@@ -1,92 +1,108 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { getLiveStandings } from '@/lib/flagmag';
+import { useState, useMemo } from 'react';
 
 export default function StatsClient({ leagues }: { leagues: any[] }) {
-  const [selectedLeague, setSelectedLeague] = useState(leagues[0]?.slug || '');
-  const [standings, setStandings] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
+  const years = [
+    '2026', '2025', '2024', '2023', '2022', '2021', '2020', '2019', '2018',
+    '2017', '2016', '2015', '2014', '2013', '2012', '2011', '2010'
+  ];
+  const seasons = ['Winter', 'Spring', 'Summer', 'Fall', 'Holiday'];
 
-  useEffect(() => {
-    if (!selectedLeague) return;
-    setLoading(true);
-    getLiveStandings(selectedLeague)
-      .then(data => setStandings(data || []))
-      .catch(err => console.error(err))
-      .finally(() => setLoading(false));
-  }, [selectedLeague]);
+  const [selectedYear, setSelectedYear] = useState<string>('2026');
+  const [selectedSeason, setSelectedSeason] = useState<string>('Summer');
+
+  // Filter leagues matching selected Year and Season
+  const filteredLeagues = useMemo(() => {
+    return leagues.filter(l => {
+      const seasonName = l.season?.name || '';
+      const yrMatch = seasonName.match(/\d{4}/)?.[0] || '';
+      const szName = seasonName.replace(/\d{4}/g, '').trim();
+      // Case-insensitive match for season
+      return yrMatch === selectedYear && szName.toLowerCase() === selectedSeason.toLowerCase();
+    });
+  }, [leagues, selectedYear, selectedSeason]);
+
+  const getLogoUrl = (url?: string) => {
+    if (!url) return '/assets/images/team1.png';
+    if (url.startsWith('/api/')) return `https://flagmag.com${url}`;
+    return url;
+  };
 
   return (
-    <section className="x-states-section" style={{ minHeight: '60vh', padding: '60px 0' }}>
+    <section className="x-states-section">
       <div className="container">
         
-        <div className="d-flex flex-wrap gap-2 mb-5">
-          {leagues.map(l => (
-            <button 
-              key={l.slug} 
-              className={`btn ${selectedLeague === l.slug ? 'btn-primary' : 'btn-outline-primary'}`}
-              onClick={() => setSelectedLeague(l.slug)}
-            >
-              {l.name}
-            </button>
+        {/* YEARS */}
+        <ul className="years-item">
+          {years.map(y => (
+            <li key={y}>
+              <a 
+                href="#" 
+                onClick={(e) => { e.preventDefault(); setSelectedYear(y); }}
+                style={selectedYear === y ? { background: '#231f20', color: '#fff' } : undefined}
+              >
+                {y}
+              </a>
+            </li>
           ))}
-        </div>
+        </ul>
 
-        {loading ? (
-          <div className="text-center py-5">Loading standings...</div>
-        ) : standings.length > 0 ? (
-          standings.map((group, i) => (
-            <div key={i} className="mb-5">
-              {group.name && <h4 className="mb-3 text-white">{group.name}</h4>}
-              <div className="table-responsive">
-                <table className="table table-dark table-striped table-hover">
-                  <thead>
-                    <tr>
-                      <th>Team</th>
-                      <th>W-L</th>
-                      <th>Win %</th>
-                      <th>PF</th>
-                      <th>PA</th>
-                      <th>DIFF</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {group.rows.map((team: any, j: number) => (
-                      <tr key={j}>
-                        <td>
-                          <img src={team.logo || '/assets/images/team-placeholder.svg'} alt="" style={{ width: 24, marginRight: 10, verticalAlign: 'middle' }} />
-                          {team.name}
-                        </td>
-                        <td>{team.wins}-{team.losses}</td>
-                        <td>{team.wins === 0 && team.losses === 0 ? '-' : team.pct.toFixed(2)}</td>
-                        <td>{team.wins === 0 && team.losses === 0 ? '-' : team.pf}</td>
-                        <td>{team.wins === 0 && team.losses === 0 ? '-' : team.pa}</td>
-                        <td>{team.wins === 0 && team.losses === 0 ? '-' : (team.diff > 0 ? `+${team.diff}` : team.diff)}</td>
-                      </tr>
-                    ))}
-                    {group.rows.length === 0 && (
-                      <tr><td colSpan={6} className="text-center text-muted">No teams found in this division.</td></tr>
-                    )}
-                  </tbody>
-                </table>
+        {/* SEASONS */}
+        <ul className="seasons-item">
+          {seasons.map(s => (
+            <li key={s}>
+              <a 
+                href="#" 
+                onClick={(e) => { e.preventDefault(); setSelectedSeason(s); }}
+                style={selectedSeason === s ? { background: '#F13B26', color: '#fff' } : undefined}
+              >
+                {s}
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <h3 className="design1">
+          <a href="#">seasons Statistical Leaders <span>view</span></a>
+        </h3>
+
+        {/* LEAGUES / LOCATIONS GRID */}
+        <ul className="seasons-team-list">
+          {filteredLeagues.map(league => (
+            <li 
+              key={league._id}
+              style={{ cursor: 'pointer' }}
+              onClick={() => window.location.href = `/organizations/xflagfootball/season/${league.slug}/game-stats`}
+            >
+              <div className="lf">
+                <img src={getLogoUrl(league.image)} alt={league.name} />
               </div>
-            </div>
-          ))
-        ) : (
-          <div className="text-center py-5 text-muted">Select a league to view standings, or no data available.</div>
+              <div className="rt">
+                <h5>{league.name}</h5>
+                <span><i className="fas fa-location-dot"></i> {league.location || 'New York, NY'}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        {filteredLeagues.length === 0 && (
+          <div className="text-center py-5 text-muted" style={{ marginBottom: '50px' }}>
+            No leagues found for {selectedSeason} {selectedYear}.
+          </div>
         )}
 
-        <div className="banner-area mt-5">
-            <div className="mob">
-                <img src="/assets/images/states-mob-img.jpg" alt="" />
-            </div>
-            <div className="content-area">
-                <h2>Advanced Stats info</h2>
-                <p>Join the advanced stats program comparing overall performances of players and teams.</p>
-                <a href="#" className="btn btn-primary">subscribe now</a>
-            </div>
+        <div className="banner-area">
+          <div className="mob">
+            <img src="/assets/images/states-mob-img.jpg" alt="" />
+          </div>
+          <div className="content-area">
+            <h2>Advanced Stats info</h2>
+            <p>Join the advanced stats program comparing overall performances of players and teams.</p>
+            <a href="#" className="btn btn-primary">subscribe now</a>
+          </div>
         </div>
+
       </div>
     </section>
   );
