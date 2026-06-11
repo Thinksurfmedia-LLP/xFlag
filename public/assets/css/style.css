@@ -3183,3 +3183,40 @@ footer .copyright-area ul li a:hover {
 .contactus-section .contact-area-wrap {
   padding: 0 10px;
 }
+
+/* ===== SCHEDULES PAGE ===== */
+.schedules-section {
+  background-color: #fff;
+}
+.schedules-section .schedule-body {
+  background-color: #fff;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.schedules-section .schedule-body .right-side table {
+  background-color: #fff;
+}
+.schedules-section .schedule-body .right-side table thead tr th {
+  background-color: rgba(245,245,245,1);
+  color: #231F20;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border: 0;
+  padding: 12px 12px;
+}
+.schedules-section .schedule-body .right-side table tbody tr td {
+  border-color: rgba(0,0,0,0.06);
+  color: #231F20;
+}
+.schedules-section .schedule-body .right-side table tbody tr:hover {
+  background-color: rgba(241,59,38,0.04);
+}
+.schedules-section .left-side ul li a {
+  transition: color 0.2s;
+}
+.schedules-section .left-side ul li a:hover {
+  color: #F13B26 !important;
+}
