@@ -2,6 +2,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { getLiveLeagues, getLiveStandings, getLiveSchedules } from '@/lib/flagmag';
+import GameRow from './GameRow';
 
 export default async function GameStatsPage({ params }: { params: { year: string; season: string; slug: string } }) {
   const { year, season, slug } = await params;
@@ -138,7 +139,7 @@ export default async function GameStatsPage({ params }: { params: { year: string
                   <div className="division-table-area game-table">
                     <div className="table-wrap">
                       <h4>{dateKey}</h4>
-                      <table className="table">
+                      <table className="table table-hover">
                         <thead>
                           <tr>
                             <th>Point</th>
@@ -150,21 +151,7 @@ export default async function GameStatsPage({ params }: { params: { year: string
                         </thead>
                         <tbody>
                           {gamesByDate[dateKey].map((game: any, gIdx: number) => (
-                            <tr key={gIdx}>
-                              <td>{game.teamA?.score !== undefined ? game.teamA.score : '-'}</td>
-                              <td>
-                                <Link href={`/${year}/${season}/${slug}/player-stats?team=${encodeURIComponent(game.teamA?.name || '')}`}>
-                                  <img src={getLogoUrl(game.teamA?.logo)} alt={game.teamA?.name} /> {game.teamA?.name}
-                                </Link>
-                              </td>
-                              <td><span className="vs">vs</span></td>
-                              <td>{game.teamB?.score !== undefined ? game.teamB.score : '-'}</td>
-                              <td>
-                                <Link href={`/${year}/${season}/${slug}/player-stats?team=${encodeURIComponent(game.teamB?.name || '')}`}>
-                                  <img src={getLogoUrl(game.teamB?.logo)} alt={game.teamB?.name} /> {game.teamB?.name}
-                                </Link>
-                              </td>
-                            </tr>
+                            <GameRow key={gIdx} game={game} year={year} season={season} slug={slug} />
                           ))}
                         </tbody>
                       </table>
