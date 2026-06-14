@@ -1,0 +1,665 @@
+/* ============================================================
+   xFlag — Mobile Responsive Overrides
+   Covers: All nav pages, schedules, xstats, locations,
+           news, contact-us, about-us, team-points, etc.
+   Breakpoints:
+     ≤991px  → tablet / mobile (hamburger menu)
+     ≤767px  → mobile
+     ≤575px  → small mobile
+     ≤480px  → extra-small
+============================================================ */
+
+/* ─── GLOBAL VIEWPORT FIX ─────────────────────────────── */
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+* {
+  min-width: 0; /* prevents flex children from overflowing */
+}
+
+/* ─── GLOBAL COMPONENT DEFAULTS ────────────────────────── */
+
+/* Schedules - default flex layout (overridden on mobile) */
+.schedule-body {
+  display: flex;
+}
+
+/* Schedule filter selects default max-width */
+.form-select.schedule-filter-select {
+  max-width: 180px;
+}
+
+/* Schedule search bar default */
+.search-bar.schedule-search-bar {
+  margin-left: auto;
+  min-width: 250px;
+}
+
+/* ─── ≤991px: Tablet / Mobile ──────────────────────────── */
+@media all and (max-width: 991px) {
+
+  /* Header */
+  header .container-fluid {
+    padding: 0 15px;
+  }
+
+  header .top-header .logo img + img {
+    max-width: 220px;
+  }
+
+  /* Nav area collapses; hide desktop right-part */
+  header .nav-area-main .right-part {
+    display: none !important;
+  }
+
+  /* Schedules */
+  .schedules-section .top-part {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .schedules-section .top-part .search-bar {
+    margin-left: 0 !important;
+    min-width: 100% !important;
+  }
+
+  .schedules-section .form-select {
+    max-width: 100% !important;
+    min-width: unset !important;
+    width: 100% !important;
+  }
+
+  .schedule-body {
+    flex-direction: column !important;
+  }
+
+  .schedule-body .left-side {
+    width: 100% !important;
+  }
+
+  .schedule-body .left-side ul {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 10px;
+    padding: 15px !important;
+  }
+
+  .schedule-body .left-side ul li {
+    margin-bottom: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* XStats section */
+  .x-states-section .years-item {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+
+  .x-states-section .seasons-item {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* Team-point nav tabs */
+  .team-point-section .team-heading-nav {
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 40px;
+  }
+
+  .team-point-section .team-heading-nav li a {
+    font-size: 1.8rem;
+  }
+
+}
+
+
+/* ─── ≤767px: Mobile ───────────────────────────────────── */
+@media all and (max-width: 767px) {
+
+  /* General */
+  .section-padding {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  .container, .container-fluid {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  /* Header */
+  header .top-header .logo img:first-child {
+    max-height: 40px;
+    width: auto;
+  }
+
+  header .top-header .logo img + img {
+    max-width: 160px;
+  }
+
+  /* Inner banner */
+  .inner-banner-section {
+    min-height: 100px;
+  }
+
+  /* Breadcrumb */
+  .breadcrumb-section ul {
+    justify-content: center;
+  }
+
+  /* ── SCHEDULES PAGE ── */
+  .schedules-section .top-part {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .schedule-body {
+    flex-direction: column !important;
+    border: none !important;
+  }
+
+  .schedule-body .left-side {
+    width: 100% !important;
+    min-height: auto !important;
+    padding: 10px 0 !important;
+  }
+
+  .schedule-body .left-side ul {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 8px;
+    padding: 10px 15px !important;
+  }
+
+  .schedule-body .left-side ul li {
+    margin-bottom: 0 !important;
+    padding: 0 !important;
+  }
+
+  .schedule-body .left-side ul li a {
+    padding: 6px 14px;
+    border: 1px solid #555;
+    border-radius: 20px;
+    font-size: 13px !important;
+  }
+
+  .schedule-body .right-side {
+    padding: 12px !important;
+  }
+
+  /* Location tabs scroll horizontally */
+  .state-carousel-area {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .state-carousel-area > div {
+    min-width: max-content;
+  }
+
+  /* Schedule table — horizontal scroll */
+  .schedule-body .right-side > div[style*="overflow"] {
+    overflow-x: auto !important;
+  }
+
+  /* ── XSTATS PAGE ── */
+  .x-states-section {
+    padding: 2rem 0;
+  }
+
+  .x-states-section .years-item {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px;
+  }
+
+  .x-states-section .seasons-item {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px;
+  }
+
+  .x-states-section .seasons-team-list {
+    grid-template-columns: 1fr !important;
+  }
+
+  .x-states-section .banner-area {
+    flex-direction: column;
+    padding: 30px 15px;
+    text-align: center;
+  }
+
+  .x-states-section .banner-area .content-area {
+    margin-top: 20px;
+  }
+
+  .x-states-section .banner-area .content-area h2 {
+    font-size: 1.6rem;
+  }
+
+  .x-states-section .banner-area .content-area p {
+    font-size: 14px;
+  }
+
+  /* ── LOCATIONS PAGE ── */
+  .location-search-section {
+    padding: 20px 0;
+  }
+
+  .location-search-section .location-area {
+    text-align: center;
+  }
+
+  .location-search-section .input-group {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .location-search-section .input-group .form-control {
+    border-radius: 26px !important;
+  }
+
+  .location-search-section .input-group .btn {
+    width: 100%;
+    border-radius: 26px !important;
+  }
+
+  .xflag-location h2 {
+    text-align: center;
+    font-size: 1.6rem;
+  }
+
+  .location-box .content-area h4 {
+    font-size: 1.1rem;
+  }
+
+  /* ── ABOUT PAGE ── */
+  .about-page-content .content-area {
+    text-align: center;
+  }
+
+  .about-page-content .content-area h2 {
+    font-size: 1.6rem;
+    margin-bottom: 15px;
+  }
+
+  .about-page-content .content-area p {
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  /* ── NEWS PAGE ── */
+  .newspage-section .pagination-area ul {
+    justify-content: center;
+  }
+
+  .related-news-section .top-part {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+  }
+
+  .related-news-section .top-part h2 {
+    width: 100%;
+    text-align: center;
+  }
+
+  .news-area .content-area h3 {
+    font-size: 16px;
+  }
+
+  /* ── CONTACT PAGE ── */
+  .contactus-section .contact-area-wrap {
+    padding: 0;
+  }
+
+  .contactus-section .contact-area {
+    padding: 20px 15px;
+    margin-bottom: 20px;
+  }
+
+  .contactus-section .contact-area h2 {
+    font-size: 1.6rem;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .contactus-section .contact-area ul li {
+    gap: 10px;
+    font-size: 15px;
+  }
+
+  .contactus-section .contact-area ul li a {
+    font-size: 15px;
+  }
+
+  .contactus-section .form-area {
+    padding: 15px 0;
+  }
+
+  /* ── TEAM POINTS PAGE ── */
+  .team-point-section h2 {
+    font-size: 1.6rem;
+    text-align: center;
+  }
+
+  .team-point-section .team-heading-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 30px;
+    justify-content: center;
+  }
+
+  .team-point-section .team-heading-nav li a {
+    font-size: 1.4rem;
+    padding: 8px 12px;
+  }
+
+  /* ── SPONSOR PAGE ── */
+  .sponsorship-section .form-area {
+    padding: 20px 15px;
+  }
+
+  .sponsorship-section .form-area .col-6 {
+    width: 100%;
+    flex: 0 0 100%;
+  }
+
+  /* ── RESOURCES / YEAR PAGES ── */
+  .table-navigation ul {
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .table-navigation ul li a {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+
+  /* Tables */
+  .table-responsive-wrapper,
+  .scoreboard-section .table-area,
+  .xstats-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Footer */
+  footer .top-footer {
+    padding: 3rem 0;
+  }
+
+  footer .top-footer .logo-area {
+    width: 100%;
+    margin-bottom: 25px;
+  }
+
+  footer .copyright-area .row {
+    text-align: center;
+  }
+
+  footer .copyright-area ul {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* Success counters */
+  .success-section .counter-area h3 {
+    font-size: 2.5rem;
+  }
+
+  .success-section .counter-area p {
+    font-size: 1rem;
+  }
+
+  /* Upcoming match tabs */
+  .upcoming-match-section .nav-area ul.nav {
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 15px;
+  }
+
+  .upcoming-match-section .nav-area ul.nav li button {
+    font-size: 18px;
+  }
+
+}
+
+
+/* ─── ≤575px: Small Mobile ─────────────────────────────── */
+@media all and (max-width: 575px) {
+
+  h1, h2 {
+    font-size: 1.8rem !important;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+  }
+
+  h4 {
+    font-size: 1.2rem;
+  }
+
+  /* Header logo */
+  header .top-header .logo img + img {
+    max-width: 130px;
+  }
+
+  /* Buttons */
+  .btn {
+    padding: 12px 20px;
+    font-size: 0.85rem;
+  }
+
+  /* ── SCHEDULES ── */
+  .schedule-body .right-side {
+    padding: 8px !important;
+  }
+
+  .schedules-section {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+
+  /* ── XSTATS ── */
+  .x-states-section .years-item {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .design1 {
+    font-size: 1.5rem;
+    padding: 15px 0 20px;
+  }
+
+  .design1 span {
+    font-size: 70%;
+    padding: 2px 14px;
+  }
+
+  /* ── TEAM POINTS ── */
+  .team-point-section .team-heading-nav li a {
+    font-size: 1.1rem;
+    padding: 6px 10px;
+  }
+
+  /* ── LOCATION DETAILS ── */
+  .location-detail-section .detail-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  /* ── FEATURED VENUES ── */
+  .featured-venues-section .featured-venues-main {
+    max-width: 100%;
+  }
+
+  .featured-venues-section .content-box-main {
+    padding: 20px 15px;
+  }
+
+  /* ── CONTACT ── */
+  .contact-column {
+    width: 100%;
+    flex: 0 0 100%;
+  }
+
+  /* ── NEWS DETAILS ── */
+  .news-details-section .content-area h2 {
+    font-size: 1.4rem;
+  }
+
+  /* Strip banner */
+  .strip-banner-section .image-area {
+    height: 120px;
+  }
+
+  /* Match carousel nav */
+  .match-carousel-nav {
+    justify-content: center;
+  }
+
+  /* About page */
+  .about-page-content .content-area p {
+    font-size: 0.95rem;
+  }
+
+  /* Footer nav */
+  footer .top-footer .nav-area h4 {
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+
+  footer .top-footer .nav-area ul li {
+    font-size: 14px;
+  }
+
+  /* Breadcrumb */
+  .breadcrumb-section ul {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .breadcrumb-section ul li {
+    font-size: 13px;
+  }
+
+  /* Pagination */
+  .pagination-area ul.pagination li a {
+    width: 40px;
+    height: 40px;
+    font-size: 14px;
+  }
+
+  /* Scoreboard table */
+  .scoreboard-section .table-area .table thead tr th {
+    font-size: 14px;
+  }
+
+  .scoreboard-section .table-area .table tbody tr td {
+    font-size: 13px;
+  }
+
+  .scoreboard-section .table-area .table tbody tr td img {
+    max-width: 25px;
+    max-height: 25px;
+  }
+
+  /* players-box */
+  .players-box {
+    flex-direction: column;
+    margin-bottom: 25px;
+  }
+
+  /* Difference section */
+  .diffrence-section .content-area h4 {
+    font-size: 1.5rem;
+  }
+
+  .diffrence-section .content-area .item-group {
+    grid-template-columns: 1fr;
+  }
+
+  /* News section heading */
+  .news-section h2 {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+}
+
+
+/* ─── ≤480px: Extra-small ──────────────────────────────── */
+@media all and (max-width: 480px) {
+
+  /* Sponsor form full-width cols */
+  .sponsorship-section .form-area .col-6 {
+    width: 100%;
+    flex: 0 0 100%;
+  }
+
+  /* Schedule table cells smaller */
+  .schedule-body table th,
+  .schedule-body table td {
+    padding: 8px 5px !important;
+    font-size: 11px !important;
+  }
+
+  /* XStats years */
+  .x-states-section .years-item {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .x-states-section .seasons-item {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Location boxes stack */
+  .xflag-location .col-sm-6 {
+    width: 100%;
+    flex: 0 0 100%;
+  }
+
+  /* Team heading nav full width */
+  .team-point-section .team-heading-nav {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .team-point-section .team-heading-nav li {
+    text-align: center;
+  }
+
+}
+
+
+/* ─── ≤380px: Very small ───────────────────────────────── */
+@media all and (max-width: 380px) {
+
+  header .top-header .logo img + img {
+    max-width: 110px;
+  }
+
+  .btn {
+    padding: 10px 14px;
+    font-size: 0.8rem;
+  }
+
+  h1, h2 {
+    font-size: 1.5rem !important;
+  }
+
+  .schedule-body table th,
+  .schedule-body table td {
+    font-size: 10px !important;
+    padding: 6px 4px !important;
+  }
+
+  .x-states-section .years-item {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+}

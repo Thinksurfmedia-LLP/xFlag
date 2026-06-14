@@ -108,7 +108,7 @@ export default async function Header() {
                                   {ctaButtons.map(btn => (
                                     <Link key={btn.id} href={btn.href} className="btn btn-info-primary">{btn.label}</Link>
                                   ))}
-                                  <Link href="#"><img src="/assets/images/mob-xflag-btn.png" alt="" /></Link>
+                                  <Link href="#" data-bs-toggle="modal" data-bs-target="#comingSoonModal"><img src="/assets/images/mob-xflag-btn.png" alt="" /></Link>
                               </div>
 
                               <div className="social">
@@ -141,11 +141,25 @@ export default async function Header() {
                       </div>
 
                       <div className="flagmag-button">
-                          <Link href="#"><img src="/assets/images/flagmag-btn.png" alt="" /></Link>
+                          <Link href="#" data-bs-toggle="modal" data-bs-target="#comingSoonModal"><img src="/assets/images/flagmag-btn.png" alt="" /></Link>
                       </div>
                   </div>
               </div>
           </div>
+      </div>
+      {/* Coming Soon Modal */}
+      <div className="modal fade" id="comingSoonModal" tabIndex={-1} aria-hidden="true">
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content text-center" style={{ backgroundColor: '#231F20', color: '#fff', border: '2px solid #dc3545', borderRadius: '8px' }}>
+            <div className="modal-header" style={{ borderBottom: 'none' }}>
+              <button type="button" className="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div className="modal-body pb-5">
+              <h2 style={{ color: '#dc3545', textTransform: 'uppercase', fontStyle: 'italic' }}>Coming Soon</h2>
+              <p className="mt-3" style={{ fontSize: '18px' }}>XStats+ is currently under development. Stay tuned!</p>
+            </div>
+          </div>
+        </div>
       </div>
     </header>
   );

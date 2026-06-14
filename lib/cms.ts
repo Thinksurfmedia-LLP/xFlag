@@ -8,25 +8,20 @@ const DEFAULT_CMS: CmsData = {
     logo2: '/assets/images/logo2.png',
     navLinks: [
       { id: 'nav-1', label: 'Home', href: '/', dropdown: [] },
-      {
-        id: 'nav-2',
-        label: 'About',
-        href: '/about-us',
-        dropdown: [
-          { id: 'nav-2-1', label: 'Our Team', href: '/about-us' },
-          { id: 'nav-2-2', label: 'Our Story', href: '/about-us' },
-        ],
-      },
+      // { id: 'nav-2', label: 'About', href: '/about-us', dropdown: [
+      //   { id: 'nav-2-1', label: 'Our Team', href: '/about-us' },
+      //   { id: 'nav-2-2', label: 'Our Story', href: '/about-us' },
+      // ] },
       { id: 'nav-3', label: 'Locations', href: '/locations', dropdown: [] },
       { id: 'nav-4', label: 'Schedules', href: '/schedules', dropdown: [] },
       { id: 'nav-5', label: 'XStats', href: '/xstats', dropdown: [] },
-      { id: 'nav-6', label: 'Shop Now', href: '#', dropdown: [] },
-      { id: 'nav-7', label: 'Resources', href: '/resources', dropdown: [] },
+      // { id: 'nav-6', label: 'Shop Now', href: '#', dropdown: [] },
+      // { id: 'nav-7', label: 'Resources', href: '/resources', dropdown: [] },
     ],
     ctaButtons: [
-      { id: 'cta-1', label: 'National Tournament', href: '#', variant: 'primary' },
-      { id: 'cta-2', label: 'Youth Flag Football', href: '#', variant: 'info' },
-      { id: 'cta-3', label: 'My Account', href: '#', variant: 'primary' },
+      // { id: 'cta-1', label: 'National Tournament', href: '#', variant: 'primary' },
+      // { id: 'cta-2', label: 'Youth Flag Football', href: '#', variant: 'info' },
+      // { id: 'cta-3', label: 'My Account', href: '#', variant: 'primary' },
     ],
   },
   footer: {

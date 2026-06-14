@@ -90,13 +90,13 @@ export default function SchedulesClient({ games, leagues }: { games: any[], leag
       <div className="container">
 
         {/* Top filter bar */}
-        <div className="top-part" style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', marginBottom: '30px' }}>
-          <select defaultValue="" className="form-select" style={{ maxWidth: '180px', backgroundColor: '#231F20', color: '#fff', border: 'none' }}>
+        <div className="top-part" style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', marginBottom: '30px', alignItems: 'center' }}>
+          <select defaultValue="" className="form-select schedule-filter-select" style={{ backgroundColor: '#231F20', color: '#fff', border: 'none' }}>
             <option value="" disabled>States</option>
           </select>
           <select
             className="form-select"
-            style={{ maxWidth: '180px', backgroundColor: '#231F20', color: '#fff', border: 'none' }}
+            style={{ backgroundColor: '#231F20', color: '#fff', border: 'none' }}
             value={selectedLeague}
             onChange={e => setSelectedLeague(e.target.value)}
           >
@@ -105,11 +105,11 @@ export default function SchedulesClient({ games, leagues }: { games: any[], leag
               <option key={l._id} value={l.name}>{l.name}</option>
             ))}
           </select>
-          <select defaultValue="" className="form-select" style={{ maxWidth: '180px', backgroundColor: '#231F20', color: '#fff', border: 'none' }}>
+          <select defaultValue="" className="form-select schedule-filter-select" style={{ backgroundColor: '#231F20', color: '#fff', border: 'none' }}>
             <option value="" disabled>All teams</option>
           </select>
 
-          <div className="search-bar" style={{ marginLeft: 'auto', minWidth: '250px' }}>
+          <div className="search-bar schedule-search-bar">
             <div className="input-group" style={{ background: '#fff', border: '1px solid #ddd', borderRadius: '4px', overflow: 'hidden' }}>
               <input
                 type="text"
@@ -127,7 +127,7 @@ export default function SchedulesClient({ games, leagues }: { games: any[], leag
         </div>
 
         {/* Main body */}
-        <div className="schedule-body" style={{ display: 'flex', background: '#fff', borderRadius: '8px', border: '1px solid #ddd', overflow: 'hidden' }}>
+        <div className="schedule-body" style={{ background: '#fff', borderRadius: '8px', border: '1px solid #ddd', overflow: 'hidden' }}>
 
           {/* LEFT — Week sidebar */}
           <div className="left-side" style={{ width: '200px', backgroundColor: '#000', padding: '20px 0', minHeight: '400px' }}>
@@ -188,8 +188,8 @@ export default function SchedulesClient({ games, leagues }: { games: any[], leag
             </div>
 
             {/* Table */}
-            <div style={{ overflowX: 'auto' }}>
-              <table className="table" style={{ borderCollapse: 'collapse', width: '100%', minWidth: '800px', border: '1px solid #eee' }}>
+            <div className="schedule-table-scroll" style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' } as React.CSSProperties}>
+              <table className="table" style={{ borderCollapse: 'collapse', width: '100%', minWidth: '600px', border: '1px solid #eee' }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid #ddd' }}>
                     <th style={{ textTransform: 'uppercase', fontSize: '12px', fontWeight: 700, padding: '15px', background: '#f9f9f9', color: '#231F20', width: '120px' }}>date/time</th>

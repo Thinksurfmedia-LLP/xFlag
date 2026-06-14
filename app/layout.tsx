@@ -6,6 +6,11 @@ export const metadata: Metadata = {
   description: "Experience the Power & Passion of FLAG FOOTBALL",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -28,6 +33,7 @@ export default function RootLayout({
         <link rel="stylesheet" href="/assets/css/owl.theme.default.min.css" />
         <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
         <link rel="stylesheet" href="/assets/css/style.css" />
+        <link rel="stylesheet" href="/assets/css/mobile.css" />
       </head>
       <body>
         {children}
