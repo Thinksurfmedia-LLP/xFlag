@@ -2,11 +2,22 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
-import { getLiveOrganization } from '@/lib/flagmag';
+import { getLiveVenues } from '@/lib/flagmag';
+import { readCmsData } from '@/lib/cms';
 
 export default async function Locations() {
-  const org = await getLiveOrganization();
-  const locations = org?.locations || [];
+  const [venues, cmsData] = await Promise.all([getLiveVenues(), readCmsData()]);
+
+  // Build lookup map: venue name (lowercase) → CMS entry (for images)
+  const cmsMap = new Map(
+    (cmsData.homepage?.featuredLocations.locations || [])
+      .filter((l: any) => l.locationName)
+      .map((l: any) => [l.locationName.toLowerCase().trim(), l])
+  );
+  const getLocationImage = (venue: any) => {
+    const key = (venue.name || '').toLowerCase().trim();
+    return (cmsMap.get(key) as any)?.image || '/assets/images/location-img.jpg';
+  };
 
   return (
     <div className="wrapper">
@@ -35,16 +46,16 @@ export default async function Locations() {
         <div className="container">
           <h2>XFLAG LOCATIONS</h2>
           <div className="row g-4">
-            {locations.length > 0 ? locations.map((loc: any, i: number) => (
+            {venues.length > 0 ? venues.map((venue: any, i: number) => (
               <div key={i} className="col-sm-6 col-xl-3">
                 <div className="location-box">
                   <div className="image-area">
-                    <img src="/assets/images/location-img.jpg" alt="" />
+                    <img src={getLocationImage(venue)} alt={venue.name} />
                   </div>
                   <div className="content-area">
-                    <h4>{(loc.locationName || loc.cityName).toUpperCase()}</h4>
-                    <p>{loc.cityName}, {loc.stateAbbr}</p>
-                    <Link href={`/locations/${loc._id}`}>Details</Link>
+                    <h4>{venue.name.toUpperCase()}</h4>
+                    <p>{venue.cityName}, {venue.stateAbbr}</p>
+                    <Link href={`/locations/${venue._id}`}>Details</Link>
                   </div>
                 </div>
               </div>

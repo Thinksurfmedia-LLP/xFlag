@@ -12,6 +12,21 @@ if (rawOrgSlug.includes('/organizations/')) {
 const ORG_SLUG = rawOrgSlug;
 
 /**
+ * Fetch all venue records in the org's operating counties.
+ * Returns 10 venues for xflagfootball (vs 9 from org.locations).
+ */
+export async function getLiveVenues() {
+  try {
+    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/venues`, { cache: 'no-store' });
+    const data = await res.json();
+    return data.success ? data.data : [];
+  } catch (error) {
+    console.error('Failed to fetch flagmag venues:', error);
+    return [];
+  }
+}
+
+/**
  * Fetch the organization details which includes locations and venues.
  */
 export async function getLiveOrganization() {

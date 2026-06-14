@@ -1,18 +1,19 @@
 import { NextResponse } from 'next/server';
-import { getLiveOrganization } from '@/lib/flagmag';
+import { getLiveVenues } from '@/lib/flagmag';
 
-// Proxy: returns the org's full locations array from flagmagMVP
-// Used by the CMS admin so it can show all locations for the featured-picker UI
+// Proxy: returns all venue records for the org (10 venues, including Mira Mesa + North Park)
+// Used by the CMS admin to populate the featured-location picker
 export async function GET() {
   try {
-    const org = await getLiveOrganization();
-    const locations = (org?.locations || []).map((loc: any) => ({
-      locationName: loc.locationName || loc.cityName || '',
-      cityName: loc.cityName || '',
-      stateAbbr: loc.stateAbbr || '',
-      countyName: loc.countyName || '',
+    const venues = await getLiveVenues();
+    const data = venues.map((v: any) => ({
+      locationName: v.name,
+      cityName: v.cityName || '',
+      stateAbbr: v.stateAbbr || '',
+      countyName: v.countyName || '',
+      address: v.address || '',
     }));
-    return NextResponse.json({ success: true, data: locations });
+    return NextResponse.json({ success: true, data });
   } catch (err: any) {
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });
   }

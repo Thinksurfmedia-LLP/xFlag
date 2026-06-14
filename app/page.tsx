@@ -3,15 +3,14 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { readCmsData } from '@/lib/cms';
-import { getLiveOrganization, getLiveSchedules, getLiveLeagues, getLiveStandings } from '@/lib/flagmag';
+import { getLiveVenues, getLiveSchedules, getLiveLeagues, getLiveStandings } from '@/lib/flagmag';
 
 export default async function Home() {
   const cmsData = await readCmsData();
   const hp = cmsData.homepage;
   if (!hp) return null;
 
-  const org = await getLiveOrganization();
-  const allOrgLocations = org?.locations || [];
+  const allVenues = await getLiveVenues();
 
   const liveGames = await getLiveSchedules();
   const upcomingGames = liveGames.filter((g: any) => g.status !== 'completed').slice(0, 4);
@@ -219,33 +218,30 @@ export default async function Home() {
                     <h2>{hp.featuredLocations.title}</h2>
                 </div>
                 {(() => {
-                  // Build CMS map: locationName (lowercase) → CMS entry
+                  // Build CMS map: venue name (lowercase) → CMS entry (featured=true only)
                   const cmsMap = new Map(
                     hp.featuredLocations.locations
-                      .filter(l => l.featured)
+                      .filter(l => l.featured && l.locationName)
                       .map(l => [l.locationName.toLowerCase().trim(), l])
                   );
-                  // Keep only org locations that are marked featured in the CMS
-                  const liveLocations = allOrgLocations.filter((loc: any) => {
-                    const key = (loc.locationName || loc.cityName || '').toLowerCase().trim();
-                    return cmsMap.has(key);
-                  });
-                  const getLocationImage = (loc: any) => {
-                    const key = (loc.locationName || loc.cityName || '').toLowerCase().trim();
-                    return cmsMap.get(key)?.image || '/assets/images/location-img.jpg';
-                  };
+                  // Keep only venues that are marked featured in the CMS
+                  const featuredVenues = allVenues.filter((v: any) =>
+                    cmsMap.has((v.name || '').toLowerCase().trim())
+                  );
+                  const getLocationImage = (v: any) =>
+                    cmsMap.get((v.name || '').toLowerCase().trim())?.image || '/assets/images/location-img.jpg';
                   return (
                     <div className="row g-4">
-                      {liveLocations.length > 0 ? liveLocations.map((loc: any, i: number) => (
+                      {featuredVenues.length > 0 ? featuredVenues.map((v: any, i: number) => (
                         <div key={i} className="col-sm-6 col-xl-3">
                           <div className="location-box">
                             <div className="image-area">
-                              <img src={getLocationImage(loc)} alt={loc.locationName} />
+                              <img src={getLocationImage(v)} alt={v.name} />
                             </div>
                             <div className="content-area">
-                              <h4>{loc.locationName || loc.cityName}</h4>
-                              <p>{loc.cityName}, {loc.stateAbbr}</p>
-                              <Link href={`/location-details?id=${loc.location || ''}`}>details</Link>
+                              <h4>{v.name.toUpperCase()}</h4>
+                              <p>{v.cityName}, {v.stateAbbr}</p>
+                              <Link href={`/locations/${v._id}`}>details</Link>
                             </div>
                           </div>
                         </div>
