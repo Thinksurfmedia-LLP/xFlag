@@ -19,13 +19,28 @@ const DEFAULT_CMS: CmsData = {
       // { id: 'nav-7', label: 'Resources', href: '/resources', dropdown: [] },
     ],
     ctaButtons: [
-      // { id: 'cta-1', label: 'National Tournament', href: '#', variant: 'primary' },
-      // { id: 'cta-2', label: 'Youth Flag Football', href: '#', variant: 'info' },
-      // { id: 'cta-3', label: 'My Account', href: '#', variant: 'primary' },
+      { id: 'cta-1', label: 'Dashboard', href: '#', variant: 'primary' },
+    ],
+    socialLinks: [
+      { id: 'social-1', platform: 'Facebook', url: '#', iconClass: 'fa-brands fa-facebook-f' },
+      { id: 'social-2', platform: 'Twitter', url: '#', iconClass: 'fa-brands fa-twitter' },
+      { id: 'social-3', platform: 'Instagram', url: '#', iconClass: 'fa-brands fa-instagram' },
+      { id: 'social-4', platform: 'YouTube', url: '#', iconClass: 'fa-brands fa-youtube' },
     ],
   },
   footer: {
     logo: '/assets/images/white-logo.png',
+    description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    socialLinks: [
+      { id: 'social-1', platform: 'Facebook', url: '#', iconClass: 'fa-brands fa-facebook-f' },
+      { id: 'social-2', platform: 'Twitter', url: '#', iconClass: 'fa-brands fa-twitter' },
+      { id: 'social-3', platform: 'Instagram', url: '#', iconClass: 'fa-brands fa-instagram' },
+    ],
+    contactInfo: {
+      phone: '91+ 920565214',
+      email: 'xflag@mail.com',
+      address: '45, 1st Floor, New York, USA',
+    },
     navColumns: [
       {
         id: 'col-1',

@@ -91,9 +91,27 @@ export interface CmsData {
     logo2: string;
     navLinks: NavLink[];
     ctaButtons: CtaButton[];
+    socialLinks?: {
+      id: string;
+      platform: string;
+      url: string;
+      iconClass: string;
+    }[];
   };
   footer: {
     logo: string;
+    description: string;
+    socialLinks: {
+      id: string;
+      platform: string;
+      url: string;
+      iconClass: string;
+    }[];
+    contactInfo: {
+      phone: string;
+      email: string;
+      address: string;
+    };
     navColumns: FooterColumn[];
   };
   homepage?: {

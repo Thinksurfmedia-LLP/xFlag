@@ -77,7 +77,7 @@ export default async function Home() {
                             <button className="nav-link active" id="pills-upcoming-tab" data-bs-toggle="pill" data-bs-target="#pills-upcoming" type="button" role="tab" aria-controls="pills-upcoming" aria-selected="true">Upcoming Games</button>
                         </li>
                         <li className="nav-item" role="presentation">
-                            <button className="nav-link" id="pills-previous-tab" data-bs-toggle="pill" data-bs-target="#pills-previous" type="button" role="tab" aria-controls="pills-previous" aria-selected="false">Previous Games</button>
+                            <button className="nav-link" id="pills-previous-tab" data-bs-toggle="pill" data-bs-target="#pills-previous" type="button" role="tab" aria-controls="pills-previous" aria-selected="false" tabIndex={-1}>Previous Games</button>
                         </li>
                     </ul>
                 </div>

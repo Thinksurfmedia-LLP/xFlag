@@ -3,7 +3,7 @@ import { readCmsData } from '@/lib/cms';
 
 export default async function Header() {
   const cms = await readCmsData();
-  const { logo1, logo2, navLinks, ctaButtons } = cms.header;
+  const { logo1, logo2, navLinks, ctaButtons, socialLinks } = cms.header;
 
   return (
     <header className="header">
@@ -32,7 +32,7 @@ export default async function Header() {
 
                       {/* FOR MOBILE */}
                       <ul className="hdr-mob-area">
-                          <li><Link href="#" data-bs-toggle="modal" data-bs-target="#searchModal"><i className="fas fa-search"></i></Link></li>
+                          {/* <li><Link href="#" data-bs-toggle="modal" data-bs-target="#searchModal"><i className="fas fa-search"></i></Link></li> */}
                           <li><Link href="#"><i className="fas fa-user"></i></Link></li>
                           <li>
                               <button className="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu">
@@ -114,9 +114,13 @@ export default async function Header() {
                               <div className="social">
                                   <h5>Follow Us on</h5>
                                   <ul>
-                                      <li><Link href="#"><i className="fa-brands fa-facebook-f"></i></Link></li>
-                                      <li><Link href="#"><i className="fa-brands fa-twitter"></i></Link></li>
-                                      <li><Link href="#"><i className="fa-brands fa-instagram"></i></Link></li>
+                                      {socialLinks?.map(social => (
+                                        <li key={social.id}>
+                                          <Link href={social.url}>
+                                            <i className={social.iconClass}></i>
+                                          </Link>
+                                        </li>
+                                      ))}
                                   </ul>
                               </div>
                           </div>
@@ -125,20 +129,23 @@ export default async function Header() {
 
                   <div className="right-part">
                       <ul className="social-icon">
-                          <li><Link href="#"><i className="fa-brands fa-facebook-f"></i></Link></li>
-                          <li><Link href="#"><i className="fa-brands fa-twitter"></i></Link></li>
-                          <li><Link href="#"><i className="fa-brands fa-instagram"></i></Link></li>
-                          <li><Link href="#"><i className="fa-brands fa-youtube"></i></Link></li>
+                          {socialLinks?.map(social => (
+                            <li key={social.id}>
+                              <Link href={social.url}>
+                                <i className={social.iconClass}></i>
+                              </Link>
+                            </li>
+                          ))}
                       </ul>
 
-                      <div className="search-bar">
+                      {/* <div className="search-bar">
                           <div className="input-group">
                               <input type="text" className="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon" />
                               <button className="" type="button" id="search-addon">
                                   <i className="fas fa-search"></i>
                               </button>
                           </div>
-                      </div>
+                      </div> */}
 
                       <div className="flagmag-button">
                           <Link href="#" data-bs-toggle="modal" data-bs-target="#comingSoonModal"><img src="/assets/images/flagmag-btn.png" alt="" /></Link>

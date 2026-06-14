@@ -3,7 +3,7 @@ import { readCmsData } from '@/lib/cms';
 
 export default async function Footer() {
   const cms = await readCmsData();
-  const { logo, navColumns } = cms.footer;
+  const { logo, description, socialLinks, contactInfo, navColumns } = cms.footer;
 
   return (
     <>
@@ -14,11 +14,15 @@ export default async function Footer() {
                       <div className="col-xl-4">
                           <div className="logo-area">
                               <img src={logo} alt="" />
-                              <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+                              <p>{description}</p>
                               <ul className="social-icon">
-                                  <li><Link href="#"> <i className="fa-brands fa-facebook-f"></i></Link></li>
-                                  <li><Link href="#"> <i className="fa-brands fa-twitter"></i></Link></li>
-                                  <li><Link href="#"> <i className="fa-brands fa-instagram"></i></Link></li>
+                                  {socialLinks?.map(social => (
+                                    <li key={social.id}>
+                                      <Link href={social.url}>
+                                        <i className={social.iconClass}></i>
+                                      </Link>
+                                    </li>
+                                  ))}
                               </ul>
                           </div>
                       </div>
@@ -39,14 +43,14 @@ export default async function Footer() {
                                 </div>
                               ))}
 
-                              {/* Contact column — static */}
+                              {/* Contact column — dynamic */}
                               <div className="col-xl-3 col-6 contact-column">
                                   <div className="nav-area contact">
                                       <h4>Contact</h4>
                                       <ul>
-                                          <li><i><i className="fa-solid fa-phone"></i></i><Link href="#">91+ 920565214</Link></li>
-                                          <li><i><i className="fa-solid fa-envelope"></i></i><Link href="#">xflag@mail.com</Link></li>
-                                          <li><i><i className="fa-solid fa-location-dot"></i></i> 45, 1st Floor, New York, USA</li>
+                                          <li><i><i className="fa-solid fa-phone"></i></i><Link href={`tel:${contactInfo?.phone}`}>{contactInfo?.phone}</Link></li>
+                                          <li><i><i className="fa-solid fa-envelope"></i></i><Link href={`mailto:${contactInfo?.email}`}>{contactInfo?.email}</Link></li>
+                                          <li><i><i className="fa-solid fa-location-dot"></i></i> {contactInfo?.address}</li>
                                       </ul>
                                   </div>
                               </div>
