@@ -24,22 +24,27 @@ export default async function GameStatsPage({ params }: { params: { year: string
     });
   });
 
-  // Group schedules by date
-  const gamesByDate = leagueSchedules.reduce((acc: any, game: any) => {
-    // Attempt to format the date nicely
-    const dateObj = new Date(game.date);
-    const dateString = isNaN(dateObj.getTime()) 
-      ? game.date 
-      : dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
-    
-    if (!acc[dateString]) acc[dateString] = [];
-    acc[dateString].push(game);
-    return acc;
-  }, {});
+  // Group schedules by week (7-day buckets from the earliest game date)
+  const sortedSchedules = [...leagueSchedules].sort((a: any, b: any) =>
+    new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
+
+  const gamesByWeek: Map<number, any[]> = new Map();
+  if (sortedSchedules.length > 0) {
+    const firstDate = new Date(sortedSchedules[0].date);
+    firstDate.setHours(0, 0, 0, 0);
+    sortedSchedules.forEach((game: any) => {
+      const d = new Date(game.date);
+      d.setHours(0, 0, 0, 0);
+      const weekNum = Math.floor((d.getTime() - firstDate.getTime()) / (7 * 24 * 60 * 60 * 1000)) + 1;
+      if (!gamesByWeek.has(weekNum)) gamesByWeek.set(weekNum, []);
+      gamesByWeek.get(weekNum)!.push(game);
+    });
+  }
 
   const getLogoUrl = (url?: string) => {
-    if (!url) return '/assets/images/team1.png';
-    if (url.startsWith('/api/')) return `https://flagmag.com${url}`;
+    if (!url) return '/assets/images/team-placeholder.svg';
+    if (url.startsWith('/api/')) return `${(process.env.NEXT_PUBLIC_FLAGMAG_API_URL || 'https://flagmag.com').replace(/\/$/, '')}${url}`;
     return url;
   };
 
@@ -132,39 +137,42 @@ export default async function GameStatsPage({ params }: { params: { year: string
             <h2>Games</h2>
           </div>
 
-          <div className="row gx-2 gy-4">
-            {Object.keys(gamesByDate).length > 0 ? (
-              Object.keys(gamesByDate).map((dateKey: string, dIdx: number) => (
-                <div className="col-lg-6" key={dIdx}>
-                  <div className="division-table-area game-table">
-                    <div className="table-wrap">
-                      <h4>{dateKey}</h4>
-                      <table className="table table-hover">
-                        <thead>
-                          <tr>
-                            <th>Point</th>
-                            <th>team</th>
-                            <th></th>
-                            <th>Point</th>
-                            <th>team</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {gamesByDate[dateKey].map((game: any, gIdx: number) => (
-                            <GameRow key={gIdx} game={game} year={year} season={season} slug={slug} />
-                          ))}
-                        </tbody>
-                      </table>
+          {gamesByWeek.size > 0 ? (
+            <div className="row gx-3 gy-4 justify-content-center">
+              {Array.from(gamesByWeek.entries()).map(([weekNum, weekGames]) => {
+                return (
+                  <div key={weekNum} className="col-xl-6">
+                    <div className="division-table-area game-table">
+                      <div className="table-wrap">
+                        <h4>Week {weekNum}</h4>
+                        <table className="table table-hover" style={{ fontSize: '13px' }}>
+                          <thead>
+                            <tr>
+                              <th>Date</th>
+                              <th>Pts</th>
+                              <th>Team</th>
+                              <th></th>
+                              <th>Pts</th>
+                              <th>Team</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {weekGames.map((game: any, gIdx: number) => (
+                              <GameRow key={gIdx} game={game} year={year} season={season} slug={slug} showDate={true} />
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))
-            ) : (
-              <div className="col-12 text-center py-5">
-                <p>No games scheduled yet.</p>
-              </div>
-            )}
-          </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="col-12 text-center py-5">
+              <p>No games scheduled yet.</p>
+            </div>
+          )}
         </div>
       </section>
 

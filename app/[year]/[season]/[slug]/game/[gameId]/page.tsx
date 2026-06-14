@@ -12,8 +12,10 @@ export default async function GameStatsPage({
   const { year, season, slug, gameId } = await params;
   const sParams = await searchParams;
 
+  const FLAGMAG_URL = (process.env.NEXT_PUBLIC_FLAGMAG_API_URL || 'https://flagmag.com').replace(/\/$/, '');
+
   // Fetch specific game details from FlagMag API
-  const gameRes = await fetch(`https://flagmag.com/api/games/${gameId}`, { next: { revalidate: 60 } });
+  const gameRes = await fetch(`${FLAGMAG_URL}/api/games/${gameId}`, { cache: 'no-store' });
   if (!gameRes.ok) {
     return (
       <div className="wrapper">
@@ -48,8 +50,8 @@ export default async function GameStatsPage({
   const fetchStats = async (type: string) => {
     try {
       const teamParam = teamName === 'all' ? '' : encodeURIComponent(teamName);
-      const url = `https://flagmag.com/api/games/${gameId}/stats/computed?team=${teamParam}&statType=${type}`;
-      const res = await fetch(url, { next: { revalidate: 60 } });
+      const url = `${FLAGMAG_URL}/api/games/${gameId}/stats/computed?team=${teamParam}&statType=${type}`;
+      const res = await fetch(url, { cache: 'no-store' });
       if (!res.ok) return [];
       const data = await res.json();
       return data.players || [];
@@ -67,14 +69,14 @@ export default async function GameStatsPage({
   ]);
 
   const getPlayerPhoto = (url?: string) => {
-    if (!url) return '/assets/images/t1.png'; 
-    if (url.startsWith('/api/')) return `https://flagmag.com${url}`;
+    if (!url) return '/assets/images/player-placeholder.svg';
+    if (url.startsWith('/api/')) return `${FLAGMAG_URL}${url}`;
     return url;
   };
 
   const getLogoUrl = (url?: string) => {
-    if (!url) return '/assets/images/team1.png';
-    if (url.startsWith('/api/')) return `https://flagmag.com${url}`;
+    if (!url) return '/assets/images/team-placeholder.svg';
+    if (url.startsWith('/api/')) return `${FLAGMAG_URL}${url}`;
     return url;
   };
 

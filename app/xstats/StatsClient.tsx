@@ -1,76 +1,90 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default function StatsClient({ leagues }: { leagues: any[] }) {
+export default function StatsClient({ leagues, seasons }: { leagues: any[]; seasons: any[] }) {
+  const router = useRouter();
+  // Build available years from the seasons list (not leagues), newest first
   const availableYears = useMemo(() => {
     const ySet = new Set<string>();
-    leagues.forEach(l => {
-      const seasonName = l.season?.name || '';
-      const yrMatch = seasonName.match(/\d{4}/)?.[0];
-      if (yrMatch) ySet.add(yrMatch);
+    seasons.forEach(s => {
+      const yr = (s.name || '').match(/\d{4}/)?.[0];
+      if (yr) ySet.add(yr);
     });
-    const sorted = Array.from(ySet).sort((a, b) => b.localeCompare(a));
-    return sorted.length > 0 ? sorted : ['2026'];
-  }, [leagues]);
+    return Array.from(ySet).sort((a, b) => b.localeCompare(a));
+  }, [seasons]);
 
-  const [selectedYear, setSelectedYear] = useState<string>(availableYears[0]);
+  // Find the year that contains the default season, fallback to newest year
+  const initialYear = useMemo(() => {
+    const defaultSeason = seasons.find(s => s.isDefault);
+    if (defaultSeason) {
+      const yr = (defaultSeason.name || '').match(/\d{4}/)?.[0];
+      if (yr) return yr;
+    }
+    return availableYears[0] || '2026';
+  }, [seasons, availableYears]);
 
+  const [selectedYear, setSelectedYear] = useState<string>(initialYear);
+
+  // Build season buttons for the selected year from the seasons list
   const availableSeasons = useMemo(() => {
-    const sSet = new Set<string>();
-    leagues.forEach(l => {
-      const seasonName = l.season?.name || '';
-      const yrMatch = seasonName.match(/\d{4}/)?.[0] || '';
-      if (yrMatch === selectedYear) {
-         const szName = seasonName.replace(/\d{4}/g, '').trim();
-         if (szName) sSet.add(szName);
-      }
-    });
     const seasonOrder = ['Winter', 'Spring', 'Summer', 'Fall', 'Holiday'];
-    return Array.from(sSet).sort((a, b) => {
-      const idxA = seasonOrder.indexOf(a);
-      const idxB = seasonOrder.indexOf(b);
-      if (idxA !== -1 && idxB !== -1) return idxA - idxB;
-      return a.localeCompare(b);
-    });
-  }, [leagues, selectedYear]);
+    return seasons
+      .filter(s => (s.name || '').match(/\d{4}/)?.[0] === selectedYear)
+      .map(s => ({ label: (s.name as string).replace(/\d{4}/g, '').trim(), isDefault: s.isDefault }))
+      .filter(s => s.label)
+      .sort((a, b) => {
+        const idxA = seasonOrder.indexOf(a.label);
+        const idxB = seasonOrder.indexOf(b.label);
+        if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+        return a.label.localeCompare(b.label);
+      });
+  }, [seasons, selectedYear]);
 
-  const [selectedSeason, setSelectedSeason] = useState<string>(availableSeasons[0] || 'Summer');
+  // Default to the isDefault season for the selected year, otherwise first
+  const initialSeason = useMemo(() => {
+    const def = availableSeasons.find(s => s.isDefault);
+    return def?.label || availableSeasons[0]?.label || '';
+  }, [availableSeasons]);
 
-  // If availableSeasons changes (e.g. year changes) and current selection is invalid, pick the first
-  if (availableSeasons.length > 0 && !availableSeasons.includes(selectedSeason)) {
-    setSelectedSeason(availableSeasons[0]);
-  }
+  const [selectedSeason, setSelectedSeason] = useState<string>(initialSeason);
 
-  // Filter leagues matching selected Year and Season
+  // When the year changes, reset the season to the default for that year
+  useEffect(() => {
+    const def = availableSeasons.find(s => s.isDefault);
+    setSelectedSeason(def?.label || availableSeasons[0]?.label || '');
+  }, [selectedYear]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Filter leagues matching selected year + season
   const filteredLeagues = useMemo(() => {
     if (!selectedYear || !selectedSeason) return [];
     return leagues.filter(l => {
       const seasonName = l.season?.name || '';
-      const yrMatch = seasonName.match(/\d{4}/)?.[0] || '';
-      const szName = seasonName.replace(/\d{4}/g, '').trim();
-      return yrMatch === selectedYear && szName.toLowerCase() === selectedSeason.toLowerCase();
+      const yr = seasonName.match(/\d{4}/)?.[0] || '';
+      const sz = seasonName.replace(/\d{4}/g, '').trim();
+      return yr === selectedYear && sz.toLowerCase() === selectedSeason.toLowerCase();
     });
   }, [leagues, selectedYear, selectedSeason]);
 
   const getLogoUrl = (url?: string) => {
-    if (!url) return '/assets/images/team1.png';
-    if (url.startsWith('/api/')) return `https://flagmag.com${url}`;
+    if (!url) return '/assets/images/league-placeholder.svg';
+    if (url.startsWith('/api/')) return `${process.env.NEXT_PUBLIC_FLAGMAG_API_URL || 'https://flagmag.com'}${url}`;
     return url;
   };
 
   return (
     <section className="x-states-section">
       <div className="container">
-        
+
         {/* YEARS */}
         <ul className="years-item">
           {availableYears.map(y => (
             <li key={y}>
-              <a 
-                href="#" 
+              <a
+                href="#"
                 onClick={(e) => { e.preventDefault(); setSelectedYear(y); }}
-                style={selectedYear === y ? { background: '#231f20', color: '#fff' } : undefined}
+                style={selectedYear === y ? { background: '#F13B26', color: '#fff' } : { background: '#231f20', color: '#fff' }}
               >
                 {y}
               </a>
@@ -81,13 +95,13 @@ export default function StatsClient({ leagues }: { leagues: any[] }) {
         {/* SEASONS */}
         <ul className="seasons-item">
           {availableSeasons.map(s => (
-            <li key={s}>
-              <a 
-                href="#" 
-                onClick={(e) => { e.preventDefault(); setSelectedSeason(s); }}
-                style={selectedSeason === s ? { background: '#F13B26', color: '#fff' } : undefined}
+            <li key={s.label}>
+              <a
+                href="#"
+                onClick={(e) => { e.preventDefault(); setSelectedSeason(s.label); }}
+                style={selectedSeason === s.label ? { background: '#F13B26', color: '#fff' } : { background: '#231f20', color: '#fff' }}
               >
-                {s}
+                {s.label}
               </a>
             </li>
           ))}
@@ -100,10 +114,10 @@ export default function StatsClient({ leagues }: { leagues: any[] }) {
         {/* LEAGUES / LOCATIONS GRID */}
         <ul className="seasons-team-list">
           {filteredLeagues.map(league => (
-            <li 
+            <li
               key={league._id}
               style={{ cursor: 'pointer' }}
-              onClick={() => window.location.href = `/${selectedYear}/${selectedSeason.toLowerCase()}/${league.slug}`}
+              onClick={() => router.push(`/${selectedYear}/${selectedSeason.toLowerCase()}/${league.slug}`)}
             >
               <div className="lf">
                 <img src={getLogoUrl(league.image)} alt={league.name} />

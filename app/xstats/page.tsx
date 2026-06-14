@@ -1,11 +1,11 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
-import { getLiveLeagues } from '@/lib/flagmag';
+import { getLiveLeagues, getLiveSeasons } from '@/lib/flagmag';
 import StatsClient from './StatsClient';
 
 export default async function Xstats() {
-  const leagues = await getLiveLeagues();
+  const [leagues, seasons] = await Promise.all([getLiveLeagues(), getLiveSeasons()]);
 
   return (
     <div className="wrapper">
@@ -28,7 +28,7 @@ export default async function Xstats() {
             </div>
         </section>
 
-        <StatsClient leagues={leagues} />
+        <StatsClient leagues={leagues} seasons={seasons} />
 
       <Footer />
     </div>

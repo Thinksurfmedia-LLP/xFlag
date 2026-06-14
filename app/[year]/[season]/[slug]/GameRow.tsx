@@ -1,29 +1,35 @@
 "use client";
 import { useRouter } from "next/navigation";
 
-export default function GameRow({ game, year, season, slug }: any) {
+export default function GameRow({ game, year, season, slug, showDate }: any) {
   const router = useRouter();
   const url = `/${year}/${season}/${slug}/game/${game._id}?team=${encodeURIComponent(game.teamA?.name || '')}`;
 
   const getLogoUrl = (url?: string) => {
-    if (!url) return '/assets/images/team1.png';
-    if (url.startsWith('/api/')) return `https://flagmag.com${url}`;
+    if (!url) return '/assets/images/team-placeholder.svg';
+    if (url.startsWith('/api/')) return `${process.env.NEXT_PUBLIC_FLAGMAG_API_URL || 'https://flagmag.com'}${url}`;
     return url;
   };
 
+  const dateLabel = (() => {
+    const d = new Date(game.date);
+    if (isNaN(d.getTime())) return game.date || '';
+    return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+  })();
+
   return (
-    <tr 
-      onClick={() => router.push(url)} 
-      style={{ cursor: 'pointer' }}
-    >
+    <tr onClick={() => router.push(url)} style={{ cursor: 'pointer' }}>
+      {showDate && <td style={{ color: '#888', fontSize: '12px', whiteSpace: 'nowrap' }}>{dateLabel}</td>}
       <td>{game.teamA?.score !== undefined ? game.teamA.score : '-'}</td>
       <td>
-        <img src={getLogoUrl(game.teamA?.logo)} alt={game.teamA?.name} /> {game.teamA?.name}
+        <img src={getLogoUrl(game.teamA?.logo)} alt={game.teamA?.name} style={{ width: 22, height: 22, objectFit: 'contain', marginRight: 4, verticalAlign: 'middle' }} />
+        {game.teamA?.name}
       </td>
       <td><span className="vs">vs</span></td>
       <td>{game.teamB?.score !== undefined ? game.teamB.score : '-'}</td>
       <td>
-        <img src={getLogoUrl(game.teamB?.logo)} alt={game.teamB?.name} /> {game.teamB?.name}
+        <img src={getLogoUrl(game.teamB?.logo)} alt={game.teamB?.name} style={{ width: 22, height: 22, objectFit: 'contain', marginRight: 4, verticalAlign: 'middle' }} />
+        {game.teamB?.name}
       </td>
     </tr>
   );

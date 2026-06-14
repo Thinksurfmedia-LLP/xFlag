@@ -92,12 +92,12 @@ export default async function Home() {
                                     <h4>{new Date(game.date).toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short' })}</h4>
                                     <div className="middle-area">
                                         <div className="a">
-                                            <span><img src={game.teamA?.logo || "/assets/images/team1.png"} alt={game.teamA?.name} /></span>
+                                            <span><img src={game.teamA?.logo || "/assets/images/team-placeholder.svg"} alt={game.teamA?.name} /></span>
                                             <h6>{game.teamA?.name}</h6>
                                         </div>
                                         <div className="b"><span>vs</span></div>
                                         <div className="c">
-                                            <img src={game.teamB?.logo || "/assets/images/team2.png"} alt={game.teamB?.name} />
+                                            <img src={game.teamB?.logo || "/assets/images/team-placeholder.svg"} alt={game.teamB?.name} />
                                             <h6>{game.teamB?.name}</h6>
                                         </div>
                                     </div>
@@ -117,12 +117,12 @@ export default async function Home() {
                                     <h4>{new Date(game.date).toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short' })}</h4>
                                     <div className="middle-area">
                                         <div className="a">
-                                            <span><img src={game.teamA?.logo || "/assets/images/team1.png"} alt={game.teamA?.name} /></span>
+                                            <span><img src={game.teamA?.logo || "/assets/images/team-placeholder.svg"} alt={game.teamA?.name} /></span>
                                             <h6>{game.teamA?.name} ({game.teamA?.score ?? 0})</h6>
                                         </div>
                                         <div className="b"><span>-</span></div>
                                         <div className="c">
-                                            <img src={game.teamB?.logo || "/assets/images/team2.png"} alt={game.teamB?.name} />
+                                            <img src={game.teamB?.logo || "/assets/images/team-placeholder.svg"} alt={game.teamB?.name} />
                                             <h6>{game.teamB?.name} ({game.teamB?.score ?? 0})</h6>
                                         </div>
                                     </div>
@@ -265,7 +265,7 @@ export default async function Home() {
                                     {firstDivisionRows.length > 0 ? firstDivisionRows.map((team: any, i: number) => (
                                         <tr key={i}>
                                             <td>{i + 1}</td>
-                                            <td><img src={team.logo || "/assets/images/team1.png"} alt="" style={{width: 24, marginRight: 10}} /> {team.name}</td>
+                                            <td><img src={team.logo || "/assets/images/team-placeholder.svg"} alt="" style={{width: 24, marginRight: 10}} /> {team.name}</td>
                                             <td>{team.wins}</td>
                                             <td>{team.losses}</td>
                                             <td>{team.diff > 0 ? `+${team.diff}` : team.diff}</td>

@@ -16,7 +16,7 @@ const ORG_SLUG = rawOrgSlug;
  */
 export async function getLiveOrganization() {
   try {
-    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}`, { next: { revalidate: 60 } });
+    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}`, { cache: 'no-store' });
     const data = await res.json();
     return data.success ? data.data : null;
   } catch (error) {
@@ -30,7 +30,7 @@ export async function getLiveOrganization() {
  */
 export async function getLiveSchedules() {
   try {
-    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/games`, { next: { revalidate: 60 } });
+    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/games`, { cache: 'no-store' });
     const data = await res.json();
     return data.success ? data.data : [];
   } catch (error) {
@@ -41,11 +41,22 @@ export async function getLiveSchedules() {
 
 export async function getLiveLeagues() {
   try {
-    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/leagues`, { next: { revalidate: 3600 } });
+    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/leagues`, { cache: 'no-store' });
     const data = await res.json();
     return data.success ? data.data : [];
   } catch (error) {
     console.error('Failed to fetch flagmag leagues:', error);
+    return [];
+  }
+}
+
+export async function getLiveSeasons() {
+  try {
+    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/seasons`, { cache: 'no-store' });
+    const data = await res.json();
+    return data.success ? data.data : [];
+  } catch (error) {
+    console.error('Failed to fetch flagmag seasons:', error);
     return [];
   }
 }
@@ -55,7 +66,7 @@ export async function getLiveLeagues() {
  */
 export async function getLiveStandings(leagueSlug: string) {
   try {
-    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/season/${leagueSlug}/standings`, { next: { revalidate: 60 } });
+    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/season/${leagueSlug}/standings`, { cache: 'no-store' });
     const data = await res.json();
     return data.divisionGroups || [];
   } catch (error) {
