@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { readCmsData } from '@/lib/cms';
+import ResultsTicker from './ResultsTicker';
 
 export default async function Header() {
   const cms = await readCmsData();
@@ -7,6 +8,7 @@ export default async function Header() {
 
   return (
     <header className="header">
+      <ResultsTicker />
       <div className="top-header">
           <div className="container-fluid">
               <div className="row justify-content-between align-items-center">

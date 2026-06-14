@@ -3220,3 +3220,99 @@ footer .copyright-area ul li a:hover {
 .schedules-section .left-side ul li a:hover {
   color: #F13B26 !important;
 }
+/* ===== RESULTS TICKER ===== */
+.results-ticker {
+  background: #1a1718;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  height: 36px;
+  overflow: hidden;
+  border-bottom: 2px solid #F13B26;
+  width: 100%;
+  position: relative;
+  z-index: 10000;
+}
+
+.results-ticker .ticker-label {
+  flex-shrink: 0;
+  padding: 0 18px;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #F13B26;
+  background: #1a1718;
+  border-right: 2px solid #F13B26;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.results-ticker .ticker-viewport {
+  flex: 1;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  mask-image: linear-gradient(to right, transparent 0%, black 3%, black 97%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 3%, black 97%, transparent 100%);
+}
+
+.results-ticker .ticker-track {
+  display: inline-flex;
+  width: max-content;
+  white-space: nowrap;
+  animation: ticker-scroll linear infinite;
+  will-change: transform;
+}
+
+.results-ticker .ticker-item {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 500;
+  gap: 6px;
+}
+
+.results-ticker .ticker-week {
+  font-weight: 700;
+  font-size: 10px;
+  color: #888;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  background: #333;
+  padding: 1px 5px;
+  border-radius: 3px;
+  margin-right: 2px;
+}
+
+.results-ticker .ticker-team {
+  color: #fff;
+}
+
+.results-ticker .ticker-score {
+  font-weight: 700;
+  color: #ccc;
+}
+
+.results-ticker .ticker-vs {
+  font-weight: 700;
+  font-size: 11px;
+  color: #F13B26;
+  margin: 0 2px;
+}
+
+.results-ticker .ticker-sep {
+  margin: 0 16px;
+  color: #444;
+  font-size: 14px;
+}
+
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}

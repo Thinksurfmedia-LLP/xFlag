@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import ScriptReinit from "./ScriptReinit";
 
 export const metadata: Metadata = {
   title: "XFlag",
@@ -37,6 +38,7 @@ export default function RootLayout({
       </head>
       <body>
         {children}
+        <ScriptReinit />
 
         {/* Scripts */}
         <Script src="/assets/js/jquery.min.js" strategy="beforeInteractive" />
@@ -44,7 +46,7 @@ export default function RootLayout({
         <Script src="/assets/js/jquery.fancybox.min.js" strategy="beforeInteractive" />
         <Script src="/assets/js/owl.carousel.min.js" strategy="beforeInteractive" />
         <Script src="https://unpkg.com/aos@2.3.1/dist/aos.js" strategy="beforeInteractive" />
-        <Script src="/assets/js/custom.js" strategy="lazyOnload" />
+        <Script src="/assets/js/custom.js" strategy="afterInteractive" />
       </body>
     </html>
   );

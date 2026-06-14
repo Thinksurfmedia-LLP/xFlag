@@ -11,7 +11,7 @@ export default async function Home() {
   if (!hp) return null;
 
   const org = await getLiveOrganization();
-  const liveLocations = org?.locations?.slice(0, 4) || [];
+  const allOrgLocations = org?.locations || [];
 
   const liveGames = await getLiveSchedules();
   const upcomingGames = liveGames.filter((g: any) => g.status !== 'completed').slice(0, 4);
@@ -69,6 +69,7 @@ export default async function Home() {
 
 
 
+        {/* UPCOMING / PREVIOUS GAMES â€” temporarily hidden
         <section className="upcoming-match-section">
             <div className="nav-area">
                 <div className="container">
@@ -149,11 +150,13 @@ export default async function Home() {
 
 
         </section>
+        */}
 
 
 
 
 
+        {/* STRIP BANNER (Register Now) — temporarily hidden
         <section className="strip-banner-section">
             <div className="image-area">
                 <img src={hp.stripBanner.image} alt="" />
@@ -162,11 +165,13 @@ export default async function Home() {
                 <Link href={hp.stripBanner.ctaLink} className="btn btn-primary">{hp.stripBanner.ctaText}</Link>
             </div>
         </section>
+        */}
 
 
 
 
 
+        {/* MATCH HIGHLIGHTS — temporarily hidden
         <section className="upcoming-match-section match-highlights-section section-padding">
             <div className="container">
                 <div className="row align-items-center justify-content-between">
@@ -199,6 +204,7 @@ export default async function Home() {
                 </div>
             </div>
         </section>
+        */}
 
 
 
@@ -212,24 +218,43 @@ export default async function Home() {
                 <div className="text-center">
                     <h2>{hp.featuredLocations.title}</h2>
                 </div>
-                <div className="row g-4">
-                    {liveLocations.length > 0 ? liveLocations.map((loc: any, i: number) => (
+                {(() => {
+                  // Build CMS map: locationName (lowercase) → CMS entry
+                  const cmsMap = new Map(
+                    hp.featuredLocations.locations
+                      .filter(l => l.featured)
+                      .map(l => [l.locationName.toLowerCase().trim(), l])
+                  );
+                  // Keep only org locations that are marked featured in the CMS
+                  const liveLocations = allOrgLocations.filter((loc: any) => {
+                    const key = (loc.locationName || loc.cityName || '').toLowerCase().trim();
+                    return cmsMap.has(key);
+                  });
+                  const getLocationImage = (loc: any) => {
+                    const key = (loc.locationName || loc.cityName || '').toLowerCase().trim();
+                    return cmsMap.get(key)?.image || '/assets/images/location-img.jpg';
+                  };
+                  return (
+                    <div className="row g-4">
+                      {liveLocations.length > 0 ? liveLocations.map((loc: any, i: number) => (
                         <div key={i} className="col-sm-6 col-xl-3">
-                            <div className="location-box">
-                                <div className="image-area">
-                                    <img src={hp.featuredLocations.locations[0]?.image || "/assets/images/location-img.jpg"} alt={loc.locationName} />
-                                </div>
-                                <div className="content-area">
-                                    <h4>{loc.locationName || loc.cityName}</h4>
-                                    <p>{loc.cityName}, {loc.stateAbbr}</p>
-                                    <Link href={`/location-details?id=${loc.location || ''}`}>details</Link>
-                                </div>
+                          <div className="location-box">
+                            <div className="image-area">
+                              <img src={getLocationImage(loc)} alt={loc.locationName} />
                             </div>
+                            <div className="content-area">
+                              <h4>{loc.locationName || loc.cityName}</h4>
+                              <p>{loc.cityName}, {loc.stateAbbr}</p>
+                              <Link href={`/location-details?id=${loc.location || ''}`}>details</Link>
+                            </div>
+                          </div>
                         </div>
-                    )) : (
+                      )) : (
                         <div className="col-12 text-center text-muted">No locations scheduled yet.</div>
-                    )}
-                </div>
+                      )}
+                    </div>
+                  );
+                })()}
                 <div className="text-center mt-5">
                     <Link href={hp.featuredLocations.ctaLink} className="btn btn-primary">{hp.featuredLocations.ctaText}</Link>
                 </div>
@@ -237,6 +262,7 @@ export default async function Home() {
         </section>
 
 
+        {/* LEAGUE SCOREBOARD — temporarily hidden
         <section className="scoreboard-section section-padding">
             <div className="container">
                 <div className="row g-5 align-items-center">
@@ -280,6 +306,7 @@ export default async function Home() {
                 </div>
             </div>
         </section>
+        */}
 
 
         
@@ -305,7 +332,9 @@ export default async function Home() {
                                     </div>
                                 ))}
                             </div>
+                            {/* READ MORE button — temporarily hidden
                             <Link href={hp.differenceSection.ctaLink} className="btn btn-primary">{hp.differenceSection.ctaText}</Link>
+                            */}
                         </div>
                     </div>
                 </div>
@@ -326,12 +355,15 @@ export default async function Home() {
                         </div>
                     ))}
                 </div>
+                {/* Want to Sponsor button — temporarily hidden
                 <Link href={hp.sponsorsSection.ctaLink} className="btn btn-primary">{hp.sponsorsSection.ctaText}</Link>
+                */}
             </div>
         </section>
 
 
 
+        {/* LEAGUE NEWS AND UPDATES — temporarily hidden
         <section className="news-section section-padding">
             <div className="container">
                 <div className="text-center">
@@ -380,7 +412,7 @@ export default async function Home() {
                                 <img src="/assets/images/blog4.jpg" alt="" />
                             </div>
                             <div className="content-area">
-                                <h4><a href="#">Women’s North Park</a></h4>
+                                <h4><a href="#">Womenâ€™s North Park</a></h4>
                                 <p>Cash counties xxi! Come join the longest running flag league in the us! 10 stated games! <a href="#">Read more</a></p>
                             </div>
                         </div>
@@ -388,17 +420,17 @@ export default async function Home() {
                 </div>
             </div>
         </section>
+        */}
 
 
 
+        {/* WHAT OUR PLAYERS SAY (testimonials) — temporarily hidden
         <section className="testimonials-section section-padding">
             <div className="container">
                 <div className="text-center">
                     <h2>{hp.testimonialsSection.title}</h2>
                 </div>
                 <div className="testimonial-wrap">
-
-                    {/* owl-carousel */}
                     <div className="owl-carousel owl-theme testimonial-carousel">
                         {hp.testimonialsSection.testimonials.map(testimonial => (
                             <div key={testimonial.id} className="testimonial-item item">
@@ -422,10 +454,10 @@ export default async function Home() {
                             </div>
                         ))}
                     </div>
-
                 </div>
             </div>
         </section>
+        */}
       <Footer />
     </div>
   );

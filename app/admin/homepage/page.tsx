@@ -10,18 +10,17 @@ export default function HomepageAdminPage() {
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
   const [activeTab, setActiveTab] = useState('hero');
   const [uploadStatus, setUploadStatus] = useState<Record<string, string>>({});
+  const [liveLocations, setLiveLocations] = useState<{ locationName: string; cityName: string; stateAbbr: string; countyName: string }[]>([]);
 
   useEffect(() => {
-    fetch('/api/cms/homepage')
-      .then(res => res.json())
-      .then(result => {
-        if (result.success && result.data) {
-          setData(result.data);
-        } else {
-          // Initialize empty if nothing
-        }
-        setLoading(false);
-      });
+    Promise.all([
+      fetch('/api/cms/homepage').then(r => r.json()),
+      fetch('/api/cms/locations-live').then(r => r.json()),
+    ]).then(([cmsResult, liveResult]) => {
+      if (cmsResult.success && cmsResult.data) setData(cmsResult.data);
+      if (liveResult.success) setLiveLocations(liveResult.data);
+      setLoading(false);
+    });
   }, []);
 
   async function handleSave() {
@@ -251,15 +250,293 @@ export default function HomepageAdminPage() {
           </div>
         )}
 
-        {/* OTHERS: HIGHLIGHTS, LOCATIONS, DIFFERENCE, SPONSORS, TESTIMONIALS */}
-        {/* We can quickly build similar lists for the rest */}
-        {['highlights', 'locations', 'difference', 'sponsors', 'testimonials'].includes(activeTab) && (
+        {/* MATCH HIGHLIGHTS */}
+        {activeTab === 'highlights' && (
           <div className="cms-section">
-             <div className="cms-alert cms-alert-info">
-                This tab maps to arrays in the data structure. Adding/removing items works similarly to the Hero Banner tab.
-             </div>
-             <p className="cms-page-desc">Advanced list editor placeholder for: {activeTab}. Check `cms.json` to verify structure.</p>
-             {/* I am simplifying the remaining tabs for brevity, but they follow the exact same map/edit pattern as Hero Banners. */}
+            <h2 className="cms-section-title">Match Highlights</h2>
+            <div className="cms-grid">
+              {data.matchHighlights.images.map((img, idx) => (
+                <div key={img.id} className="cms-card">
+                  <div className="cms-card-header">
+                    <h6>Image {idx + 1}</h6>
+                    <button className="cms-btn-icon cms-btn-danger" onClick={() => {
+                      const n = [...data.matchHighlights.images]; n.splice(idx, 1);
+                      setData({...data, matchHighlights: {...data.matchHighlights, images: n}});
+                    }}>✕</button>
+                  </div>
+                  <div className="cms-card-body">
+                    <ImageUpload
+                      src={img.image}
+                      status={uploadStatus[`highlight-${img.id}`]}
+                      onUpload={(f) => handleUpload(`highlight-${img.id}`, f, (path) => {
+                        const n = [...data.matchHighlights.images]; n[idx].image = path;
+                        setData({...data, matchHighlights: {...data.matchHighlights, images: n}});
+                      })}
+                    />
+                  </div>
+                </div>
+              ))}
+              <div className="cms-card cms-add-card" onClick={() => {
+                const n = [...data.matchHighlights.images, { id: 'mh-'+Date.now(), image: '' }];
+                setData({...data, matchHighlights: {...data.matchHighlights, images: n}});
+              }}><span>+ Add Image</span></div>
+            </div>
+          </div>
+        )}
+
+        {/* LOCATIONS */}
+        {activeTab === 'locations' && (() => {
+          // Merge live API locations with CMS entries so we always show all org locations
+          const cmsMap = new Map(
+            data.featuredLocations.locations
+              .filter(l => l.locationName)
+              .map(l => [l.locationName.toLowerCase().trim(), l])
+          );
+          const featuredCount = data.featuredLocations.locations.filter(l => l.featured).length;
+
+          // Build merged list: one entry per live location
+          const merged = liveLocations.map(live => {
+            const key = (live.locationName || live.cityName || '').toLowerCase().trim();
+            const existing = cmsMap.get(key);
+            return {
+              id: existing?.id || 'loc-' + key.replace(/\W+/g, '-'),
+              locationName: live.locationName || live.cityName || '',
+              cityName: live.cityName,
+              stateAbbr: live.stateAbbr,
+              countyName: live.countyName,
+              image: existing?.image || '',
+              title: existing?.title || (live.locationName || live.cityName || ''),
+              address: existing?.address || `${live.cityName}, ${live.stateAbbr}`,
+              link: existing?.link || '/location-details',
+              featured: existing?.featured ?? false,
+            };
+          });
+
+          const updateMerged = (updated: typeof merged) => {
+            setData({...data, featuredLocations: {...data.featuredLocations, locations: updated}});
+          };
+
+          return (
+            <div className="cms-section">
+              <h2 className="cms-section-title">Featured Locations</h2>
+              <div className="cms-alert cms-alert-info">
+                <span className="cms-alert-icon">ℹ</span>
+                Toggle <strong>Show on Homepage</strong> for up to 4 locations. Upload a photo for each. All locations are pulled live from flagmagMVP.
+              </div>
+
+              <div style={{display:'flex', gap:16, alignItems:'center', marginBottom:24, flexWrap:'wrap'}}>
+                <div className="cms-form-group mb-0" style={{maxWidth:360, flex:1}}>
+                  <label>Section Title</label>
+                  <input type="text" className="cms-input" value={data.featuredLocations.title}
+                    onChange={e => setData({...data, featuredLocations: {...data.featuredLocations, title: e.target.value}})} />
+                </div>
+                <div style={{background: featuredCount > 4 ? '#fef2f2' : '#ecfdf5', color: featuredCount > 4 ? '#dc2626' : '#059669', padding:'8px 16px', borderRadius:8, fontWeight:600, fontSize:'0.9rem', border: `1px solid ${featuredCount > 4 ? '#fecaca' : '#a7f3d0'}`}}>
+                  {featuredCount} / 4 featured
+                </div>
+              </div>
+
+              {liveLocations.length === 0 && (
+                <div className="cms-alert cms-alert-info"><span className="cms-alert-icon">⏳</span>Loading locations from flagmagMVP…</div>
+              )}
+
+              <div className="cms-locations-list">
+                {merged.map((loc, idx) => (
+                  <div key={loc.id} className={`cms-location-row ${loc.featured ? 'is-featured' : ''}`}>
+                    <div className="cms-location-img">
+                      <ImageUpload
+                        src={loc.image}
+                        status={uploadStatus[`location-${loc.id}`]}
+                        onUpload={(f) => handleUpload(`location-${loc.id}`, f, (path) => {
+                          const n = [...merged]; n[idx] = {...n[idx], image: path};
+                          updateMerged(n);
+                        })}
+                      />
+                    </div>
+                    <div className="cms-location-info">
+                      <div style={{fontWeight:700, fontSize:'1rem', marginBottom:4}}>{loc.locationName || loc.cityName}</div>
+                      <div style={{color:'#64748b', fontSize:'0.85rem'}}>{loc.cityName}, {loc.countyName}, {loc.stateAbbr}</div>
+                      <div className="cms-form-group mt-2 mb-0">
+                        <label>Address label</label>
+                        <input type="text" className="cms-input" value={loc.address} onChange={e => {
+                          const n = [...merged]; n[idx] = {...n[idx], address: e.target.value};
+                          updateMerged(n);
+                        }} />
+                      </div>
+                    </div>
+                    <div className="cms-location-toggle">
+                      <label className="cms-toggle-label">
+                        <input type="checkbox" checked={loc.featured} onChange={e => {
+                          const n = [...merged]; n[idx] = {...n[idx], featured: e.target.checked};
+                          updateMerged(n);
+                        }} />
+                        <span className="cms-toggle-track"></span>
+                      </label>
+                      <div style={{fontSize:'0.78rem', color: loc.featured ? '#059669' : '#94a3b8', fontWeight:600, marginTop:6}}>
+                        {loc.featured ? 'On homepage' : 'Hidden'}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="cms-card p-4 mt-4" style={{maxWidth:400}}>
+                <h5 style={{marginBottom:16}}>Section CTA Button</h5>
+                <div className="cms-form-group">
+                  <label>Button Text</label>
+                  <input type="text" className="cms-input" value={data.featuredLocations.ctaText}
+                    onChange={e => setData({...data, featuredLocations: {...data.featuredLocations, ctaText: e.target.value}})} />
+                </div>
+                <div className="cms-form-group">
+                  <label>Button Link</label>
+                  <input type="text" className="cms-input" value={data.featuredLocations.ctaLink}
+                    onChange={e => setData({...data, featuredLocations: {...data.featuredLocations, ctaLink: e.target.value}})} />
+                </div>
+              </div>
+            </div>
+          );
+        })()}
+
+        {/* DIFFERENCE SECTION */}
+        {activeTab === 'difference' && (
+          <div className="cms-section">
+            <h2 className="cms-section-title">The Difference We Deliver</h2>
+            <div className="cms-grid">
+              {data.differenceSection.items.map((item, idx) => (
+                <div key={item.id} className="cms-card">
+                  <div className="cms-card-header">
+                    <h6>Item {idx + 1}</h6>
+                    <button className="cms-btn-icon cms-btn-danger" onClick={() => {
+                      const n = [...data.differenceSection.items]; n.splice(idx, 1);
+                      setData({...data, differenceSection: {...data.differenceSection, items: n}});
+                    }}>✕</button>
+                  </div>
+                  <div className="cms-card-body">
+                    <ImageUpload
+                      src={item.icon}
+                      status={uploadStatus[`diff-${item.id}`]}
+                      onUpload={(f) => handleUpload(`diff-${item.id}`, f, (path) => {
+                        const n = [...data.differenceSection.items]; n[idx] = {...n[idx], icon: path};
+                        setData({...data, differenceSection: {...data.differenceSection, items: n}});
+                      })}
+                    />
+                    <div className="cms-form-group mt-3">
+                      <label>Title</label>
+                      <input type="text" className="cms-input" value={item.title} onChange={e => {
+                        const n = [...data.differenceSection.items]; n[idx].title = e.target.value;
+                        setData({...data, differenceSection: {...data.differenceSection, items: n}});
+                      }} />
+                    </div>
+                    <div className="cms-form-group">
+                      <label>Description</label>
+                      <textarea className="cms-input" value={item.description} onChange={e => {
+                        const n = [...data.differenceSection.items]; n[idx].description = e.target.value;
+                        setData({...data, differenceSection: {...data.differenceSection, items: n}});
+                      }} />
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <div className="cms-card cms-add-card" onClick={() => {
+                const n = [...data.differenceSection.items, { id: 'diff-'+Date.now(), icon: '', title: 'New Item', description: '' }];
+                setData({...data, differenceSection: {...data.differenceSection, items: n}});
+              }}><span>+ Add Item</span></div>
+            </div>
+          </div>
+        )}
+
+        {/* SPONSORS */}
+        {activeTab === 'sponsors' && (
+          <div className="cms-section">
+            <h2 className="cms-section-title">Sponsors</h2>
+            <div className="cms-grid">
+              {data.sponsorsSection.sponsors.map((s, idx) => (
+                <div key={s.id} className="cms-card">
+                  <div className="cms-card-header">
+                    <h6>Sponsor {idx + 1}</h6>
+                    <button className="cms-btn-icon cms-btn-danger" onClick={() => {
+                      const n = [...data.sponsorsSection.sponsors]; n.splice(idx, 1);
+                      setData({...data, sponsorsSection: {...data.sponsorsSection, sponsors: n}});
+                    }}>✕</button>
+                  </div>
+                  <div className="cms-card-body">
+                    <ImageUpload
+                      src={s.image}
+                      status={uploadStatus[`sponsor-${s.id}`]}
+                      onUpload={(f) => handleUpload(`sponsor-${s.id}`, f, (path) => {
+                        const n = [...data.sponsorsSection.sponsors]; n[idx].image = path;
+                        setData({...data, sponsorsSection: {...data.sponsorsSection, sponsors: n}});
+                      })}
+                    />
+                  </div>
+                </div>
+              ))}
+              <div className="cms-card cms-add-card" onClick={() => {
+                const n = [...data.sponsorsSection.sponsors, { id: 'sponsor-'+Date.now(), image: '' }];
+                setData({...data, sponsorsSection: {...data.sponsorsSection, sponsors: n}});
+              }}><span>+ Add Sponsor</span></div>
+            </div>
+          </div>
+        )}
+
+        {/* TESTIMONIALS */}
+        {activeTab === 'testimonials' && (
+          <div className="cms-section">
+            <h2 className="cms-section-title">Player Testimonials</h2>
+            <div className="cms-grid">
+              {data.testimonialsSection.testimonials.map((t, idx) => (
+                <div key={t.id} className="cms-card">
+                  <div className="cms-card-header">
+                    <h6>{t.authorName || `Testimonial ${idx + 1}`}</h6>
+                    <button className="cms-btn-icon cms-btn-danger" onClick={() => {
+                      const n = [...data.testimonialsSection.testimonials]; n.splice(idx, 1);
+                      setData({...data, testimonialsSection: {...data.testimonialsSection, testimonials: n}});
+                    }}>✕</button>
+                  </div>
+                  <div className="cms-card-body">
+                    <ImageUpload
+                      src={t.authorImage}
+                      status={uploadStatus[`test-${t.id}`]}
+                      onUpload={(f) => handleUpload(`test-${t.id}`, f, (path) => {
+                        const n = [...data.testimonialsSection.testimonials]; n[idx] = {...n[idx], authorImage: path};
+                        setData({...data, testimonialsSection: {...data.testimonialsSection, testimonials: n}});
+                      })}
+                    />
+                    <div className="cms-form-group mt-3">
+                      <label>Author Name</label>
+                      <input type="text" className="cms-input" value={t.authorName} onChange={e => {
+                        const n = [...data.testimonialsSection.testimonials]; n[idx].authorName = e.target.value;
+                        setData({...data, testimonialsSection: {...data.testimonialsSection, testimonials: n}});
+                      }} />
+                    </div>
+                    <div className="cms-form-group">
+                      <label>Date</label>
+                      <input type="text" className="cms-input" value={t.date} onChange={e => {
+                        const n = [...data.testimonialsSection.testimonials]; n[idx].date = e.target.value;
+                        setData({...data, testimonialsSection: {...data.testimonialsSection, testimonials: n}});
+                      }} />
+                    </div>
+                    <div className="cms-form-group">
+                      <label>Rating (1–5)</label>
+                      <input type="number" min={1} max={5} className="cms-input" value={t.rating} onChange={e => {
+                        const n = [...data.testimonialsSection.testimonials]; n[idx].rating = Number(e.target.value);
+                        setData({...data, testimonialsSection: {...data.testimonialsSection, testimonials: n}});
+                      }} />
+                    </div>
+                    <div className="cms-form-group">
+                      <label>Quote</label>
+                      <textarea className="cms-input" rows={3} value={t.text} onChange={e => {
+                        const n = [...data.testimonialsSection.testimonials]; n[idx].text = e.target.value;
+                        setData({...data, testimonialsSection: {...data.testimonialsSection, testimonials: n}});
+                      }} />
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <div className="cms-card cms-add-card" onClick={() => {
+                const n = [...data.testimonialsSection.testimonials, { id: 'test-'+Date.now(), rating: 5, text: '', authorImage: '', authorName: '', date: '' }];
+                setData({...data, testimonialsSection: {...data.testimonialsSection, testimonials: n}});
+              }}><span>+ Add Testimonial</span></div>
+            </div>
           </div>
         )}
 
@@ -316,6 +593,19 @@ export default function HomepageAdminPage() {
         .cms-img-upload:hover { border-color: #3b82f6; }
         .cms-img-upload-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; opacity: 0; transition: opacity 0.2s; }
         .cms-img-upload:hover .cms-img-upload-overlay { opacity: 1; }
+
+        /* Location list */
+        .cms-locations-list { display: flex; flex-direction: column; gap: 12px; }
+        .cms-location-row { display: grid; grid-template-columns: 140px 1fr auto; gap: 20px; align-items: center; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; transition: border-color 0.2s; }
+        .cms-location-row.is-featured { border-color: #059669; background: #f0fdf4; }
+        .cms-location-img .cms-img-upload { min-height: 90px; }
+        .cms-location-toggle { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .cms-toggle-label { display: flex; align-items: center; cursor: pointer; }
+        .cms-toggle-label input { display: none; }
+        .cms-toggle-track { width: 44px; height: 24px; background: #cbd5e1; border-radius: 12px; position: relative; transition: background 0.2s; }
+        .cms-toggle-label input:checked + .cms-toggle-track { background: #059669; }
+        .cms-toggle-track::after { content: ''; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; background: #fff; border-radius: 50%; transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+        .cms-toggle-label input:checked + .cms-toggle-track::after { transform: translateX(20px); }
       `}</style>
     </div>
   );

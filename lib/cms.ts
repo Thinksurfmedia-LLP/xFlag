@@ -126,10 +126,18 @@ const DEFAULT_CMS: CmsData = {
     featuredLocations: {
       title: 'Featured LOCATIONS',
       locations: [
-        { id: 'loc-1', image: '/assets/images/location-img.jpg', title: 'Robb Field', address: '2525 Bacon St San Diego', link: '/location-details' },
-        { id: 'loc-2', image: '/assets/images/location-img.jpg', title: 'Robb Field', address: '2525 Bacon St San Diego', link: '/location-details' },
-        { id: 'loc-3', image: '/assets/images/location-img.jpg', title: 'Robb Field', address: '2525 Bacon St San Diego', link: '/location-details' },
-        { id: 'loc-4', image: '/assets/images/location-img.jpg', title: 'Robb Field', address: '2525 Bacon St San Diego', link: '/location-details' },
+        // locationName matches org.locations[].locationName from the flagmagMVP API (case-insensitive)
+        // featured=true means this location appears on the homepage (max 4 recommended)
+        { id: 'loc-1',  locationName: 'Beverly Field',  image: '/assets/images/location-img.jpg', title: 'Beverly Field',  address: 'Beverly, MA',       link: '/location-details', featured: true  },
+        { id: 'loc-2',  locationName: 'Chino',          image: '/assets/images/location-img.jpg', title: 'Chino',          address: 'Chino, CA',         link: '/location-details', featured: true  },
+        { id: 'loc-3',  locationName: 'Irvine',         image: '/assets/images/location-img.jpg', title: 'Irvine',         address: 'Irvine, CA',        link: '/location-details', featured: true  },
+        { id: 'loc-4',  locationName: 'Mira Mesa',      image: '/assets/images/location-img.jpg', title: 'Mira Mesa',      address: 'San Diego, CA',     link: '/location-details', featured: true  },
+        { id: 'loc-5',  locationName: 'North Park',     image: '/assets/images/location-img.jpg', title: 'North Park',     address: 'San Diego, CA',     link: '/location-details', featured: false },
+        { id: 'loc-6',  locationName: 'Oceanside',      image: '/assets/images/location-img.jpg', title: 'Oceanside',      address: 'Oceanside, CA',     link: '/location-details', featured: false },
+        { id: 'loc-7',  locationName: 'Pomona',         image: '/assets/images/location-img.jpg', title: 'Pomona',         address: 'Pomona, CA',        link: '/location-details', featured: false },
+        { id: 'loc-8',  locationName: 'Poway',          image: '/assets/images/location-img.jpg', title: 'Poway',          address: 'Poway, CA',         link: '/location-details', featured: false },
+        { id: 'loc-9',  locationName: 'Riverside',      image: '/assets/images/location-img.jpg', title: 'Riverside',      address: 'Riverside, CA',     link: '/location-details', featured: false },
+        { id: 'loc-10', locationName: 'Temecula',       image: '/assets/images/location-img.jpg', title: 'Temecula',       address: 'Temecula, CA',      link: '/location-details', featured: false },
       ],
       ctaText: 'VIEW ALL LOCATIONS',
       ctaLink: '/locations',

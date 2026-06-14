@@ -79,7 +79,7 @@ export default async function GameStatsPage({ params }: { params: { year: string
         <div className="container-fluid">
           <div className="text-center">
             <h2><span>{seasonName}</span> {leagueName}</h2>
-            <h3 className="design1"><Link href="#">seasons Statistical Leaders <span>view</span></Link></h3>
+            <h3 className="design1"><Link href={`/${year}/${season}/${slug}/leaderboard`}>seasons Statistical Leaders <span>view</span></Link></h3>
           </div>
 
           <div className={`row g-2 ${standings.length === 1 ? 'justify-content-center' : ''}`}>

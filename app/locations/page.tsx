@@ -30,19 +30,6 @@ export default async function Locations() {
         </div>
       </section>
 
-      <section className="location-search-section">
-        <div className="container">
-          <div className="location-area">
-            <h4>Select Location</h4>
-            <div className="input-group">
-              <input type="text" className="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon" />
-              <button className="btn btn-primary" type="button" id="search-addon">
-                SEARCH <i className="fas fa-search"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <section className="xflag-location section-padding">
         <div className="container">

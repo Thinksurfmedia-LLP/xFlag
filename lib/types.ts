@@ -58,10 +58,12 @@ export interface MatchHighlight {
 
 export interface FeaturedLocation {
   id: string;
+  locationName: string; // must match org.locations[].locationName from the flagmagMVP API
   image: string;
   title: string;
   address: string;
   link: string;
+  featured: boolean;    // true = show on homepage
 }
 
 export interface DifferenceItem {

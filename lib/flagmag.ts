@@ -50,6 +50,20 @@ export async function getLiveLeagues() {
   }
 }
 
+export async function getLiveLeagueLeaderboard(leagueSlug: string, statType: string) {
+  try {
+    const res = await fetch(
+      `${API_URL}/organizations/${ORG_SLUG}/season/${leagueSlug}/stats/computed?statType=${statType}`,
+      { cache: 'no-store' }
+    );
+    const data = await res.json();
+    return data.players || [];
+  } catch (error) {
+    console.error(`Failed to fetch league leaderboard (${statType}):`, error);
+    return [];
+  }
+}
+
 export async function getLiveSeasonLeaderboard(seasonId: string, statType: string) {
   try {
     const res = await fetch(
