@@ -21,11 +21,13 @@ export default async function PlayerStatsPage({
   const leagueName = league?.name?.replace(seasonName, '').trim() || league?.name || 'League';
 
   // Helper to fetch computed stats
+  const FLAGMAG_URL = (process.env.NEXT_PUBLIC_FLAGMAG_API_URL || 'https://flagmag.com').replace(/\/$/, '');
+
   const fetchStats = async (type: string) => {
     try {
       const teamParam = teamName === 'All Players' ? '' : encodeURIComponent(teamName);
-      const url = `https://flagmag.com/api/organizations/xflagfootball/season/${slug}/stats/computed?team=${teamParam}&statType=${type}`;
-      const res = await fetch(url, { next: { revalidate: 60 } });
+      const url = `${FLAGMAG_URL}/api/organizations/xflagfootball/season/${slug}/stats/computed?team=${teamParam}&statType=${type}`;
+      const res = await fetch(url, { cache: 'no-store' });
       if (!res.ok) return [];
       const data = await res.json();
       return data.players || [];
@@ -42,8 +44,8 @@ export default async function PlayerStatsPage({
   ]);
 
   const getPlayerPhoto = (url?: string) => {
-    if (!url) return '/assets/images/t1.png'; // Fallback player image from the template
-    if (url.startsWith('/api/')) return `https://flagmag.com${url}`;
+    if (!url) return '/assets/images/player-placeholder.svg';
+    if (url.startsWith('/api/')) return `${FLAGMAG_URL}${url}`;
     return url;
   };
 

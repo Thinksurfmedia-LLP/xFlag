@@ -2,10 +2,11 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function StatsClient({ leagues, seasons }: { leagues: any[]; seasons: any[] }) {
   const router = useRouter();
-  // Build available years from the seasons list (not leagues), newest first
+
   const availableYears = useMemo(() => {
     const ySet = new Set<string>();
     seasons.forEach(s => {
@@ -15,11 +16,10 @@ export default function StatsClient({ leagues, seasons }: { leagues: any[]; seas
     return Array.from(ySet).sort((a, b) => b.localeCompare(a));
   }, [seasons]);
 
-  // Find the year that contains the default season, fallback to newest year
   const initialYear = useMemo(() => {
-    const defaultSeason = seasons.find(s => s.isDefault);
-    if (defaultSeason) {
-      const yr = (defaultSeason.name || '').match(/\d{4}/)?.[0];
+    const def = seasons.find(s => s.isDefault);
+    if (def) {
+      const yr = (def.name || '').match(/\d{4}/)?.[0];
       if (yr) return yr;
     }
     return availableYears[0] || '2026';
@@ -27,12 +27,11 @@ export default function StatsClient({ leagues, seasons }: { leagues: any[]; seas
 
   const [selectedYear, setSelectedYear] = useState<string>(initialYear);
 
-  // Build season buttons for the selected year from the seasons list
   const availableSeasons = useMemo(() => {
     const seasonOrder = ['Winter', 'Spring', 'Summer', 'Fall', 'Holiday'];
     return seasons
       .filter(s => (s.name || '').match(/\d{4}/)?.[0] === selectedYear)
-      .map(s => ({ label: (s.name as string).replace(/\d{4}/g, '').trim(), isDefault: s.isDefault }))
+      .map(s => ({ _id: s._id, label: (s.name as string).replace(/\d{4}/g, '').trim(), isDefault: s.isDefault }))
       .filter(s => s.label)
       .sort((a, b) => {
         const idxA = seasonOrder.indexOf(a.label);
@@ -42,21 +41,26 @@ export default function StatsClient({ leagues, seasons }: { leagues: any[]; seas
       });
   }, [seasons, selectedYear]);
 
-  // Default to the isDefault season for the selected year, otherwise first
-  const initialSeason = useMemo(() => {
+  const getDefaultSeasonLabel = () => {
     const def = availableSeasons.find(s => s.isDefault);
     return def?.label || availableSeasons[0]?.label || '';
-  }, [availableSeasons]);
+  };
 
-  const [selectedSeason, setSelectedSeason] = useState<string>(initialSeason);
+  const [selectedSeason, setSelectedSeason] = useState<string>(getDefaultSeasonLabel);
 
-  // When the year changes, reset the season to the default for that year
   useEffect(() => {
-    const def = availableSeasons.find(s => s.isDefault);
-    setSelectedSeason(def?.label || availableSeasons[0]?.label || '');
+    setSelectedSeason(getDefaultSeasonLabel());
   }, [selectedYear]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Filter leagues matching selected year + season
+  const selectedSeasonId = useMemo(() => {
+    const obj = availableSeasons.find(s => s.label.toLowerCase() === selectedSeason.toLowerCase());
+    return obj?._id || '';
+  }, [availableSeasons, selectedSeason]);
+
+  const leaderboardHref = selectedSeasonId
+    ? `/xstats/leaderboard?season=${selectedSeasonId}`
+    : '/xstats/leaderboard';
+
   const filteredLeagues = useMemo(() => {
     if (!selectedYear || !selectedSeason) return [];
     return leagues.filter(l => {
@@ -108,7 +112,7 @@ export default function StatsClient({ leagues, seasons }: { leagues: any[]; seas
         </ul>
 
         <h3 className="design1">
-          <a href="#">seasons Statistical Leaders <span>view</span></a>
+          <Link href={leaderboardHref}>seasons Statistical Leaders <span>view</span></Link>
         </h3>
 
         {/* LEAGUES / LOCATIONS GRID */}
