@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState('');
@@ -54,6 +54,43 @@ export default function ResetPasswordPage() {
   }
 
   return (
+    <>
+      {error && <div className="alert alert-danger py-2 small">{error}</div>}
+      {message && <div className="alert alert-success py-2 small">{message}</div>}
+
+      <form onSubmit={handleSubmit}>
+        <div className="mb-3">
+          <label className="cms-label">New Password</label>
+          <input
+            type="password"
+            className="form-control cms-input"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            required
+            disabled={!token || !!message}
+          />
+        </div>
+        <div className="mb-4">
+          <label className="cms-label">Confirm Password</label>
+          <input
+            type="password"
+            className="form-control cms-input"
+            value={confirmPassword}
+            onChange={e => setConfirmPassword(e.target.value)}
+            required
+            disabled={!token || !!message}
+          />
+        </div>
+        <button type="submit" className="btn btn-primary w-100" disabled={loading || !token || !!message}>
+          {loading ? 'Resetting…' : 'Reset Password'}
+        </button>
+      </form>
+    </>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
     <div className="cms-login-page">
       <div className="cms-login-card">
         <div className="cms-login-logo">
@@ -62,36 +99,9 @@ export default function ResetPasswordPage() {
         <h2>Reset Password</h2>
         <p className="cms-login-sub">Enter your new password below</p>
 
-        {error && <div className="alert alert-danger py-2 small">{error}</div>}
-        {message && <div className="alert alert-success py-2 small">{message}</div>}
-
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label className="cms-label">New Password</label>
-            <input
-              type="password"
-              className="form-control cms-input"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              required
-              disabled={!token || !!message}
-            />
-          </div>
-          <div className="mb-4">
-            <label className="cms-label">Confirm Password</label>
-            <input
-              type="password"
-              className="form-control cms-input"
-              value={confirmPassword}
-              onChange={e => setConfirmPassword(e.target.value)}
-              required
-              disabled={!token || !!message}
-            />
-          </div>
-          <button type="submit" className="btn btn-primary w-100" disabled={loading || !token || !!message}>
-            {loading ? 'Resetting…' : 'Reset Password'}
-          </button>
-        </form>
+        <Suspense fallback={<div className="text-center text-muted">Loading...</div>}>
+          <ResetPasswordForm />
+        </Suspense>
       </div>
 
       <style>{`
