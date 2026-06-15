@@ -90,7 +90,7 @@ function PassingTable({ rows }: { rows: any[] }) {
         </thead>
         <tbody>
           {sorted.length > 0 ? sorted.map((p, i) => (
-            <tr key={p.playerId || i}>
+            <tr key={`${p.playerId || ''}_${p.teamName || ''}_${i}`}>
               <td>{i + 1}</td>
               <PlayerCell p={p} />
               <td>{p.teamName}</td>
@@ -132,7 +132,7 @@ function ReceivingTable({ rows }: { rows: any[] }) {
         </thead>
         <tbody>
           {sorted.length > 0 ? sorted.map((p, i) => (
-            <tr key={p.playerId || i}>
+            <tr key={`${p.playerId || ''}_${p.teamName || ''}_${i}`}>
               <td>{i + 1}</td>
               <PlayerCell p={p} />
               <td>{p.teamName}</td>
@@ -170,7 +170,7 @@ function RushingTable({ rows }: { rows: any[] }) {
         </thead>
         <tbody>
           {sorted.length > 0 ? sorted.map((p, i) => (
-            <tr key={p.playerId || i}>
+            <tr key={`${p.playerId || ''}_${p.teamName || ''}_${i}`}>
               <td>{i + 1}</td>
               <PlayerCell p={p} />
               <td>{p.teamName}</td>
@@ -210,7 +210,7 @@ function DefensiveTable({ rows }: { rows: any[] }) {
         </thead>
         <tbody>
           {sorted.length > 0 ? sorted.map((p, i) => (
-            <tr key={p.playerId || i}>
+            <tr key={`${p.playerId || ''}_${p.teamName || ''}_${i}`}>
               <td>{i + 1}</td>
               <PlayerCell p={p} />
               <td>{p.teamName}</td>
