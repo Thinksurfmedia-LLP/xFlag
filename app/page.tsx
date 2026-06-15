@@ -89,7 +89,7 @@ export default async function Home() {
                         <div className="owl-carousel owl-theme match-carousel">
                             {upcomingGames.length > 0 ? upcomingGames.map((game: any, i: number) => (
                                 <div key={i} className="item match-area">
-                                    <h4>{new Date(game.date).toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short' })}</h4>
+                                    <h4>{new Date(game.date).toLocaleDateString('en-US', { timeZone: 'UTC', weekday: 'short', day: 'numeric', month: 'short' })}</h4>
                                     <div className="middle-area">
                                         <div className="a">
                                             <span><img src={game.teamA?.logo || "/assets/images/team-placeholder.svg"} alt={game.teamA?.name} /></span>
@@ -114,7 +114,7 @@ export default async function Home() {
                         <div className="owl-carousel owl-theme match-carousel">
                             {pastGames.length > 0 ? pastGames.map((game: any, i: number) => (
                                 <div key={i} className="item match-area">
-                                    <h4>{new Date(game.date).toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short' })}</h4>
+                                    <h4>{new Date(game.date).toLocaleDateString('en-US', { timeZone: 'UTC', weekday: 'short', day: 'numeric', month: 'short' })}</h4>
                                     <div className="middle-area">
                                         <div className="a">
                                             <span><img src={game.teamA?.logo || "/assets/images/team-placeholder.svg"} alt={game.teamA?.name} /></span>

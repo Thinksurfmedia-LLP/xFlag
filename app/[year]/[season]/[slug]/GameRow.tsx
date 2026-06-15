@@ -14,7 +14,7 @@ export default function GameRow({ game, year, season, slug, showDate }: any) {
   const dateLabel = (() => {
     const d = new Date(game.date);
     if (isNaN(d.getTime())) return game.date || '';
-    return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    return d.toLocaleDateString('en-US', { timeZone: 'UTC', weekday: 'short', month: 'short', day: 'numeric' });
   })();
 
   return (

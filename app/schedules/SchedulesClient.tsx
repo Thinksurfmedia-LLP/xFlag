@@ -2,7 +2,26 @@
 
 import { useState, useMemo, useEffect, Fragment } from 'react';
 
-export default function SchedulesClient({ games, leagues }: { games: any[], leagues: any[] }) {
+function formatTimeWithZone(timeStr: string, timezone: string = "America/Los_Angeles", gameDate?: Date | string | null): string {
+  if (!timeStr || timeStr === 'TBD') return timeStr;
+  const [hStr, mStr] = timeStr.split(":");
+  const h = parseInt(hStr, 10);
+  const m = parseInt(mStr, 10);
+  if (isNaN(h) || isNaN(m)) return timeStr;
+  const ampm = h < 12 ? "AM" : "PM";
+  const h12 = h % 12 || 12;
+  // Use the game's own date for DST-accurate abbreviation
+  const refDate = gameDate ? new Date(gameDate) : new Date();
+  let tzAbbr = "";
+  try {
+    tzAbbr = new Intl.DateTimeFormat("en-US", { timeZone: timezone, timeZoneName: "short" })
+      .formatToParts(refDate)
+      .find((p) => p.type === "timeZoneName")?.value || "";
+  } catch { tzAbbr = ""; }
+  return `${h12}:${String(m).padStart(2, "0")} ${ampm}${tzAbbr ? ` ${tzAbbr}` : ""}`;
+}
+
+export default function SchedulesClient({ games, leagues, orgTimezone = "America/Los_Angeles" }: { games: any[], leagues: any[], orgTimezone?: string }) {
   const [selectedLeague, setSelectedLeague] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedWeek, setSelectedWeek] = useState(1);
@@ -74,7 +93,7 @@ export default function SchedulesClient({ games, leagues }: { games: any[], leag
   const gamesByDateTime = useMemo(() => {
     const map = new Map<string, any[]>();
     currentViewGames.forEach((g: any) => {
-      const dateStr = new Date(g.date).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }).replace(/\//g, '-');
+      const dateStr = new Date(g.date).toLocaleDateString('en-US', { timeZone: 'UTC', month: '2-digit', day: '2-digit', year: 'numeric' }).replace(/\//g, '-');
       const timeStr = g.time || 'TBD';
       const key = `${timeStr}__${dateStr}`;
       if (!map.has(key)) map.set(key, []);
@@ -240,7 +259,7 @@ export default function SchedulesClient({ games, leagues }: { games: any[], leag
                     return (
                       <tr key={dateTimeKey} style={{ borderBottom: '1px solid #eee' }}>
                         <td style={{ padding: '15px', border: '1px solid #eee', fontSize: '12px', color: '#231F20', fontWeight: 600, verticalAlign: 'middle' }}>
-                          <div style={{ marginBottom: '4px' }}>{time}</div>
+                          <div style={{ marginBottom: '4px' }}>{formatTimeWithZone(time, orgTimezone, slotGames[0]?.date)}</div>
                           <div style={{ color: '#888', fontWeight: 400 }}>{date}</div>
                         </td>
                         {renderGameCell(g1)}

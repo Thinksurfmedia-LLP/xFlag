@@ -1,12 +1,12 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
-import { getLiveSchedules, getLiveLeagues } from '@/lib/flagmag';
+import { getLiveSchedules, getLiveLeagues, getLiveOrganization } from '@/lib/flagmag';
 import SchedulesClient from './SchedulesClient';
 
 export default async function Schedules() {
-  const games = await getLiveSchedules();
-  const leagues = await getLiveLeagues();
+  const [games, leagues, org] = await Promise.all([getLiveSchedules(), getLiveLeagues(), getLiveOrganization()]);
+  const orgTimezone = org?.timezone || "America/Los_Angeles";
 
   return (
     <div className="wrapper">
@@ -29,7 +29,7 @@ export default async function Schedules() {
             </div>
         </section>
 
-        <SchedulesClient games={games} leagues={leagues} />
+        <SchedulesClient games={games} leagues={leagues} orgTimezone={orgTimezone} />
 
       <Footer />
     </div>
