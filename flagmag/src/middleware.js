@@ -5,7 +5,7 @@ const JWT_SECRET = new TextEncoder().encode(
     process.env.JWT_SECRET || "fallback-secret-do-not-use-in-production"
 );
 
-const COOKIE_NAME = "flagmag-token";
+const COOKIE_NAME = "xflag-token";
 
 // Routes that require authentication
 const protectedRoutes = [
