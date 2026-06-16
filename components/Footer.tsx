@@ -50,7 +50,7 @@ export default async function Footer() {
                                       <ul>
                                           <li><i><i className="fa-solid fa-phone"></i></i><Link href={`tel:${contactInfo?.phone}`}>{contactInfo?.phone}</Link></li>
                                           <li><i><i className="fa-solid fa-envelope"></i></i><Link href={`mailto:${contactInfo?.email}`}>{contactInfo?.email}</Link></li>
-                                          <li><i><i className="fa-solid fa-location-dot"></i></i> {contactInfo?.address}</li>
+                                          {/* <li><i><i className="fa-solid fa-location-dot"></i></i> {contactInfo?.address}</li> */}
                                       </ul>
                                   </div>
                               </div>

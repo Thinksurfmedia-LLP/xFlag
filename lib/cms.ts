@@ -8,10 +8,7 @@ const DEFAULT_CMS: CmsData = {
     logo2: '/assets/images/logo2.png',
     navLinks: [
       { id: 'nav-1', label: 'Home', href: '/', dropdown: [] },
-      // { id: 'nav-2', label: 'About', href: '/about-us', dropdown: [
-      //   { id: 'nav-2-1', label: 'Our Team', href: '/about-us' },
-      //   { id: 'nav-2-2', label: 'Our Story', href: '/about-us' },
-      // ] },
+      { id: 'nav-2', label: 'About', href: '/about-us', dropdown: [] },
       { id: 'nav-3', label: 'Locations', href: '/locations', dropdown: [] },
       { id: 'nav-4', label: 'Schedules', href: '/schedules', dropdown: [] },
       { id: 'nav-5', label: 'XStats', href: '/xstats', dropdown: [] },
