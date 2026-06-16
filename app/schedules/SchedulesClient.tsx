@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect, Fragment } from 'react';
+import { useState, useMemo, useEffect, useRef, Fragment } from 'react';
 
 function formatTimeWithZone(timeStr: string, timezone: string = "America/Los_Angeles", gameDate?: Date | string | null): string {
   if (!timeStr || timeStr === 'TBD') return timeStr;
@@ -21,23 +21,152 @@ function formatTimeWithZone(timeStr: string, timezone: string = "America/Los_Ang
   return `${h12}:${String(m).padStart(2, "0")} ${ampm}${tzAbbr ? ` ${tzAbbr}` : ""}`;
 }
 
-export default function SchedulesClient({ games, leagues, orgTimezone = "America/Los_Angeles" }: { games: any[], leagues: any[], orgTimezone?: string }) {
+export default function SchedulesClient({ games, leagues, seasons, venues = [], orgTimezone = "America/Los_Angeles" }: { games: any[], leagues: any[], seasons: any[], venues?: any[], orgTimezone?: string }) {
+  // Determine the default season (marked isDefault, else first season)
+  const defaultSeasonId = (() => {
+    const fromLeague = leagues.find((l: any) => l.season?.isDefault);
+    if (fromLeague) return String(fromLeague.season._id);
+    const fromSeasons = seasons.find((s: any) => s.isDefault);
+    if (fromSeasons) return String(fromSeasons._id);
+    return seasons.length > 0 ? String(seasons[0]._id) : '';
+  })();
+
+  const [selectedSeason, setSelectedSeason] = useState(defaultSeasonId);
+  const [selectedState, setSelectedState] = useState('');
   const [selectedLeague, setSelectedLeague] = useState('');
+  const [selectedTeam, setSelectedTeam] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedWeek, setSelectedWeek] = useState(1);
-  const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
+  const leagueStripRef = useRef<HTMLDivElement>(null);
+  const scrollStrip = (dir: 'left' | 'right') => {
+    if (leagueStripRef.current) leagueStripRef.current.scrollBy({ left: dir === 'left' ? -280 : 280, behavior: 'smooth' });
+  };
 
-  // Filter games based on search and league
+  const handleSeasonChange = (seasonId: string) => {
+    setSelectedSeason(seasonId);
+    setSelectedState('');
+    setSelectedLeague('');
+    setSelectedTeam('');
+    setSelectedWeek(1);
+  };
+
+  // Build venue lookup maps (exact match, lowercase+trimmed key)
+  const venueExactMap = useMemo(() => {
+    const stateMap = new Map<string, string>();
+    const abbrMap = new Map<string, string>();
+    venues.forEach((v: any) => {
+      if (v.name) {
+        const key = v.name.toLowerCase().trim();
+        if (v.stateName) stateMap.set(key, v.stateName);
+        if (v.stateAbbr) abbrMap.set(key, v.stateAbbr);
+      }
+    });
+    return { stateMap, abbrMap };
+  }, [venues]);
+
+  // Resolve a location string to a stateName using exact then partial venue matching
+  const resolveState = (location: string): string => {
+    if (!location) return '';
+    const loc = location.toLowerCase().trim();
+    // 1. Exact match
+    const exact = venueExactMap.stateMap.get(loc);
+    if (exact) return exact;
+    // 2. Partial match: game.location contains venue name, or venue name contains game.location
+    for (const [venueName, stateName] of venueExactMap.stateMap) {
+      if (loc.includes(venueName) || venueName.includes(loc)) return stateName;
+    }
+    return '';
+  };
+
+  const resolveStateAbbr = (location: string): string => {
+    if (!location) return '';
+    const loc = location.toLowerCase().trim();
+    const exact = venueExactMap.abbrMap.get(loc);
+    if (exact) return exact;
+    for (const [venueName, abbr] of venueExactMap.abbrMap) {
+      if (loc.includes(venueName) || venueName.includes(loc)) return abbr;
+    }
+    return '';
+  };
+
+  // Leagues that belong to the selected season (for the Leagues dropdown)
+  const filteredLeagues = useMemo(() => {
+    if (!selectedSeason) return leagues;
+    return leagues.filter((l: any) => String(l.season?._id) === selectedSeason);
+  }, [leagues, selectedSeason]);
+
+  // Build set of league IDs for the selected season to filter games
+  const leagueIdsForSeason = useMemo(() => {
+    if (!selectedSeason) return null;
+    return new Set(filteredLeagues.map((l: any) => String(l._id)));
+  }, [filteredLeagues, selectedSeason]);
+
+  // leagueId → league object map for fallback location lookup
+  const leagueMap = useMemo(() => {
+    const map = new Map<string, any>();
+    leagues.forEach((l: any) => map.set(String(l._id), l));
+    return map;
+  }, [leagues]);
+
+  // Resolve state for a game: try game.location first, then league.location as fallback
+  const resolveGameState = (g: any): string => {
+    const fromGame = resolveState(g.location);
+    if (fromGame) return fromGame;
+    const league = leagueMap.get(String(g.league));
+    if (league?.location) return resolveState(league.location);
+    if (Array.isArray(league?.locations) && league.locations[0]) return resolveState(league.locations[0]);
+    return '';
+  };
+
+  // Games filtered by season only (used to derive available states/leagues for dropdowns)
+  const gamesBySeason = useMemo(() => {
+    return games.filter((g: any) =>
+      leagueIdsForSeason ? leagueIdsForSeason.has(String(g.league)) : true
+    );
+  }, [games, leagueIdsForSeason]);
+
+  // States that actually have games in the selected season
+  const states = useMemo(() => {
+    const seen = new Set<string>();
+    const result: { name: string; abbr: string }[] = [];
+    gamesBySeason.forEach((g: any) => {
+      const stateName = resolveGameState(g);
+      if (stateName && !seen.has(stateName)) {
+        seen.add(stateName);
+        const abbr = resolveStateAbbr(g.location) || stateName;
+        result.push({ name: stateName, abbr });
+      }
+    });
+    return result.sort((a, b) => a.name.localeCompare(b.name));
+  }, [gamesBySeason, venueExactMap, leagueMap]);
+
+  // Teams available for the current season + state + league selection (before team filter)
+  const teams = useMemo(() => {
+    const seen = new Set<string>();
+    games.forEach((g: any) => {
+      if (leagueIdsForSeason && !leagueIdsForSeason.has(String(g.league))) return;
+      if (selectedState && resolveGameState(g) !== selectedState) return;
+      if (selectedLeague && g.league !== selectedLeague && g.leagueName !== selectedLeague) return;
+      if (g.teamA?.name) seen.add(g.teamA.name);
+      if (g.teamB?.name) seen.add(g.teamB.name);
+    });
+    return Array.from(seen).sort((a, b) => a.localeCompare(b));
+  }, [games, leagueIdsForSeason, selectedState, selectedLeague, venueExactMap, leagueMap]);
+
+  // Filter games based on season, state, league, team, and search
   const filteredGames = useMemo(() => {
     return games.filter((g: any) => {
+      if (leagueIdsForSeason && !leagueIdsForSeason.has(String(g.league))) return false;
+      if (selectedState && resolveGameState(g) !== selectedState) return false;
       if (selectedLeague && g.league !== selectedLeague && g.leagueName !== selectedLeague) return false;
+      if (selectedTeam && g.teamA?.name !== selectedTeam && g.teamB?.name !== selectedTeam) return false;
       if (searchQuery) {
         const q = searchQuery.toLowerCase();
         if (!g.teamA?.name?.toLowerCase().includes(q) && !g.teamB?.name?.toLowerCase().includes(q)) return false;
       }
       return true;
     });
-  }, [games, selectedLeague, searchQuery]);
+  }, [games, leagueIdsForSeason, selectedState, venueExactMap, leagueMap, selectedLeague, selectedTeam, searchQuery]);
 
   // Sort games by date and time
   const sortedGames = useMemo(() => {
@@ -66,28 +195,15 @@ export default function SchedulesClient({ games, leagues, orgTimezone = "America
     return { weeks: map, weekCount: map.size };
   }, [sortedGames]);
 
-  // Extract locations for the current week
   const weekGames = weeks.get(selectedWeek) || [];
-  const locations = useMemo(() => {
-    const locs = new Set<string>();
-    weekGames.forEach((g: any) => {
-      if (g.location) locs.add(g.location);
-    });
-    return Array.from(locs);
-  }, [weekGames]);
 
-  // Auto-select first location if none is selected
-  useEffect(() => {
-    if ((!selectedLocation || !locations.includes(selectedLocation)) && locations.length > 0) {
-      setSelectedLocation(locations[0]);
-    }
-  }, [locations, selectedLocation]);
+  // Strip tabs = all leagues for the selected season (same source as dropdown)
+  const leagueStripNames = useMemo(() => {
+    return filteredLeagues.map((l: any) => l.name).filter(Boolean);
+  }, [filteredLeagues]);
 
-  // Games for current week AND selected location
-  const currentViewGames = useMemo(() => {
-    if (!selectedLocation) return [];
-    return weekGames.filter((g: any) => g.location === selectedLocation);
-  }, [weekGames, selectedLocation]);
+  // Games for the current week — filteredGames already handles the league filter via selectedLeague
+  const currentViewGames = weekGames;
 
   // Group games by Exact Date + Time
   const gamesByDateTime = useMemo(() => {
@@ -109,25 +225,59 @@ export default function SchedulesClient({ games, leagues, orgTimezone = "America
       <div className="container">
 
         {/* Top filter bar */}
-        <div className="top-part" style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', marginBottom: '30px', alignItems: 'center' }}>
-          <select defaultValue="" className="form-select schedule-filter-select" style={{ backgroundColor: '#231F20', color: '#fff', border: 'none' }}>
-            <option value="" disabled>States</option>
-          </select>
+        <div className="top-part" style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', marginBottom: '30px', alignItems: 'center', justifyContent: 'flex-start' }}>
+          {/* Season */}
           <select
-            className="form-select"
-            style={{ backgroundColor: '#231F20', color: '#fff', border: 'none' }}
-            value={selectedLeague}
-            onChange={e => setSelectedLeague(e.target.value)}
+            className="form-select schedule-filter-select"
+            style={{ backgroundColor: '#231F20', color: '#fff', border: 'none', width: 'auto', minWidth: '160px', flex: '0 0 auto' }}
+            value={selectedSeason}
+            onChange={e => handleSeasonChange(e.target.value)}
           >
-            <option value="">Leagues</option>
-            {leagues.map((l: any) => (
+            {seasons.map((s: any) => (
+              <option key={s._id} value={String(s._id)}>{s.name}</option>
+            ))}
+          </select>
+
+          {/* States */}
+          <select
+            className="form-select schedule-filter-select"
+            style={{ backgroundColor: '#231F20', color: '#fff', border: 'none', width: 'auto', minWidth: '140px', flex: '0 0 auto' }}
+            value={selectedState}
+            onChange={e => { setSelectedState(e.target.value); setSelectedLeague(''); setSelectedTeam(''); setSelectedWeek(1); }}
+          >
+            <option value="">All States</option>
+            {states.map(s => (
+              <option key={s.abbr} value={s.name}>{s.name}</option>
+            ))}
+          </select>
+
+          {/* Leagues */}
+          <select
+            className="form-select schedule-filter-select"
+            style={{ backgroundColor: '#231F20', color: '#fff', border: 'none', width: 'auto', minWidth: '150px', flex: '0 0 auto' }}
+            value={selectedLeague}
+            onChange={e => { setSelectedLeague(e.target.value); setSelectedTeam(''); setSelectedWeek(1); }}
+          >
+            <option value="">All Leagues</option>
+            {filteredLeagues.map((l: any) => (
               <option key={l._id} value={l.name}>{l.name}</option>
             ))}
           </select>
-          <select defaultValue="" className="form-select schedule-filter-select" style={{ backgroundColor: '#231F20', color: '#fff', border: 'none' }}>
-            <option value="" disabled>All teams</option>
+
+          {/* Teams */}
+          <select
+            className="form-select schedule-filter-select"
+            style={{ backgroundColor: '#231F20', color: '#fff', border: 'none', width: 'auto', minWidth: '140px', flex: '0 0 auto' }}
+            value={selectedTeam}
+            onChange={e => { setSelectedTeam(e.target.value); setSelectedWeek(1); }}
+          >
+            <option value="">All Teams</option>
+            {teams.map(t => (
+              <option key={t} value={t}>{t}</option>
+            ))}
           </select>
 
+          {/* Search box — temporarily hidden; uncomment to restore
           <div className="search-bar schedule-search-bar">
             <div className="input-group" style={{ background: '#fff', border: '1px solid #ddd', borderRadius: '4px', overflow: 'hidden' }}>
               <input
@@ -143,6 +293,7 @@ export default function SchedulesClient({ games, leagues, orgTimezone = "America
               </button>
             </div>
           </div>
+          */}
         </div>
 
         {/* Main body */}
@@ -155,129 +306,134 @@ export default function SchedulesClient({ games, leagues, orgTimezone = "America
                 <li key={w} style={{ padding: '0 20px', marginBottom: '15px' }}>
                   <a
                     href="#"
-                    onClick={e => { e.preventDefault(); setSelectedWeek(w); setSelectedLocation(null); }}
+                    onClick={e => { e.preventDefault(); setSelectedWeek(w); }}
                     style={{
                       color: selectedWeek === w ? '#fff' : '#888',
                       fontWeight: selectedWeek === w ? 700 : 400,
                       textDecoration: 'none',
-                      textTransform: 'lowercase',
+                      textTransform: 'capitalize',
                       fontSize: '15px',
                       display: 'block'
                     }}
                   >
-                    week {w}
+                    Week {w}
                   </a>
                 </li>
               )) : (
-                <li style={{ padding: '0 20px' }}><span style={{ color: '#888', fontSize: '14px' }}>No games</span></li>
+                <li style={{ padding: '0 20px' }}></li>
               )}
             </ul>
           </div>
 
           {/* RIGHT — Schedule table */}
-          <div className="right-side" style={{ flex: 1, padding: '20px' }}>
+          <div className="right-side" style={{ flex: 1, width: 'auto', minWidth: 0, padding: '20px' }}>
             
-            {/* Location Tabs */}
+            {/* League strip tabs */}
             <div className="state-carousel-area" style={{ display: 'flex', gap: '5px', background: '#f5f5f5', padding: '5px', borderRadius: '4px', marginBottom: '20px', alignItems: 'center' }}>
-              <button style={{ border: 'none', background: '#666', color: '#fff', padding: '5px 15px', borderRadius: '4px' }}>&lt;</button>
-              <div style={{ flex: 1, display: 'flex', gap: '2px', overflowX: 'auto', justifyContent: 'space-around' }}>
-                {locations.length > 0 ? locations.map(loc => (
+              <button onClick={() => scrollStrip('left')} style={{ flexShrink: 0, border: 'none', background: '#666', color: '#fff', padding: '5px 15px', borderRadius: '4px', cursor: 'pointer' }}>&lt;</button>
+              <div ref={leagueStripRef} style={{ flex: 1, display: 'flex', gap: '4px', overflowX: 'auto', scrollbarWidth: 'none' } as React.CSSProperties}>
+                {leagueStripNames.length > 0 ? leagueStripNames.map(name => (
                   <button
-                    key={loc}
-                    onClick={() => setSelectedLocation(loc)}
+                    key={name}
+                    onClick={() => { setSelectedLeague(selectedLeague === name ? '' : name); setSelectedTeam(''); setSelectedWeek(1); }}
                     style={{
+                      flexShrink: 0,
                       border: 'none',
-                      background: selectedLocation === loc ? '#fff' : 'transparent',
-                      color: selectedLocation === loc ? '#000' : '#888',
-                      fontWeight: selectedLocation === loc ? 800 : 600,
-                      padding: '10px 20px',
+                      background: selectedLeague === name ? '#231F20' : 'transparent',
+                      color: selectedLeague === name ? '#fff' : '#888',
+                      fontWeight: selectedLeague === name ? 700 : 500,
+                      padding: '8px 18px',
                       textTransform: 'uppercase',
-                      fontSize: '13px',
+                      fontSize: '12px',
+                      letterSpacing: '0.5px',
                       borderRadius: '4px',
-                      boxShadow: selectedLocation === loc ? '0 2px 4px rgba(0,0,0,0.05)' : 'none'
+                      whiteSpace: 'nowrap',
+                      cursor: 'pointer',
                     }}
                   >
-                    {loc}
+                    {name}
                   </button>
                 )) : (
-                  <div style={{ padding: '10px', color: '#888', fontSize: '13px', fontWeight: 600 }}>NO LOCATIONS FOR WEEK {selectedWeek}</div>
+                  <div style={{ padding: '10px', color: '#888', fontSize: '13px', fontWeight: 600 }}>NO LEAGUES FOR WEEK {selectedWeek}</div>
                 )}
               </div>
-              <button style={{ border: 'none', background: '#666', color: '#fff', padding: '5px 15px', borderRadius: '4px' }}>&gt;</button>
+              <button onClick={() => scrollStrip('right')} style={{ flexShrink: 0, border: 'none', background: '#666', color: '#fff', padding: '5px 15px', borderRadius: '4px', cursor: 'pointer' }}>&gt;</button>
             </div>
 
             {/* Table */}
-            <div className="schedule-table-scroll" style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' } as React.CSSProperties}>
-              <table className="table" style={{ borderCollapse: 'collapse', width: '100%', minWidth: '600px', border: '1px solid #eee' }}>
-                <thead>
-                  <tr style={{ borderBottom: '1px solid #ddd' }}>
-                    <th style={{ textTransform: 'uppercase', fontSize: '12px', fontWeight: 700, padding: '15px', background: '#f9f9f9', color: '#231F20', width: '120px' }}>date/time</th>
-                    <th style={{ textTransform: 'uppercase', fontSize: '12px', fontWeight: 700, padding: '15px', background: '#f9f9f9', color: '#231F20', textAlign: 'center' }}>field 1</th>
-                    <th style={{ textTransform: 'uppercase', fontSize: '12px', fontWeight: 700, padding: '15px', background: '#f9f9f9', color: '#231F20', textAlign: 'center' }}>field 2</th>
-                    <th style={{ textTransform: 'uppercase', fontSize: '12px', fontWeight: 700, padding: '15px', background: '#f9f9f9', color: '#231F20', textAlign: 'center' }}>field 3</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {gamesByDateTime.map(([dateTimeKey, slotGames]) => {
-                    const [time, date] = dateTimeKey.split('__');
-                    // We map up to 3 games for Field 1, Field 2, Field 3
-                    const g1 = slotGames[0];
-                    const g2 = slotGames[1];
-                    const g3 = slotGames[2];
+            {gamesByDateTime.length === 0 ? (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '160px', color: '#888', fontSize: '14px' }}>
+                No games scheduled for {selectedLeague || 'this week'}.
+              </div>
+            ) : (() => {
+              // Compute the maximum number of concurrent games across all time slots
+              const maxFields = Math.max(...gamesByDateTime.map(([, sg]) => sg.length), 1);
+              const fieldCols = Array.from({ length: maxFields }, (_, i) => i + 1);
 
-                    const getLogoUrl = (url?: string) => {
-                      if (!url) return '/assets/images/team-placeholder.svg';
-                      if (url.startsWith('/api/')) return `https://flagmag.com${url}`;
-                      return url;
-                    };
+              const getLogoUrl = (url?: string) => {
+                if (!url) return '/assets/images/team-placeholder.svg';
+                if (url.startsWith('/api/')) return `https://flagmag.com${url}`;
+                return url;
+              };
 
-                    const renderGameCell = (game: any) => {
-                      if (!game) return <td style={{ border: '1px solid #eee' }}></td>;
-                      return (
-                        <td style={{ border: '1px solid #eee', padding: '15px 10px', verticalAlign: 'middle' }}>
-                          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '15px' }}>
-                            <div style={{ textAlign: 'center', width: '40%' }}>
-                              <img src={getLogoUrl(game.teamA?.logo)} style={{ width: '40px', height: '40px', objectFit: 'contain', marginBottom: '5px' }} alt="" />
-                              <span style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#888', lineHeight: 1.2 }}>
-                                {game.teamA?.name || 'TBD'}
-                              </span>
-                            </div>
-                            <div style={{ fontWeight: 700, color: '#F13B26', fontSize: '14px', whiteSpace: 'nowrap' }}>
-                              {game.status === 'completed' ? `${game.teamA?.score ?? 0} - ${game.teamB?.score ?? 0}` : <span style={{ fontSize: '12px', padding: '3px 8px', border: '1px solid #eee', borderRadius: '4px', color: '#888', background: '#fbfbfb' }}>vs</span>}
-                            </div>
-                            <div style={{ textAlign: 'center', width: '40%' }}>
-                              <img src={getLogoUrl(game.teamB?.logo)} style={{ width: '40px', height: '40px', objectFit: 'contain', marginBottom: '5px' }} alt="" />
-                              <span style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#888', lineHeight: 1.2 }}>
-                                {game.teamB?.name || 'TBD'}
-                              </span>
-                            </div>
-                          </div>
-                        </td>
-                      );
-                    };
+              const renderGameCell = (game: any, key: number) => {
+                if (!game) return <td key={key} style={{ border: '1px solid #eee' }}></td>;
+                return (
+                  <td key={key} style={{ border: '1px solid #eee', padding: '15px 10px', verticalAlign: 'middle' }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '15px' }}>
+                      <div style={{ textAlign: 'center', width: '40%' }}>
+                        <img src={getLogoUrl(game.teamA?.logo)} style={{ width: '40px', height: '40px', objectFit: 'contain', marginBottom: '5px' }} alt="" />
+                        <span style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#888', lineHeight: 1.2 }}>
+                          {game.teamA?.name || 'TBD'}
+                        </span>
+                      </div>
+                      <div style={{ fontWeight: 700, color: '#F13B26', fontSize: '14px', whiteSpace: 'nowrap' }}>
+                        {game.status === 'completed'
+                          ? `${game.teamA?.score ?? 0} - ${game.teamB?.score ?? 0}`
+                          : <span style={{ fontSize: '12px', padding: '3px 8px', border: '1px solid #eee', borderRadius: '4px', color: '#888', background: '#fbfbfb' }}>vs</span>}
+                      </div>
+                      <div style={{ textAlign: 'center', width: '40%' }}>
+                        <img src={getLogoUrl(game.teamB?.logo)} style={{ width: '40px', height: '40px', objectFit: 'contain', marginBottom: '5px' }} alt="" />
+                        <span style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#888', lineHeight: 1.2 }}>
+                          {game.teamB?.name || 'TBD'}
+                        </span>
+                      </div>
+                    </div>
+                  </td>
+                );
+              };
 
-                    return (
-                      <tr key={dateTimeKey} style={{ borderBottom: '1px solid #eee' }}>
-                        <td style={{ padding: '15px', border: '1px solid #eee', fontSize: '12px', color: '#231F20', fontWeight: 600, verticalAlign: 'middle' }}>
-                          <div style={{ marginBottom: '4px' }}>{formatTimeWithZone(time, orgTimezone, slotGames[0]?.date)}</div>
-                          <div style={{ color: '#888', fontWeight: 400 }}>{date}</div>
-                        </td>
-                        {renderGameCell(g1)}
-                        {renderGameCell(g2)}
-                        {renderGameCell(g3)}
+              return (
+                <div className="schedule-table-scroll" style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', width: '100%' } as React.CSSProperties}>
+                  <table style={{ borderCollapse: 'collapse', width: '100%', tableLayout: 'fixed', border: '1px solid #eee' }}>
+                    <thead>
+                      <tr style={{ borderBottom: '1px solid #ddd' }}>
+                        <th style={{ textTransform: 'uppercase', fontSize: '12px', fontWeight: 700, padding: '15px', background: '#f9f9f9', color: '#231F20', width: '120px' }}>date/time</th>
+                        {fieldCols.map(n => (
+                          <th key={n} style={{ textTransform: 'uppercase', fontSize: '12px', fontWeight: 700, padding: '15px', background: '#f9f9f9', color: '#231F20', textAlign: 'center' }}>
+                            field {n}
+                          </th>
+                        ))}
                       </tr>
-                    );
-                  })}
-                  {gamesByDateTime.length === 0 && (
-                    <tr>
-                      <td colSpan={4} style={{ textAlign: 'center', padding: '40px', color: '#888' }}>
-                        No games scheduled for {selectedLocation || 'this location'}.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+                    </thead>
+                    <tbody>
+                      {gamesByDateTime.map(([dateTimeKey, slotGames]) => {
+                        const [time, date] = dateTimeKey.split('__');
+                        return (
+                          <tr key={dateTimeKey} style={{ borderBottom: '1px solid #eee' }}>
+                            <td style={{ padding: '15px', border: '1px solid #eee', fontSize: '12px', color: '#231F20', fontWeight: 600, verticalAlign: 'middle' }}>
+                              <div style={{ marginBottom: '4px' }}>{formatTimeWithZone(time, orgTimezone, slotGames[0]?.date)}</div>
+                              <div style={{ color: '#888', fontWeight: 400 }}>{date}</div>
+                            </td>
+                            {fieldCols.map(n => renderGameCell(slotGames[n - 1], n))}
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              );
+            })()}
 
           </div>
         </div>
