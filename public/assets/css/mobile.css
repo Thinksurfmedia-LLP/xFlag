@@ -457,10 +457,6 @@ th, td {
     font-size: 0.85rem;
   }
 
-  /* ── SCHEDULES ── */
-  .schedule-body .right-side {
-    padding: 8px !important;
-  }
 
   .schedules-section {
     padding-top: 1.5rem;
@@ -603,12 +599,7 @@ th, td {
     flex: 0 0 100%;
   }
 
-  /* Schedule table cells smaller */
-  .schedule-body table th,
-  .schedule-body table td {
-    padding: 8px 5px !important;
-    font-size: 11px !important;
-  }
+
 
   /* XStats years */
   .x-states-section .years-item {
@@ -650,11 +641,6 @@ th, td {
     font-size: 1.5rem !important;
   }
 
-  .schedule-body table th,
-  .schedule-body table td {
-    font-size: 10px !important;
-    padding: 6px 4px !important;
-  }
 
   .x-states-section .years-item {
     grid-template-columns: repeat(2, 1fr) !important;

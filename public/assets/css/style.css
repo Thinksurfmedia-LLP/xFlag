@@ -773,8 +773,10 @@ header .hdr-mob-area {
 .banner-section .image-area img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center center;
+  -o-object-fit: cover;
+     object-fit: cover;
+  -o-object-position: center center;
+     object-position: center center;
 }
 .banner-section .container-fluid {
   position: relative;
@@ -1330,8 +1332,10 @@ header .hdr-mob-area {
 .sponsors-section .sponsors-carousel .image-area img {
   width: auto;
   height: 100px;
-  object-fit: contain;
-  object-position: center center;
+  -o-object-fit: contain;
+     object-fit: contain;
+  -o-object-position: center center;
+     object-position: center center;
   margin: auto;
 }
 
@@ -1431,7 +1435,8 @@ header .hdr-mob-area {
 .testimonials-section .testimonial-wrap .testimonial-item .author-area .lf img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  -o-object-fit: cover;
+     object-fit: cover;
 }
 .testimonials-section .testimonial-wrap .testimonial-item .author-area .rt h5 {
   font-family: "Inter", sans-serif;
@@ -1577,8 +1582,10 @@ header .hdr-mob-area {
 .inner-banner-section .image-area img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center center;
+  -o-object-fit: cover;
+     object-fit: cover;
+  -o-object-position: center center;
+     object-position: center center;
 }
 .inner-banner-section h1 {
   color: #fff;
@@ -1624,6 +1631,12 @@ header .hdr-mob-area {
 .form-select:focus {
   border-color: #312D23;
   box-shadow: none;
+}
+
+.form-control::-moz-placeholder {
+  color: rgba(255, 255, 255, 0.6);
+  opacity: 1;
+  font-size: 1rem;
 }
 
 .form-control::placeholder {
@@ -1700,8 +1713,10 @@ header .hdr-mob-area {
   width: auto;
   max-height: 100px;
   max-width: 120px;
-  object-fit: contain;
-  object-position: center center;
+  -o-object-fit: contain;
+     object-fit: contain;
+  -o-object-position: center center;
+     object-position: center center;
   margin: auto;
 }
 .sponsor-page-logo-section .sponsors-carousel .item h5 {
@@ -1774,6 +1789,10 @@ header .hdr-mob-area {
   color: #000;
   box-shadow: none;
   transition: 0.3s;
+}
+.sponsorship-section .form-area .form-control::-moz-placeholder {
+  color: rgba(0, 0, 0, 0.85);
+  font-size: 14px;
 }
 .sponsorship-section .form-area .form-control::placeholder {
   color: rgba(0, 0, 0, 0.85);
@@ -1988,7 +2007,9 @@ header .hdr-mob-area {
 .table-wrap {
   padding: 0;
   border-radius: 0;
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
   box-sizing: border-box;
   margin-bottom: 40px;
   border: 1px solid rgba(0, 0, 0, 0.06);
@@ -2012,6 +2033,7 @@ table.states-table tr * {
   vertical-align: middle;
   line-height: 1.25;
   border: 1px solid rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
 }
 table.states-table tr th {
   background: #F13B26;
@@ -2167,7 +2189,9 @@ div > .table-wrap:nth-last-child(1) {
   min-width: 150px;
   border-radius: 6px;
   min-height: 48px;
-  appearance: none;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
   background: url(../images/select-arrow.png) right 15px center no-repeat #222;
   background-size: 12px 8px;
   padding-right: 40px;
@@ -2202,6 +2226,9 @@ div > .table-wrap:nth-last-child(1) {
   z-index: 1;
   border: 1px solid rgba(0, 0, 0, 0.1);
   min-height: 48px;
+}
+.schedules-section .top-part .search-bar .input-group input::-moz-placeholder {
+  color: rgba(0, 0, 0, 0.6);
 }
 .schedules-section .top-part .search-bar .input-group input::placeholder {
   color: rgba(0, 0, 0, 0.6);
@@ -2434,8 +2461,10 @@ div > .table-wrap:nth-last-child(1) {
   height: 100%;
   max-width: 100px;
   max-height: 80px;
-  object-fit: contain;
-  object-position: center center;
+  -o-object-fit: contain;
+     object-fit: contain;
+  -o-object-position: center center;
+     object-position: center center;
 }
 .x-states-section .seasons-team-list li .rt {
   display: flex;
@@ -2995,8 +3024,10 @@ footer .copyright-area ul li a:hover {
     height: 100%;
     width: auto;
     max-width: 100%;
-    object-fit: cover;
-    object-position: center center;
+    -o-object-fit: cover;
+       object-fit: cover;
+    -o-object-position: center center;
+       object-position: center center;
   }
   .featured-venues-section .content-box-main {
     padding: 20px 25px;
@@ -3160,6 +3191,75 @@ footer .copyright-area ul li a:hover {
   .team-point-section .team-heading-nav li a {
     font-size: 2.2rem;
   }
+  .schedule-table thead {
+    display: none;
+  }
+  .schedule-table tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .schedule-table tbody tr {
+    display: block;
+    border: 1px solid #e2d0d0;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .schedule-table tbody tr td {
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 40px 4px 10px !important;
+    align-items: center;
+    text-align: center !important;
+  }
+  .schedule-table tbody tr td::before {
+    content: attr(data-title);
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    font-weight: 600;
+    color: #000;
+    width: 100%;
+    font-size: 14px;
+    background: #f5f5f5;
+    line-height: 1.5;
+    padding: 4px 6px;
+  }
+  .schedule-table tbody tr td .main img {
+    margin: 0 auto 5px !important;
+  }
+  .schedule-table tbody tr td:nth-child(1) {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: center;
+  }
+  .schedule-table tbody tr td:nth-child(1) br {
+    display: none;
+  }
+  .schedule-table tbody tr td:nth-child(1) span {
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .schedule-table tbody tr td:nth-child(1) br + span {
+    color: #bf4545;
+  }
+  .schedules-section .schedule-body .right-side {
+    padding: 10px 0px !important;
+  }
+  .schedules-section .schedule-body .right-side table tr td .main {
+    gap: 15px;
+  }
+  .schedules-section .schedule-body .right-side table tr td .main .a {
+    min-width: 100px;
+    gap: 4px;
+  }
+  .schedules-section .schedule-body .right-side table tr td .main .b span {
+    font-size: 18px !important;
+  }
 }
 @media only screen and (max-width: 480px) {
   .sponsorship-section .form-area .col-6 {
@@ -3172,4 +3272,4 @@ footer .copyright-area ul li a:hover {
     width: 100%;
     flex: 0 0 100%;
   }
-}
+}/*# sourceMappingURL=style.css.map */

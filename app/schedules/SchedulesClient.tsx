@@ -376,27 +376,25 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
                 return url;
               };
 
-              const renderGameCell = (game: any, key: number) => {
-                if (!game) return <td key={key} style={{ border: '1px solid #eee' }}></td>;
+              const renderGameCell = (game: any, fieldNum: number) => {
+                if (!game) return <td key={fieldNum} data-title={`Field ${fieldNum}`}></td>;
                 return (
-                  <td key={key} style={{ border: '1px solid #eee', padding: '15px 10px', verticalAlign: 'middle' }}>
-                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '15px' }}>
-                      <div style={{ textAlign: 'center', width: '40%' }}>
-                        <img src={getLogoUrl(game.teamA?.logo)} style={{ width: '40px', height: '40px', objectFit: 'contain', marginBottom: '5px' }} alt="" />
-                        <span style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#888', lineHeight: 1.2 }}>
-                          {game.teamA?.name || 'TBD'}
-                        </span>
+                  <td key={fieldNum} data-title={`Field ${fieldNum}`}>
+                    <div className="main">
+                      <div className="a">
+                        <img src={getLogoUrl(game.teamA?.logo)} alt="" />
+                        <span>{game.teamA?.name || 'TBD'}</span>
                       </div>
-                      <div style={{ fontWeight: 700, color: '#F13B26', fontSize: '14px', whiteSpace: 'nowrap' }}>
+                      <div className="b">
                         {game.status === 'completed'
-                          ? `${game.teamA?.score ?? 0} - ${game.teamB?.score ?? 0}`
-                          : <span style={{ fontSize: '12px', padding: '3px 8px', border: '1px solid #eee', borderRadius: '4px', color: '#888', background: '#fbfbfb' }}>vs</span>}
+                          ? <span style={{ fontWeight: 700, color: '#F13B26', fontSize: '14px', whiteSpace: 'nowrap' }}>
+                              {game.teamA?.score ?? 0} - {game.teamB?.score ?? 0}
+                            </span>
+                          : <span className="vs">vs</span>}
                       </div>
-                      <div style={{ textAlign: 'center', width: '40%' }}>
-                        <img src={getLogoUrl(game.teamB?.logo)} style={{ width: '40px', height: '40px', objectFit: 'contain', marginBottom: '5px' }} alt="" />
-                        <span style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#888', lineHeight: 1.2 }}>
-                          {game.teamB?.name || 'TBD'}
-                        </span>
+                      <div className="a">
+                        <img src={getLogoUrl(game.teamB?.logo)} alt="" />
+                        <span>{game.teamB?.name || 'TBD'}</span>
                       </div>
                     </div>
                   </td>
@@ -405,14 +403,12 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
 
               return (
                 <div className="schedule-table-scroll" style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', width: '100%' } as React.CSSProperties}>
-                  <table style={{ borderCollapse: 'collapse', width: 'max-content', minWidth: '100%', tableLayout: 'auto', border: '1px solid #eee' }}>
+                  <table className="table schedule-table" style={{ width: 'max-content', minWidth: '100%' }}>
                     <thead>
-                      <tr style={{ borderBottom: '1px solid #ddd' }}>
-                        <th style={{ textTransform: 'uppercase', fontSize: '12px', fontWeight: 700, padding: '15px', background: '#f9f9f9', color: '#231F20', width: '120px' }}>date/time</th>
+                      <tr>
+                        <th>date/time</th>
                         {fieldCols.map(n => (
-                          <th key={n} style={{ textTransform: 'uppercase', fontSize: '12px', fontWeight: 700, padding: '15px', background: '#f9f9f9', color: '#231F20', textAlign: 'center' }}>
-                            field {n}
-                          </th>
+                          <th key={n}>field {n}</th>
                         ))}
                       </tr>
                     </thead>
@@ -420,10 +416,11 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
                       {gamesByDateTime.map(([dateTimeKey, slotGames]) => {
                         const [time, date] = dateTimeKey.split('__');
                         return (
-                          <tr key={dateTimeKey} style={{ borderBottom: '1px solid #eee' }}>
-                            <td style={{ padding: '15px', border: '1px solid #eee', fontSize: '12px', color: '#231F20', fontWeight: 600, verticalAlign: 'middle' }}>
-                              <div style={{ marginBottom: '4px' }}>{formatTimeWithZone(time, orgTimezone, slotGames[0]?.date)}</div>
-                              <div style={{ color: '#888', fontWeight: 400 }}>{date}</div>
+                          <tr key={dateTimeKey}>
+                            <td data-title="Date/Time">
+                              <span>{date}</span>
+                              <br />
+                              <span>{formatTimeWithZone(time, orgTimezone, slotGames[0]?.date)}</span>
                             </td>
                             {fieldCols.map(n => renderGameCell(slotGames[n - 1], n))}
                           </tr>

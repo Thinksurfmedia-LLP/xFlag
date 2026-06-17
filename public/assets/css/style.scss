@@ -4093,6 +4093,42 @@ footer {
 	}
 
 
+	.schedule-table {
+		thead {display: none;}
+
+		tbody{ display: flex; flex-direction: column; gap: 20px; flex-wrap: wrap;
+			tr{display: block; border: 1px solid #e2d0d0; border-radius: 12px; overflow: hidden;
+				td {width:100%; position: relative; display:flex; flex-direction: column; padding: 40px 4px 10px !important; align-items: center; text-align:center !important; 
+					&::before {content: attr(data-title); position: absolute; left: 0px; top: 0px; font-weight: 600; color: #000; width: 100%; font-size: 14px; background: #f5f5f5; line-height: 1.5; padding: 4px 6px;}
+
+					.main{
+						img{margin: 0 auto 5px !important;}
+					}
+
+				}
+				td:nth-child(1) {display: flex; flex-direction: row; gap: 10px; justify-content: center;
+					br{display: none;}
+					span{font-size: 15px; font-weight: 500;}
+					br + span {color: #bf4545;}
+				}
+				
+				
+			}
+
+		}
+
+		
+	}
+
+	.schedules-section .schedule-body .right-side{ padding: 10px 0px !important;
+		 table tr td .main{ gap: 15px;
+			.a{min-width:100px; gap:4px;}
+			.b span{font-size: 18px !important;}
+		}
+	}
+
+
+
 
 }
 
