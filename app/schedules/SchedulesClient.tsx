@@ -297,7 +297,7 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
         </div>
 
         {/* Main body */}
-        <div className="schedule-body" style={{ background: '#fff', borderRadius: '8px', border: '1px solid #ddd', overflow: 'hidden' }}>
+        <div className="schedule-body" style={{ background: '#fff', borderRadius: '8px', border: '1px solid #ddd' }}>
 
           {/* LEFT — Week sidebar */}
           <div className="left-side" style={{ width: '200px', backgroundColor: '#000', padding: '20px 0', minHeight: '400px' }}>
@@ -405,7 +405,7 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
 
               return (
                 <div className="schedule-table-scroll" style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', width: '100%' } as React.CSSProperties}>
-                  <table style={{ borderCollapse: 'collapse', width: '100%', tableLayout: 'fixed', border: '1px solid #eee' }}>
+                  <table style={{ borderCollapse: 'collapse', width: 'max-content', minWidth: '100%', tableLayout: 'auto', border: '1px solid #eee' }}>
                     <thead>
                       <tr style={{ borderBottom: '1px solid #ddd' }}>
                         <th style={{ textTransform: 'uppercase', fontSize: '12px', fontWeight: 700, padding: '15px', background: '#f9f9f9', color: '#231F20', width: '120px' }}>date/time</th>

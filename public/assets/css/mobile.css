@@ -19,6 +19,11 @@ html, body {
   min-width: 0; /* prevents flex children from overflowing */
 }
 
+/* Restore natural min-width for table cells so tables can force horizontal scroll */
+th, td {
+  min-width: auto;
+}
+
 /* ─── GLOBAL COMPONENT DEFAULTS ────────────────────────── */
 
 /* Schedules - default flex layout (overridden on mobile) */
@@ -199,8 +204,10 @@ html, body {
   }
 
   /* Schedule table — horizontal scroll */
-  .schedule-body .right-side > div[style*="overflow"] {
+  .schedule-body .right-side > div[style*="overflow"],
+  .schedule-table-scroll {
     overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
   }
 
   /* ── XSTATS PAGE ── */
@@ -380,7 +387,8 @@ html, body {
   /* Tables */
   .table-responsive-wrapper,
   .scoreboard-section .table-area,
-  .xstats-table-wrap {
+  .xstats-table-wrap,
+  .table-wrap {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
