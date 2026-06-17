@@ -10,25 +10,36 @@ export default async function LeaderboardPage({
   searchParams: { season?: string };
 }) {
   const sParams = await searchParams;
+  const urlSeasonId = sParams.season || '';
 
-  // Resolve the season: use query param or fall back to the default season
-  let seasonId = sParams.season || '';
-  let seasonName = '';
+  // When the season is already in the URL, fire all 5 fetches simultaneously.
+  // When it isn't, we need seasons first to resolve the default, then fetch stats.
+  let seasons: any[];
+  let passingStats: any[], receivingStats: any[], rushingStats: any[], defenseStats: any[];
 
-  const seasons = await getLiveSeasons();
-  if (!seasonId && seasons.length > 0) {
-    const def = seasons.find((s: any) => s.isDefault) || seasons[0];
-    seasonId = def._id;
+  if (urlSeasonId) {
+    [seasons, passingStats, receivingStats, rushingStats, defenseStats] = await Promise.all([
+      getLiveSeasons(),
+      getLiveSeasonLeaderboard(urlSeasonId, 'passing'),
+      getLiveSeasonLeaderboard(urlSeasonId, 'receiving'),
+      getLiveSeasonLeaderboard(urlSeasonId, 'rushing'),
+      getLiveSeasonLeaderboard(urlSeasonId, 'defensive'),
+    ]);
+  } else {
+    seasons = await getLiveSeasons();
+    const defaultSeason = seasons.find((s: any) => s.isDefault) || seasons[0];
+    const defaultId = defaultSeason?._id || '';
+    [passingStats, receivingStats, rushingStats, defenseStats] = await Promise.all([
+      getLiveSeasonLeaderboard(defaultId, 'passing'),
+      getLiveSeasonLeaderboard(defaultId, 'receiving'),
+      getLiveSeasonLeaderboard(defaultId, 'rushing'),
+      getLiveSeasonLeaderboard(defaultId, 'defensive'),
+    ]);
   }
-  const seasonObj = seasons.find((s: any) => s._id === seasonId || String(s._id) === seasonId);
-  seasonName = seasonObj?.name || 'Season';
 
-  const [passingStats, receivingStats, rushingStats, defenseStats] = await Promise.all([
-    getLiveSeasonLeaderboard(seasonId, 'passing'),
-    getLiveSeasonLeaderboard(seasonId, 'receiving'),
-    getLiveSeasonLeaderboard(seasonId, 'rushing'),
-    getLiveSeasonLeaderboard(seasonId, 'defensive'),
-  ]);
+  const seasonId = urlSeasonId || seasons.find((s: any) => s.isDefault)?._id || seasons[0]?._id || '';
+  const seasonObj = seasons.find((s: any) => s._id === seasonId || String(s._id) === seasonId);
+  const seasonName = seasonObj?.name || 'Season';
 
   return (
     <div className="wrapper">

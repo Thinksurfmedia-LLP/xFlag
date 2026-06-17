@@ -14,20 +14,13 @@ export default async function PlayerStatsPage({
   const sParams = await searchParams;
   const teamName = sParams.team || 'All Players';
 
-  // Fetch league info to get the display name
-  const leagues = await getLiveLeagues();
-  const league = leagues.find((l: any) => l.slug === slug);
-  const seasonName = league?.season?.name || 'Current Season';
-  const leagueName = league?.name?.replace(seasonName, '').trim() || league?.name || 'League';
-
-  // Helper to fetch computed stats
   const FLAGMAG_URL = (process.env.NEXT_PUBLIC_FLAGMAG_API_URL || 'https://flagmag.com').replace(/\/$/, '');
 
   const fetchStats = async (type: string) => {
     try {
       const teamParam = teamName === 'All Players' ? '' : encodeURIComponent(teamName);
       const url = `${FLAGMAG_URL}/api/organizations/xflagfootball/season/${slug}/stats/computed?team=${teamParam}&statType=${type}`;
-      const res = await fetch(url, { cache: 'no-store' });
+      const res = await fetch(url, { next: { revalidate: 120 } });
       if (!res.ok) return [];
       const data = await res.json();
       return data.players || [];
@@ -37,11 +30,17 @@ export default async function PlayerStatsPage({
     }
   };
 
-  const [passingStats, receivingStats, rushingStats] = await Promise.all([
+  // Run leagues lookup and all three stat fetches in parallel
+  const [leagues, passingStats, receivingStats, rushingStats] = await Promise.all([
+    getLiveLeagues(),
     fetchStats('passing'),
     fetchStats('receiving'),
-    fetchStats('rushing')
+    fetchStats('rushing'),
   ]);
+
+  const league = leagues.find((l: any) => l.slug === slug);
+  const seasonName = league?.season?.name || 'Current Season';
+  const leagueName = league?.name?.replace(seasonName, '').trim() || league?.name || 'League';
 
   const getPlayerPhoto = (url?: string) => {
     if (!url) return '/assets/images/player-placeholder.svg';

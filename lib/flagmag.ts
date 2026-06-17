@@ -1,23 +1,21 @@
 'use server';
 
-// Ensure the base URL doesn't have a trailing slash, and append /api for API calls
 const BASE_URL = (process.env.NEXT_PUBLIC_FLAGMAG_API_URL || 'https://flagmag.com').replace(/\/$/, '');
 const API_URL = `${BASE_URL}/api`;
 
-// Extract the slug from a full URL if provided, otherwise use the string directly
 let rawOrgSlug = process.env.NEXT_PUBLIC_FLAGMAG_ORG_SLUG || 'xflagfootball';
 if (rawOrgSlug.includes('/organizations/')) {
   rawOrgSlug = rawOrgSlug.split('/organizations/')[1].split('/')[0];
 }
 const ORG_SLUG = rawOrgSlug;
 
-/**
- * Fetch all venue records in the org's operating counties.
- * Returns 10 venues for xflagfootball (vs 9 from org.locations).
- */
+// 2-minute stale-while-revalidate: first request hits API and caches,
+// subsequent requests within 120s are served from cache instantly.
+const CACHE = { next: { revalidate: 120 } } as const;
+
 export async function getLiveVenues() {
   try {
-    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/venues`, { cache: 'no-store' });
+    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/venues`, CACHE);
     const data = await res.json();
     return data.success ? data.data : [];
   } catch (error) {
@@ -26,12 +24,9 @@ export async function getLiveVenues() {
   }
 }
 
-/**
- * Fetch the organization details which includes locations and venues.
- */
 export async function getLiveOrganization() {
   try {
-    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}`, { cache: 'no-store' });
+    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}`, CACHE);
     const data = await res.json();
     return data.success ? data.data : null;
   } catch (error) {
@@ -40,12 +35,9 @@ export async function getLiveOrganization() {
   }
 }
 
-/**
- * Fetch all upcoming and past games for the organization.
- */
 export async function getLiveSchedules() {
   try {
-    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/games`, { cache: 'no-store' });
+    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/games`, CACHE);
     const data = await res.json();
     return data.success ? data.data : [];
   } catch (error) {
@@ -56,7 +48,7 @@ export async function getLiveSchedules() {
 
 export async function getLiveLeagues() {
   try {
-    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/leagues`, { cache: 'no-store' });
+    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/leagues`, CACHE);
     const data = await res.json();
     return data.success ? data.data : [];
   } catch (error) {
@@ -69,7 +61,7 @@ export async function getLiveLeagueLeaderboard(leagueSlug: string, statType: str
   try {
     const res = await fetch(
       `${API_URL}/organizations/${ORG_SLUG}/season/${leagueSlug}/stats/computed?statType=${statType}`,
-      { cache: 'no-store' }
+      CACHE
     );
     const data = await res.json();
     return data.players || [];
@@ -83,7 +75,7 @@ export async function getLiveSeasonLeaderboard(seasonId: string, statType: strin
   try {
     const res = await fetch(
       `${API_URL}/organizations/${ORG_SLUG}/seasons/leaderboard?seasons=${seasonId}&statType=${statType}`,
-      { cache: 'no-store' }
+      CACHE
     );
     const data = await res.json();
     return data.players || [];
@@ -95,7 +87,7 @@ export async function getLiveSeasonLeaderboard(seasonId: string, statType: strin
 
 export async function getLiveSeasons() {
   try {
-    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/seasons`, { cache: 'no-store' });
+    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/seasons`, CACHE);
     const data = await res.json();
     return data.success ? data.data : [];
   } catch (error) {
@@ -104,12 +96,9 @@ export async function getLiveSeasons() {
   }
 }
 
-/**
- * Fetch standings for a specific league.
- */
 export async function getLiveStandings(leagueSlug: string) {
   try {
-    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/season/${leagueSlug}/standings`, { cache: 'no-store' });
+    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/season/${leagueSlug}/standings`, CACHE);
     const data = await res.json();
     return data.divisionGroups || [];
   } catch (error) {

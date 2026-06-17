@@ -15,7 +15,7 @@ export default async function GameStatsPage({
   const FLAGMAG_URL = (process.env.NEXT_PUBLIC_FLAGMAG_API_URL || 'https://flagmag.com').replace(/\/$/, '');
 
   // Fetch specific game details from FlagMag API
-  const gameRes = await fetch(`${FLAGMAG_URL}/api/games/${gameId}`, { cache: 'no-store' });
+  const gameRes = await fetch(`${FLAGMAG_URL}/api/games/${gameId}`, { next: { revalidate: 60 } });
   if (!gameRes.ok) {
     return (
       <div className="wrapper">
@@ -51,7 +51,7 @@ export default async function GameStatsPage({
     try {
       const teamParam = teamName === 'all' ? '' : encodeURIComponent(teamName);
       const url = `${FLAGMAG_URL}/api/games/${gameId}/stats/computed?team=${teamParam}&statType=${type}`;
-      const res = await fetch(url, { cache: 'no-store' });
+      const res = await fetch(url, { next: { revalidate: 60 } });
       if (!res.ok) return [];
       const data = await res.json();
       return data.players || [];
