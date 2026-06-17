@@ -131,13 +131,11 @@ html, body {
 
   /* Header */
   header .top-header .logo img:first-child {
-    max-height: 40px;
+    max-height: 80px;
     width: auto;
   }
 
-  header .top-header .logo img + img {
-    max-width: 160px;
-  }
+
 
   /* Inner banner */
   .inner-banner-section {
@@ -444,10 +442,6 @@ html, body {
     font-size: 1.2rem;
   }
 
-  /* Header logo */
-  header .top-header .logo img + img {
-    max-width: 130px;
-  }
 
   /* Buttons */
   .btn {
@@ -639,10 +633,6 @@ html, body {
 /* ─── ≤380px: Very small ───────────────────────────────── */
 @media all and (max-width: 380px) {
 
-  header .top-header .logo img + img {
-    max-width: 110px;
-  }
-
   .btn {
     padding: 10px 14px;
     font-size: 0.8rem;
@@ -667,22 +657,32 @@ html, body {
 /* ===== RESULTS TICKER — mobile ===== */
 @media only screen and (max-width: 767px) {
   .results-ticker {
-    height: 30px;
+    height: 36px;
   }
   .results-ticker .ticker-label {
-    font-size: 10px;
-    padding: 0 10px;
-    letter-spacing: 0;
+    font-size: 11px;
+    padding: 0 12px;
+    letter-spacing: 0.5px;
   }
   .results-ticker .ticker-item {
-    font-size: 11px;
-    gap: 4px;
-    padding: 0 6px;
+    font-size: 13px;
+    gap: 6px;
+    padding: 0 8px;
+  }
+  .results-ticker .ticker-team {
+    font-size: 13px;
+  }
+  .results-ticker .ticker-score {
+    font-size: 14px;
+  }
+  .results-ticker .ticker-week {
+    font-size: 12px;
   }
   .results-ticker .ticker-vs {
-    font-size: 9px;
+    font-size: 10px;
   }
   .results-ticker .ticker-sep {
-    margin: 0 10px;
+    margin: 0 4px;
+    font-size: 14px;
   }
 }

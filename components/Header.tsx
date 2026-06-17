@@ -34,7 +34,7 @@ export default async function Header() {
 
                       {/* FOR MOBILE */}
                       <ul className="hdr-mob-area">
-                          {/* <li><Link href="#" data-bs-toggle="modal" data-bs-target="#searchModal"><i className="fas fa-search"></i></Link></li> */}
+                          <li><Link href="#" data-bs-toggle="modal" data-bs-target="#searchModal"><i className="fas fa-search"></i></Link></li>
                           <li><Link href="#"><i className="fas fa-user"></i></Link></li>
                           <li>
                               <button className="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu">

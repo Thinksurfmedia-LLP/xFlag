@@ -12,8 +12,9 @@ const DEFAULT_CMS: CmsData = {
       { id: 'nav-3', label: 'Locations', href: '/locations', dropdown: [] },
       { id: 'nav-4', label: 'Schedules', href: '/schedules', dropdown: [] },
       { id: 'nav-5', label: 'XStats', href: '/xstats', dropdown: [] },
-      // { id: 'nav-6', label: 'Shop Now', href: '#', dropdown: [] },
-      // { id: 'nav-7', label: 'Resources', href: '/resources', dropdown: [] },
+      { id: 'nav-6', label: 'Contact Us', href: '/contact-us', dropdown: [] },
+      // { id: 'nav-7', label: 'Shop Now', href: '#', dropdown: [] },
+      // { id: 'nav-8', label: 'Resources', href: '/resources', dropdown: [] },
     ],
     ctaButtons: [
       { id: 'cta-1', label: 'Dashboard', href: '#', variant: 'primary' },

@@ -306,7 +306,8 @@ ul.list2 li:before {
   margin: 0;
   padding: 0;
 }
-.card .card-header, .card .card-body {
+.card .card-header,
+.card .card-body {
   margin: 0;
   padding: 0;
   border: 0;
@@ -326,7 +327,8 @@ input:focus {
 }
 
 /* Owl Carousel */
-.owl-carousel .owl-nav button.owl-next, .owl-carousel .owl-nav button.owl-prev {
+.owl-carousel .owl-nav button.owl-next,
+.owl-carousel .owl-nav button.owl-prev {
   width: 40px;
   height: 40px;
   display: block;
@@ -386,15 +388,21 @@ input:focus {
 }
 
 .accordion-button {
-  display: flex; /* Ensure flexbox is used (default in Bootstrap 5) */
-  align-items: center; /* Vertically align items */
-  gap: 0.5rem; /* Add some space between the icon and text */
+  display: flex;
+  /* Ensure flexbox is used (default in Bootstrap 5) */
+  align-items: center;
+  /* Vertically align items */
+  gap: 0.5rem;
+  /* Add some space between the icon and text */
 }
 
 .accordion-button::after {
-  order: -1; /* Move the pseudo-element (icon) to the start of the flex container */
-  margin-left: 0 !important; /* Remove default left margin */
-  margin-right: 0.5rem; /* Add right margin for spacing */
+  order: -1;
+  /* Move the pseudo-element (icon) to the start of the flex container */
+  margin-left: 0 !important;
+  /* Remove default left margin */
+  margin-right: 0.5rem;
+  /* Add right margin for spacing */
 }
 
 .social-icon {
@@ -439,6 +447,86 @@ input:focus {
   color: #e2e2e2;
 }
 
+/*	------ RESULTS TICKER ------  */
+.results-ticker {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  height: 42px;
+  background: #1a1a1a;
+  overflow: hidden;
+  border-bottom: 2px solid #2a2a2a;
+}
+.results-ticker .ticker-label {
+  flex-shrink: 0;
+  padding: 0 20px;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #fff;
+  background: #F13B26;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+.results-ticker .ticker-viewport {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+.results-ticker .ticker-track {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+  animation: ticker-scroll linear infinite;
+  will-change: transform;
+}
+.results-ticker .ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #ccc;
+  padding: 0 12px;
+  line-height: 1;
+}
+.results-ticker .ticker-week {
+  color: #F13B26;
+  font-weight: 800;
+  font-size: 13px;
+}
+.results-ticker .ticker-team {
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+}
+.results-ticker .ticker-score {
+  color: #fff;
+  font-weight: 800;
+  font-size: 15px;
+}
+.results-ticker .ticker-vs {
+  color: #888;
+  font-size: 11px;
+  font-weight: 600;
+}
+.results-ticker .ticker-sep {
+  color: #555;
+  font-size: 16px;
+  margin: 0 4px;
+}
+
+@keyframes ticker-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
 /*	------ HEADER PART ------  */
 header {
   position: relative;
@@ -595,7 +683,16 @@ header .hdr-mob-area {
   color: #16181C;
 }
 
-.homepage-banner .banner-section {
+.homepage-banner .owl-dots {
+  margin: 0px !important;
+  justify-content: center;
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+}
+
+.banner-section {
   min-height: 100vh;
   background: url(../images/banner.jpg) center top no-repeat;
   background-size: cover;
@@ -604,7 +701,7 @@ header .hdr-mob-area {
   display: flex;
   align-items: center;
 }
-.homepage-banner .banner-section .image-area {
+.banner-section .image-area {
   position: absolute;
   top: 0;
   left: 0;
@@ -612,19 +709,17 @@ header .hdr-mob-area {
   height: 100%;
   z-index: 1;
 }
-.homepage-banner .banner-section .image-area img {
+.banner-section .image-area img {
   width: 100%;
   height: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
-  -o-object-position: center center;
-     object-position: center center;
+  object-fit: cover;
+  object-position: center center;
 }
-.homepage-banner .banner-section .container-fluid {
+.banner-section .container-fluid {
   position: relative;
   z-index: 2;
 }
-.homepage-banner .banner-section .banner-area {
+.banner-section .banner-area {
   max-width: 100%;
   width: 650px;
   margin: 0;
@@ -635,7 +730,7 @@ header .hdr-mob-area {
   gap: 20px;
   padding: 50px 0;
 }
-.homepage-banner .banner-section .banner-area h2 {
+.banner-section .banner-area h1 {
   font-size: 5.5rem;
   margin-bottom: 0px;
   color: #fff;
@@ -643,32 +738,13 @@ header .hdr-mob-area {
   text-transform: uppercase;
   letter-spacing: 1px;
 }
-.homepage-banner .banner-section .banner-area h5 {
+.banner-section .banner-area h5 {
   font-size: 24px;
   line-height: 1.4;
   margin-bottom: 15px;
   color: #fff;
   text-transform: uppercase;
   font-weight: 400;
-}
-.homepage-banner .homepage-banner-carousel .owl-dots {
-  margin: 0;
-  padding: 0;
-  position: absolute;
-  justify-content: center;
-  width: 100%;
-  bottom: 50px;
-  gap: 5px;
-}
-.homepage-banner .homepage-banner-carousel .owl-dots .owl-dot span {
-  margin: 0;
-  width: 13px;
-}
-.homepage-banner .homepage-banner-carousel .owl-dots .owl-dot span:hover {
-  background: #F13B26;
-}
-.homepage-banner .homepage-banner-carousel .owl-dots .owl-dot.active span {
-  width: 25px;
 }
 
 .success-section {
@@ -792,13 +868,15 @@ header .hdr-mob-area {
   max-width: 60px;
   height: auto;
 }
-.upcoming-match-section .match-area .middle-area .a, .upcoming-match-section .match-area .middle-area .c {
+.upcoming-match-section .match-area .middle-area .a,
+.upcoming-match-section .match-area .middle-area .c {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px;
 }
-.upcoming-match-section .match-area .middle-area .a h6, .upcoming-match-section .match-area .middle-area .c h6 {
+.upcoming-match-section .match-area .middle-area .a h6,
+.upcoming-match-section .match-area .middle-area .c h6 {
   font-size: 15px;
   text-transform: uppercase;
   margin: 0;
@@ -909,12 +987,6 @@ header .hdr-mob-area {
 .match-highlights-section .heading-area {
   text-align: start;
 }
-.match-highlights-section .match-carousel-nav {
-  margin: 0;
-}
-.match-highlights-section .owl-carousel {
-  margin-top: 30px;
-}
 .match-highlights-section .owl-nav {
   opacity: 0;
   visibility: hidden;
@@ -995,63 +1067,6 @@ header .hdr-mob-area {
 }
 .featured-venues-section .content-box-main .location i {
   margin-right: 10px;
-}
-
-.xflag-location h2 {
-  text-transform: uppercase;
-  color: #231F20;
-  margin-bottom: 40px;
-}
-.xflag-location .location-box {
-  position: relative;
-  border-radius: 10px;
-  overflow: hidden;
-  text-align: center;
-}
-.xflag-location .location-box .image-area {
-  position: relative;
-  z-index: 1;
-}
-.xflag-location .location-box .image-area img {
-  width: 100%;
-}
-.xflag-location .location-box .image-area::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(240, 0, 0, 0.82) 100%);
-}
-.xflag-location .location-box .content-area {
-  position: absolute;
-  bottom: 10px;
-  left: 0;
-  padding: 15px;
-  width: 100%;
-  z-index: 2;
-  text-align: center;
-}
-.xflag-location .location-box .content-area h4 {
-  font-size: 20px;
-  color: #fff;
-  text-transform: uppercase;
-  font-family: "Inter", sans-serif;
-  font-weight: 700;
-  margin-bottom: 4px;
-}
-.xflag-location .location-box .content-area p {
-  font-size: 16px;
-  color: #fff;
-  margin-bottom: 2px;
-}
-.xflag-location .location-box .content-area a {
-  color: #fff;
-  font-size: 15px;
-  text-decoration: underline;
-  text-transform: capitalize;
-  font-weight: 600;
 }
 
 .scoreboard-section {
@@ -1244,7 +1259,6 @@ header .hdr-mob-area {
 }
 .sponsors-section .sponsors-carousel {
   margin: 40px 0;
-  display: block !important;
 }
 .sponsors-section .sponsors-carousel .image-area {
   border: 1px solid rgba(0, 0, 0, 0.07);
@@ -1253,13 +1267,10 @@ header .hdr-mob-area {
   text-align: center;
 }
 .sponsors-section .sponsors-carousel .image-area img {
-  display: block;
   width: auto;
   height: 100px;
-  -o-object-fit: contain;
-     object-fit: contain;
-  -o-object-position: center center;
-     object-position: center center;
+  object-fit: contain;
+  object-position: center center;
   margin: auto;
 }
 
@@ -1359,8 +1370,7 @@ header .hdr-mob-area {
 .testimonials-section .testimonial-wrap .testimonial-item .author-area .lf img {
   width: 100%;
   height: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
+  object-fit: cover;
 }
 .testimonials-section .testimonial-wrap .testimonial-item .author-area .rt h5 {
   font-family: "Inter", sans-serif;
@@ -1385,7 +1395,8 @@ header .hdr-mob-area {
   font-size: 16px;
   text-transform: uppercase;
 }
-.table tr th img, .table tr th a {
+.table tr th img,
+.table tr th a {
   border: 0;
   box-shadow: none;
 }
@@ -1505,10 +1516,8 @@ header .hdr-mob-area {
 .inner-banner-section .image-area img {
   width: 100%;
   height: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
-  -o-object-position: center center;
-     object-position: center center;
+  object-fit: cover;
+  object-position: center center;
 }
 .inner-banner-section h1 {
   color: #fff;
@@ -1554,12 +1563,6 @@ header .hdr-mob-area {
 .form-select:focus {
   border-color: #312D23;
   box-shadow: none;
-}
-
-.form-control::-moz-placeholder {
-  color: rgba(255, 255, 255, 0.6);
-  opacity: 1;
-  font-size: 1rem;
 }
 
 .form-control::placeholder {
@@ -1636,10 +1639,8 @@ header .hdr-mob-area {
   width: auto;
   max-height: 100px;
   max-width: 120px;
-  -o-object-fit: contain;
-     object-fit: contain;
-  -o-object-position: center center;
-     object-position: center center;
+  object-fit: contain;
+  object-position: center center;
   margin: auto;
 }
 .sponsor-page-logo-section .sponsors-carousel .item h5 {
@@ -1712,10 +1713,6 @@ header .hdr-mob-area {
   color: #000;
   box-shadow: none;
   transition: 0.3s;
-}
-.sponsorship-section .form-area .form-control::-moz-placeholder {
-  color: rgba(0, 0, 0, 0.85);
-  font-size: 14px;
 }
 .sponsorship-section .form-area .form-control::placeholder {
   color: rgba(0, 0, 0, 0.85);
@@ -1960,7 +1957,8 @@ table.states-table tr th {
   color: #fff;
   vertical-align: middle;
 }
-table.states-table tr th a, table.states-table tr th img {
+table.states-table tr th a,
+table.states-table tr th img {
   display: inline-flex;
   margin-left: 2px;
 }
@@ -2108,9 +2106,7 @@ div > .table-wrap:nth-last-child(1) {
   min-width: 150px;
   border-radius: 6px;
   min-height: 48px;
-  -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
+  appearance: none;
   background: url(../images/select-arrow.png) right 15px center no-repeat #222;
   background-size: 12px 8px;
   padding-right: 40px;
@@ -2145,9 +2141,6 @@ div > .table-wrap:nth-last-child(1) {
   z-index: 1;
   border: 1px solid rgba(0, 0, 0, 0.1);
   min-height: 48px;
-}
-.schedules-section .top-part .search-bar .input-group input::-moz-placeholder {
-  color: rgba(0, 0, 0, 0.6);
 }
 .schedules-section .top-part .search-bar .input-group input::placeholder {
   color: rgba(0, 0, 0, 0.6);
@@ -2278,14 +2271,18 @@ div > .table-wrap:nth-last-child(1) {
 .schedules-section .schedule-body .right-side .state-carousel-area .state-carousel .item a:hover {
   color: #000;
 }
-.schedules-section .schedule-body .right-side .state-carousel-area .owl-carousel .owl-nav button.owl-next, .schedules-section .schedule-body .right-side .state-carousel-area .owl-carousel .owl-nav button.owl-prev, .schedules-section .schedule-body .right-side .state-carousel-area .owl-carousel button.owl-dot {
+.schedules-section .schedule-body .right-side .state-carousel-area .owl-carousel .owl-nav button.owl-next,
+.schedules-section .schedule-body .right-side .state-carousel-area .owl-carousel .owl-nav button.owl-prev,
+.schedules-section .schedule-body .right-side .state-carousel-area .owl-carousel button.owl-dot {
   width: 35px;
   border-radius: 0;
   height: 100%;
   border-radius: 5px;
   background-color: rgba(53, 53, 53, 0.8) !important;
 }
-.schedules-section .schedule-body .right-side .state-carousel-area .owl-carousel .owl-nav button.owl-next i, .schedules-section .schedule-body .right-side .state-carousel-area .owl-carousel .owl-nav button.owl-prev i, .schedules-section .schedule-body .right-side .state-carousel-area .owl-carousel button.owl-dot i {
+.schedules-section .schedule-body .right-side .state-carousel-area .owl-carousel .owl-nav button.owl-next i,
+.schedules-section .schedule-body .right-side .state-carousel-area .owl-carousel .owl-nav button.owl-prev i,
+.schedules-section .schedule-body .right-side .state-carousel-area .owl-carousel button.owl-dot i {
   color: #fff;
 }
 .schedules-section .schedule-body .right-side .state-carousel-area .owl-carousel .owl-nav button:hover {
@@ -2348,7 +2345,7 @@ div > .table-wrap:nth-last-child(1) {
 }
 .x-states-section .seasons-team-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 15px;
 }
 .x-states-section .seasons-team-list li {
@@ -2376,10 +2373,8 @@ div > .table-wrap:nth-last-child(1) {
   height: 100%;
   max-width: 100px;
   max-height: 80px;
-  -o-object-fit: contain;
-     object-fit: contain;
-  -o-object-position: center center;
-     object-position: center center;
+  object-fit: contain;
+  object-position: center center;
 }
 .x-states-section .seasons-team-list li .rt {
   display: flex;
@@ -2582,7 +2577,8 @@ footer .copyright-area ul li a:hover {
   html {
     font-size: 16px;
   }
-  p, body {
+  p,
+  body {
     font-size: 1.125rem;
   }
 }
@@ -2742,7 +2738,10 @@ footer .copyright-area ul li a:hover {
   header #mobileMenu .offcanvas-body .social ul li a:hover {
     color: #F13B26;
   }
-  .social-icon, .header-btn-col, .search-bar, .flagmag-button {
+  .social-icon,
+  .header-btn-col,
+  .search-bar,
+  .flagmag-button {
     display: none !important;
   }
   ul.hdr-mob-area {
@@ -2820,10 +2819,17 @@ footer .copyright-area ul li a:hover {
   }
 }
 @media all and (max-width: 767px) {
+  .homepage-banner .owl-dots {
+    bottom: 5px;
+  }
+  .homepage-banner .banner-section .banner-area {
+    padding: 0 10px 30px;
+  }
   .container {
     max-width: 100%;
   }
-  h1, h2 {
+  h1,
+  h2 {
     font-size: 2.2rem;
     font-weight: 400;
   }
@@ -2859,6 +2865,13 @@ footer .copyright-area ul li a:hover {
   .table-navigation ul li.active a::after {
     bottom: -8px;
   }
+  .header .top-header .logo {
+    flex: 0 0 100%;
+    justify-content: center;
+  }
+  .header .top-header .right-area {
+    flex: 0 0 100%;
+  }
 }
 @media only screen and (max-width: 575px) {
   .section-padding {
@@ -2871,7 +2884,8 @@ footer .copyright-area ul li a:hover {
   .section-padding-bottom {
     padding-bottom: 3.85rem;
   }
-  h1 br, h2 br {
+  h1 br,
+  h2 br {
     display: none;
   }
   p {
@@ -2883,12 +2897,34 @@ footer .copyright-area ul li a:hover {
   .heading-area {
     text-align: center !important;
   }
-  .homepage-banner .banner-section .banner-area {
+  .banner-section {
+    min-height: auto;
+    padding: 0;
+  }
+  .banner-section > .image-area {
+    display: none !important;
+  }
+  .banner-section .container-fluid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0px;
+  }
+  .banner-section .container-fluid .image-area {
+    display: block !important;
+    position: relative;
+  }
+  .banner-section .banner-area {
+    width: 100%;
     text-align: center;
+    padding: 0 10px 30px;
+    gap: 0;
     justify-content: center;
     align-items: center;
   }
-  .homepage-banner .banner-section .banner-area h2 {
+  .banner-section .banner-area h1 {
     font-size: 3rem;
   }
   .strip-banner-section .image-area {
@@ -2898,10 +2934,8 @@ footer .copyright-area ul li a:hover {
     height: 100%;
     width: auto;
     max-width: 100%;
-    -o-object-fit: cover;
-       object-fit: cover;
-    -o-object-position: center center;
-       object-position: center center;
+    object-fit: cover;
+    object-position: center center;
   }
   .featured-venues-section .content-box-main {
     padding: 20px 25px;
@@ -3077,242 +3111,4 @@ footer .copyright-area ul li a:hover {
     width: 100%;
     flex: 0 0 100%;
   }
-}
-
-/* ===== LOCATIONS PAGE OVERRIDES ===== */
-.location-search-section {
-  background-color: #F5F5F5;
-  padding: 40px 0;
-}
-.location-search-section .location-area h4 {
-  color: #231F20;
-  font-size: 1.1rem;
-  font-weight: 600;
-  font-family: "Inter", sans-serif;
-  margin-bottom: 14px;
-  text-transform: capitalize;
-}
-.location-search-section .input-group {
-  display: flex;
-  align-items: stretch;
-  gap: 0;
-}
-.location-search-section .form-control {
-  background-color: #ffffff;
-  border: 1px solid #d0d0d0;
-  color: #231F20;
-  border-radius: 4px 0 0 4px;
-  min-height: 52px;
-}
-.location-search-section .form-control::placeholder {
-  color: #aaa;
-}
-.location-search-section .form-control:focus {
-  background-color: #ffffff;
-  color: #231F20;
-  border-color: #c0c0c0;
-  box-shadow: none;
-}
-.location-search-section .btn-primary {
-  border-radius: 0 4px 4px 0;
-  min-height: 52px;
-  padding: 0 24px;
-  font-family: "Inter", sans-serif;
-  font-weight: 700;
-  letter-spacing: 1px;
-  font-size: 15px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.xflag-location {
-  background-color: #ffffff;
-}
-.xflag-location h2 {
-  color: #231F20;
-}
-/*# sourceMappingURL=style.css.map */
-
-/* ===== LOCATION DETAILS PAGE ===== */
-.location-gallery {
-  background-color: #ffffff;
-}
-.location-gallery-title {
-  color: #231F20;
-  text-transform: uppercase;
-  font-family: "Inter", sans-serif;
-}
-.gallery-box {
-  border-radius: 10px;
-  overflow: hidden;
-  position: relative;
-}
-.gallery-box a {
-  display: block;
-  width: 100%;
-}
-.gallery-box img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.3s ease;
-}
-.gallery-box:hover img {
-  transform: scale(1.05);
-}
-/* Plain text nodes inside contact/facilities list items */
-.contactus-section .contact-area ul li {
-  color: #231F20;
-  align-items: center;
-}
-/* White text for numbers (01, 02, 03...) inside red circles */
-.contactus-section .contact-area ul li span {
-  color: #fff;
-}
-.contactus-section .contact-area ul li b.facility-text {
-  color: #231F20;
-  font-size: 16px;
-  font-weight: 600;
-  font-family: "Inter", sans-serif;
-  flex: 1;
-  line-height: 1.3;
-}
-/* Reduce padding so items have more room */
-.contactus-section .contact-area-wrap {
-  padding: 0 10px;
-}
-
-/* ===== SCHEDULES PAGE ===== */
-.schedules-section {
-  background-color: #fff;
-}
-.schedules-section .schedule-body {
-  background-color: #fff;
-  border: 1px solid rgba(0,0,0,0.1);
-  border-radius: 10px;
-  overflow: hidden;
-}
-.schedules-section .schedule-body .right-side table {
-  background-color: #fff;
-}
-.schedules-section .schedule-body .right-side table thead tr th {
-  background-color: rgba(245,245,245,1);
-  color: #231F20;
-  font-size: 13px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  border: 0;
-  padding: 12px 12px;
-}
-.schedules-section .schedule-body .right-side table tbody tr td {
-  border-color: rgba(0,0,0,0.06);
-  color: #231F20;
-}
-.schedules-section .schedule-body .right-side table tbody tr:hover {
-  background-color: rgba(241,59,38,0.04);
-}
-.schedules-section .left-side ul li a {
-  transition: color 0.2s;
-}
-.schedules-section .left-side ul li a:hover {
-  color: #F13B26 !important;
-}
-/* ===== RESULTS TICKER ===== */
-.results-ticker {
-  background: #1a1718;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  height: 36px;
-  overflow: hidden;
-  border-bottom: 2px solid #F13B26;
-  width: 100%;
-  position: relative;
-  z-index: 10000;
-}
-
-.results-ticker .ticker-label {
-  flex-shrink: 0;
-  padding: 0 18px;
-  font-weight: 700;
-  font-size: 12px;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  color: #F13B26;
-  background: #1a1718;
-  border-right: 2px solid #F13B26;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  white-space: nowrap;
-}
-
-.results-ticker .ticker-viewport {
-  flex: 1;
-  overflow: hidden;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  mask-image: linear-gradient(to right, transparent 0%, black 3%, black 97%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 3%, black 97%, transparent 100%);
-}
-
-.results-ticker .ticker-track {
-  display: inline-flex;
-  width: max-content;
-  white-space: nowrap;
-  animation: ticker-scroll linear infinite;
-  will-change: transform;
-}
-
-.results-ticker .ticker-item {
-  display: inline-flex;
-  flex-shrink: 0;
-  align-items: center;
-  padding: 0 12px;
-  font-size: 13px;
-  font-weight: 500;
-  gap: 6px;
-}
-
-.results-ticker .ticker-week {
-  font-weight: 700;
-  font-size: 10px;
-  color: #888;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  background: #333;
-  padding: 1px 5px;
-  border-radius: 3px;
-  margin-right: 2px;
-}
-
-.results-ticker .ticker-team {
-  color: #fff;
-}
-
-.results-ticker .ticker-score {
-  font-weight: 700;
-  color: #ccc;
-}
-
-.results-ticker .ticker-vs {
-  font-weight: 700;
-  font-size: 11px;
-  color: #F13B26;
-  margin: 0 2px;
-}
-
-.results-ticker .ticker-sep {
-  margin: 0 16px;
-  color: #444;
-  font-size: 14px;
-}
-
-@keyframes ticker-scroll {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
 }

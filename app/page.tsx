@@ -33,6 +33,9 @@ export default async function Home() {
                   <img src={banner.image} alt={banner.title} />
                 </div>
                 <div className="container-fluid">
+                    <div className="image-area for-mobile d-none">
+                    <img src={banner.image} alt={banner.title} />
+                    </div>
                   <div className="banner-area">
                     <h2>{banner.title}</h2>
                     <h5>{banner.subtitle}</h5>

@@ -573,6 +573,93 @@ input {
 
 
 
+/*	------ RESULTS TICKER ------  */
+
+.results-ticker {
+	display: flex;
+	align-items: stretch;
+	width: 100%;
+	height: 42px;
+	background: #1a1a1a;
+	overflow: hidden;
+	border-bottom: 2px solid #2a2a2a;
+
+	.ticker-label {
+		flex-shrink: 0;
+		padding: 0 20px;
+		font-size: 12px;
+		font-weight: 800;
+		text-transform: uppercase;
+		letter-spacing: 1.5px;
+		color: #fff;
+		background: $primary-color;
+		display: flex;
+		align-items: center;
+		white-space: nowrap;
+	}
+
+	.ticker-viewport {
+		flex: 1;
+		overflow: hidden;
+		display: flex;
+		align-items: center;
+	}
+
+	.ticker-track {
+		display: flex;
+		align-items: center;
+		white-space: nowrap;
+		flex-shrink: 0;
+		animation: ticker-scroll linear infinite;
+		will-change: transform;
+	}
+
+	.ticker-item {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		font-size: 14px;
+		color: #ccc;
+		padding: 0 12px;
+		line-height: 1;
+	}
+
+	.ticker-week {
+		color: $primary-color;
+		font-weight: 800;
+		font-size: 13px;
+	}
+
+	.ticker-team {
+		color: #fff;
+		font-weight: 600;
+		font-size: 14px;
+	}
+
+	.ticker-score {
+		color: #fff;
+		font-weight: 800;
+		font-size: 15px;
+	}
+
+	.ticker-vs {
+		color: #888;
+		font-size: 11px;
+		font-weight: 600;
+	}
+
+	.ticker-sep {
+		color: #555;
+		font-size: 16px;
+		margin: 0 4px;
+	}
+}
+
+@keyframes ticker-scroll {
+	0%   { transform: translateX(0); }
+	100% { transform: translateX(-50%); }
+}
+
 /*	------ HEADER PART ------  */
 
 
@@ -781,6 +868,10 @@ header {
 
 
 // ---- BANNER SECTION-----------------
+
+.homepage-banner{
+	.owl-dots {margin: 0px !important; justify-content: center; position: absolute; bottom: 10px; left: 0; right: 0;}
+}
 
 .banner-section {
 	min-height: 100vh;
@@ -3552,6 +3643,11 @@ footer {
 
 @media all and (max-width: 767px) {
 
+	.homepage-banner{
+		.owl-dots {bottom: 5px;}
+		.banner-section .banner-area {padding: 0 10px 30px;}
+	}
+
 	.container {
 		max-width: 100%;
 	}
@@ -3603,6 +3699,15 @@ footer {
 		}
 	}
 
+	.header{
+		.top-header{
+			.logo {flex:0 0 100%; justify-content: center;}
+			.right-area { flex:0 0 100%;}
+		}
+	}
+
+
+
 }
 
 @media only screen and (max-width: 575px) {
@@ -3639,13 +3744,19 @@ footer {
 		text-align: center !important;
 	}
 
-	.banner-section .banner-area {
-		text-align: center;
+	.banner-section { min-height: auto; padding:0;
+		& > .image-area {display: none !important;}
+		.container-fluid{ display:flex; flex-direction: column; gap: 20px; align-items: center; justify-content: center; padding: 0 0px;
+			.image-area{display:block !important; position: relative;}
+		}
+		.banner-area { width: 100%; 
+		text-align: center; padding: 0 10px 30px; gap:0; 
 		justify-content: center;
 		align-items: center;
 
-		h1 {
-			font-size: 3rem;
+			h1 {
+				font-size: 3rem;
+			}
 		}
 	}
 
@@ -3666,10 +3777,7 @@ footer {
 	.featured-venues-section .content-box-main {
 		padding: 20px 25px;
 
-		ul li .time {
-			font-size: 18px;
-		}
-
+		ul li .time {font-size: 18px;}
 		.location {
 			font-size: 15px;
 		}
