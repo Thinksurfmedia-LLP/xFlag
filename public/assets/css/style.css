@@ -683,6 +683,67 @@ header .hdr-mob-area {
   color: #16181C;
 }
 
+.xflag-location {
+  background: #fff;
+}
+.xflag-location h2 {
+  text-transform: uppercase;
+  color: #231F20;
+  margin-bottom: 40px;
+}
+.xflag-location .location-box {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  text-align: center;
+}
+.xflag-location .location-box .image-area {
+  position: relative;
+  z-index: 1;
+}
+.xflag-location .location-box .image-area img {
+  width: 100%;
+  display: block;
+}
+.xflag-location .location-box .image-area::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(240, 0, 0, 0.82) 100%);
+}
+.xflag-location .location-box .content-area {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  padding: 15px;
+  width: 100%;
+  text-align: center;
+  z-index: 2;
+}
+.xflag-location .location-box .content-area h4 {
+  font-size: 20px;
+  color: #fff;
+  text-transform: uppercase;
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.xflag-location .location-box .content-area p {
+  font-size: 16px;
+  color: #fff;
+  margin-bottom: 2px;
+}
+.xflag-location .location-box .content-area a {
+  color: #fff;
+  font-size: 15px;
+  text-decoration: underline;
+  text-transform: capitalize;
+  font-weight: 600;
+}
+
 .homepage-banner .owl-dots {
   margin: 0px !important;
   justify-content: center;

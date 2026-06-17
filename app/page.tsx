@@ -244,7 +244,7 @@ export default async function Home() {
                             <div className="content-area">
                               <h4>{v.name.toUpperCase()}</h4>
                               <p>{v.cityName}, {v.stateAbbr}</p>
-                              <Link href={`/locations/${v._id}`}>details</Link>
+                              {/* <Link href={`/locations/${v._id}`}>details</Link> */}
                             </div>
                           </div>
                         </div>

@@ -35,8 +35,8 @@ export default function ContactUs() {
                             <div className="contact-area">
                                 <h2>contact info</h2>
                                 <ul>
-                                    <li><span><i className="fa-solid fa-phone"></i></span> <a href="#">855 - 3524 - 411</a></li>
-                                    <li><span><i className="fa-solid fa-envelope"></i></span> <a href="#">mzimmerman@xflagfootball.com</a></li>
+                                    <li><span><i className="fa-solid fa-phone"></i></span> <a href="tel:8553524411">855 - 3524 - 411</a></li>
+                                    <li><span><i className="fa-solid fa-envelope"></i></span> <a href="mailto:mzimmerman@xflagfootball.com">mzimmerman@xflagfootball.com</a></li>
                                 </ul>
                             </div>
                         </div>

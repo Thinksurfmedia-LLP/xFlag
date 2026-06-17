@@ -55,7 +55,7 @@ export default async function Locations() {
                   <div className="content-area">
                     <h4>{venue.name.toUpperCase()}</h4>
                     <p>{venue.cityName}, {venue.stateAbbr}</p>
-                    <Link href={`/locations/${venue._id}`}>Details</Link>
+                    {/* <Link href={`/locations/${venue._id}`}>Details</Link> */}
                   </div>
                 </div>
               </div>
