@@ -33,6 +33,17 @@ export default async function Header() {
                       </div>
 
                       {/* FOR MOBILE */}
+
+                      <ul className="hdr-mob-area mob-social">
+                          {socialLinks?.map(social => (
+                            <li key={social.id}>
+                              <Link href={social.url}>
+                                <i className={social.iconClass}></i>
+                              </Link>
+                            </li>
+                          ))}
+                      </ul>
+
                       <ul className="hdr-mob-area">
                           <li><Link href="#" data-bs-toggle="modal" data-bs-target="#searchModal"><i className="fas fa-search"></i></Link></li>
                           <li><Link href="#"><i className="fas fa-user"></i></Link></li>

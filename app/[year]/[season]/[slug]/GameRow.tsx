@@ -19,17 +19,21 @@ export default function GameRow({ game, year, season, slug, showDate }: any) {
 
   return (
     <tr onClick={() => router.push(url)} style={{ cursor: 'pointer' }}>
-      {showDate && <td style={{ color: '#888', fontSize: '12px', whiteSpace: 'nowrap' }}>{dateLabel}</td>}
+      {showDate && <td style={{ color: '#f13b26', fontSize: '12px', fontWeight: '600', whiteSpace: 'nowrap' }}>{dateLabel}</td>}
       <td>{game.teamA?.score !== undefined ? game.teamA.score : '-'}</td>
       <td>
-        <img src={getLogoUrl(game.teamA?.logo)} alt={game.teamA?.name} style={{ width: 22, height: 22, objectFit: 'contain', marginRight: 4, verticalAlign: 'middle' }} />
-        {game.teamA?.name}
+        <span>
+          <img src={getLogoUrl(game.teamA?.logo)} alt={game.teamA?.name} style={{ width: 22, height: 22, objectFit: 'contain', marginRight: 4, verticalAlign: 'middle' }} />
+          <span>{game.teamA?.name}</span>
+        </span>
       </td>
       <td><span className="vs">vs</span></td>
       <td>{game.teamB?.score !== undefined ? game.teamB.score : '-'}</td>
       <td>
-        <img src={getLogoUrl(game.teamB?.logo)} alt={game.teamB?.name} style={{ width: 22, height: 22, objectFit: 'contain', marginRight: 4, verticalAlign: 'middle' }} />
-        {game.teamB?.name}
+        <span>
+          <img src={getLogoUrl(game.teamB?.logo)} alt={game.teamB?.name} style={{ width: 22, height: 22, objectFit: 'contain', marginRight: 4, verticalAlign: 'middle' }} />
+          <span>{game.teamB?.name}</span>
+        </span>
       </td>
     </tr>
   );

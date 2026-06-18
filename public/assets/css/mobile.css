@@ -215,19 +215,6 @@ th, td {
     padding: 2rem 0;
   }
 
-  .x-states-section .years-item {
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 8px;
-  }
-
-  .x-states-section .seasons-item {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 8px;
-  }
-
-  .x-states-section .seasons-team-list {
-    grid-template-columns: 1fr !important;
-  }
 
   .x-states-section .banner-area {
     flex-direction: column;
@@ -463,10 +450,7 @@ th, td {
     padding-bottom: 1.5rem;
   }
 
-  /* ── XSTATS ── */
-  .x-states-section .years-item {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
+
 
   .design1 {
     font-size: 1.5rem;
@@ -525,11 +509,7 @@ th, td {
     font-size: 0.95rem;
   }
 
-  /* Footer nav */
-  footer .top-footer .nav-area h4 {
-    font-size: 1rem;
-    margin-bottom: 10px;
-  }
+
 
   footer .top-footer .nav-area ul li {
     font-size: 14px;
@@ -601,20 +581,7 @@ th, td {
 
 
 
-  /* XStats years */
-  .x-states-section .years-item {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
 
-  .x-states-section .seasons-item {
-    grid-template-columns: 1fr !important;
-  }
-
-  /* Location boxes stack */
-  .xflag-location .col-sm-6 {
-    width: 100%;
-    flex: 0 0 100%;
-  }
 
   /* Team heading nav full width */
   .team-point-section .team-heading-nav {

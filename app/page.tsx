@@ -234,7 +234,7 @@ export default async function Home() {
                   const getLocationImage = (v: any) =>
                     cmsMap.get((v.name || '').toLowerCase().trim())?.image || '/assets/images/location-img.jpg';
                   return (
-                    <div className="row g-4">
+                    <div className="row g-2 g-lg-4">
                       {featuredVenues.length > 0 ? featuredVenues.map((v: any, i: number) => (
                         <div key={i} className="col-sm-6 col-xl-3">
                           <div className="location-box">
@@ -254,7 +254,7 @@ export default async function Home() {
                     </div>
                   );
                 })()}
-                <div className="text-center mt-5">
+                <div className="text-center mt-3 mt-xl-5">
                     <Link href={hp.featuredLocations.ctaLink} className="btn btn-primary">{hp.featuredLocations.ctaText}</Link>
                 </div>
             </div>

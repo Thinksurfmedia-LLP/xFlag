@@ -74,9 +74,9 @@ function initCarousels() {
             autoplay: true,
             autoplayTimeout: 3000,
             responsive:{
-                0:{ items:2 },
+                0:{ items:2, margin: 10, },
                 600:{ items:3 },
-                1000:{ items:4 },
+                1000:{ items:4, margin: 30, },
                 1200:{ items:5 }
             }
         });

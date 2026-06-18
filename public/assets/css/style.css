@@ -136,7 +136,7 @@ p {
 }
 
 .btn-primary:hover {
-  background-color: transparent;
+  background-color: #fff;
   color: #F13B26;
   border-color: #F13B26;
 }
@@ -284,16 +284,16 @@ ul.list2 li:before {
 }
 
 .section-padding {
-  padding-top: 6.25rem;
-  padding-bottom: 6.25rem;
+  padding-top: 3.25rem;
+  padding-bottom: 3.25rem;
 }
 
 .section-padding-top {
-  padding-top: 6.25rem;
+  padding-top: 3.25rem;
 }
 
 .section-padding-bottom {
-  padding-bottom: 6.25rem;
+  padding-bottom: 3.25rem;
 }
 
 .spacer {
@@ -808,6 +808,7 @@ header .hdr-mob-area {
   color: #fff;
   text-transform: uppercase;
   font-weight: 400;
+  font-family: "Inter", sans-serif;
 }
 
 .success-section {
@@ -816,7 +817,7 @@ header .hdr-mob-area {
 .success-section h2 {
   text-align: center;
   color: #fff;
-  margin-bottom: 70px;
+  margin-bottom: 40px;
   text-transform: uppercase;
   color: #231F20;
 }
@@ -824,7 +825,7 @@ header .hdr-mob-area {
   text-align: center;
 }
 .success-section .counter-area h3 {
-  font-size: 4.5rem;
+  font-size: 4rem;
   color: #F13B26;
   margin-bottom: 15px;
 }
@@ -832,7 +833,6 @@ header .hdr-mob-area {
   font-size: 1.5rem;
   color: #231F20;
   margin-bottom: 0;
-  font-family: "Anton", sans-serif;
 }
 
 .upcoming-match-section {
@@ -1321,7 +1321,7 @@ header .hdr-mob-area {
   text-transform: uppercase;
 }
 .sponsors-section .sponsors-carousel {
-  margin: 40px 0;
+  margin: 40px 0 0;
 }
 .sponsors-section .sponsors-carousel .image-area {
   border: 1px solid rgba(0, 0, 0, 0.07);
@@ -1556,7 +1556,7 @@ header .hdr-mob-area {
 
 .inner-banner-section {
   position: relative;
-  min-height: 130px;
+  min-height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2019,8 +2019,9 @@ header .hdr-mob-area {
   text-transform: uppercase;
   padding: 16px 40px;
   margin: 0;
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 500;
+  text-align: center;
 }
 
 table.states-table {
@@ -2044,6 +2045,9 @@ table.states-table tr th a,
 table.states-table tr th img {
   display: inline-flex;
   margin-left: 2px;
+}
+table.states-table tr td:nth-child(2) {
+  text-align: start;
 }
 
 div > .table-wrap:nth-last-child(1) {
@@ -2099,10 +2103,11 @@ div > .table-wrap:nth-last-child(1) {
 }
 
 .division-table-area {
-  padding: 30px;
+  padding: 0px;
   background: #fff;
 }
 .division-table-area .table-wrap {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
   border: 0;
 }
 .division-table-area .table-wrap h4 {
@@ -2113,6 +2118,9 @@ div > .table-wrap:nth-last-child(1) {
   color: #231F20;
   margin: 0 0 15px;
   padding: 0;
+}
+.division-table-area .table {
+  margin: 0;
 }
 .division-table-area .table tr > * {
   text-align: center;
@@ -2128,15 +2136,33 @@ div > .table-wrap:nth-last-child(1) {
 }
 .division-table-area .table tr > *:nth-child(1) {
   min-width: 150px;
+  text-align: start;
+  line-height: 1;
+  font-size: 14px;
+}
+.division-table-area .table tr > *:nth-child(1) a {
+  display: flex;
+  gap: 6px;
+  justify-content: start;
+  align-items: center;
+}
+.division-table-area .table tr > *:nth-child(1) a span {
+  flex: 1 0 0;
 }
 .division-table-area .table tr > *:nth-child(1) img {
-  max-width: 30px;
+  width: 30px;
+  flex: 0 0 30px;
   max-height: 25px;
   margin: auto;
+  -o-object-fit: contain;
+     object-fit: contain;
 }
 
 .game-table-section {
   background: rgb(231, 231, 231);
+}
+.game-table-section .game-table .table-wrap {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
 }
 .game-table-section .game-table h4 {
   background: #F13B26;
@@ -2151,11 +2177,37 @@ div > .table-wrap:nth-last-child(1) {
 .game-table-section .game-table .table {
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
+.game-table-section .game-table .table tr > *:nth-child(1) {
+  min-width: auto;
+}
+.game-table-section .game-table .table tr th:nth-child(3), .game-table-section .game-table .table tr th:nth-child(6) {
+  text-align: start;
+}
 .game-table-section .game-table .table tr > * {
   border: 0;
 }
+.game-table-section .game-table .table tr td:nth-child(3) span, .game-table-section .game-table .table tr td:nth-child(6) span {
+  display: flex;
+  gap: 6px;
+  justify-content: start;
+  align-items: center;
+  font-size: 12px;
+  line-height: 1;
+}
+.game-table-section .game-table .table tr td:nth-child(3) span img, .game-table-section .game-table .table tr td:nth-child(6) span img {
+  width: 30px;
+  height: 30px;
+  -o-object-fit: contain;
+     object-fit: contain;
+  margin-right: 0px;
+}
+.game-table-section .game-table .table tr td:nth-child(3) span span, .game-table-section .game-table .table tr td:nth-child(6) span span {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.7);
+  text-align: start;
+}
 .game-table-section .game-table .table tr th {
-  background: #ffffff;
+  background: #f0f0f0;
   color: #272727;
   font-weight: 500;
   font-size: 16px;
@@ -2298,6 +2350,21 @@ div > .table-wrap:nth-last-child(1) {
   padding: 14px 12px;
   color: #000;
 }
+.schedules-section .schedule-body .right-side table tr td:nth-child(1) {
+  line-height: 1;
+}
+.schedules-section .schedule-body .right-side table tr td:nth-child(1) span {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+.schedules-section .schedule-body .right-side table tr td:nth-child(1) br + span {
+  color: #bf4545;
+  font-size: 14px;
+  line-height: 1;
+  margin-top: 5px;
+  display: block;
+}
 .schedules-section .schedule-body .right-side table tr td {
   font-size: 14px;
 }
@@ -2309,6 +2376,7 @@ div > .table-wrap:nth-last-child(1) {
 }
 .schedules-section .schedule-body .right-side table tr td .a {
   display: inline-flex;
+  flex: 1 0 0;
   align-items: center;
   justify-content: center;
   gap: 10px;
@@ -2317,12 +2385,18 @@ div > .table-wrap:nth-last-child(1) {
   color: rgba(0, 0, 0, 0.7);
 }
 .schedules-section .schedule-body .right-side table tr td .a img {
-  max-width: 30px;
-  max-height: 30px;
+  width: 30px;
+  height: 30px;
+  -o-object-fit: contain;
+     object-fit: contain;
   margin-right: 0px;
 }
 .schedules-section .schedule-body .right-side table tr td .b {
   display: inline-flex;
+  flex: 0 0 auto;
+}
+.schedules-section .schedule-body .right-side table tr td .b span {
+  font-size: 20px !important;
 }
 .schedules-section .schedule-body .right-side table tr td .b .vs {
   width: 30px;
@@ -2433,7 +2507,7 @@ div > .table-wrap:nth-last-child(1) {
 }
 .x-states-section .seasons-team-list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 15px;
 }
 .x-states-section .seasons-team-list li {
@@ -2447,10 +2521,8 @@ div > .table-wrap:nth-last-child(1) {
   transition: 0.4s;
 }
 .x-states-section .seasons-team-list li .lf {
-  width: 140px;
-  height: 100px;
-  border-radius: 6px;
-  background-color: #4B4949;
+  width: 100px;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2459,8 +2531,6 @@ div > .table-wrap:nth-last-child(1) {
 .x-states-section .seasons-team-list li .lf img {
   width: 100%;
   height: 100%;
-  max-width: 100px;
-  max-height: 80px;
   -o-object-fit: contain;
      object-fit: contain;
   -o-object-position: center center;
@@ -2486,10 +2556,6 @@ div > .table-wrap:nth-last-child(1) {
 }
 .x-states-section .seasons-team-list li:hover {
   background-color: #F13B26;
-  transition: 0.4s;
-}
-.x-states-section .seasons-team-list li:hover .lf {
-  background-color: #AB2208;
   transition: 0.4s;
 }
 .x-states-section .banner-area {
@@ -2549,7 +2615,7 @@ footer .social-icon li a:hover i {
   color: #fff;
 }
 footer .top-footer {
-  padding: 6rem 0;
+  padding: 3.25rem 0;
 }
 footer .top-footer .logo-area {
   max-width: 350px;
@@ -2561,7 +2627,7 @@ footer .top-footer .logo-area > p {
   font-size: 1rem;
 }
 footer .top-footer .nav-area h4 {
-  font-size: 18px;
+  font-size: 24px;
   text-transform: uppercase;
   margin-bottom: 30px;
 }
@@ -2574,13 +2640,21 @@ footer .top-footer .nav-area ul li {
   font-size: 16px;
   color: rgb(255, 255, 255);
   display: flex;
+  flex-wrap: nowrap;
+  align-items: start;
+  flex-direction: row;
 }
 footer .top-footer .nav-area ul li i {
-  margin-right: 6px;
+  margin-right: 12px;
+  display: flex;
+  flex: 0 0 auto;
+  padding-top: 2px;
 }
 footer .top-footer .nav-area ul li a {
   color: rgb(255, 255, 255);
   display: flex;
+  word-break: break-all;
+  line-height: 1.1;
 }
 footer .top-footer .nav-area ul li a:hover {
   color: #000;
@@ -2913,7 +2987,23 @@ footer .copyright-area ul li a:hover {
     bottom: 5px;
   }
   .homepage-banner .banner-section .banner-area {
-    padding: 0 10px 30px;
+    padding: 0 20px 30px;
+  }
+  .homepage-banner .banner-section .banner-area h2 {
+    margin-bottom: 10px;
+  }
+  .homepage-banner .banner-section .banner-area h5 {
+    text-transform: capitalize;
+    font-size: 16px;
+  }
+  .sponsors-section .sponsors-carousel {
+    margin: 20px 0 0;
+  }
+  .sponsors-section .sponsors-carousel .image-area {
+    padding: 10px;
+  }
+  .diffrence-section .content-area .item-group {
+    margin-bottom: 0px;
   }
   .container {
     max-width: 100%;
@@ -2923,12 +3013,22 @@ footer .copyright-area ul li a:hover {
     font-size: 2.2rem;
     font-weight: 400;
   }
+  .header .top-header .right-area {
+    justify-content: space-between;
+    margin: 4px 0 8px;
+  }
   .breadcrumb-section ul {
     justify-content: center;
   }
   .inner-banner-section h1 {
     text-align: center;
     font-size: 1.45rem;
+  }
+  .success-section h2 {
+    margin-bottom: 25px;
+  }
+  .success-section .counter-area h3 {
+    margin-bottom: 0px;
   }
   .about-page-content .content-area {
     text-align: center;
@@ -2961,6 +3061,30 @@ footer .copyright-area ul li a:hover {
   }
   .header .top-header .right-area {
     flex: 0 0 100%;
+  }
+  .xflag-location h2 {
+    margin-bottom: 20px;
+  }
+  .xflag-location .col-sm-6 {
+    width: 50%;
+    flex: 0 0 50%;
+  }
+  .xflag-location .location-box .content-area {
+    bottom: 0;
+    padding: 15px 15px 6px;
+  }
+  .xflag-location .location-box .content-area h4 {
+    margin-bottom: 2px;
+    font-size: 17px;
+  }
+  .xflag-location .location-box .content-area p {
+    font-size: 13px;
+    margin-bottom: 0px;
+  }
+  /* Footer nav */
+  footer .top-footer .nav-area h4 {
+    font-size: 1rem;
+    margin-bottom: 10px;
   }
 }
 @media only screen and (max-width: 575px) {
@@ -3138,9 +3262,6 @@ footer .copyright-area ul li a:hover {
   footer .top-footer .logo-area p {
     font-size: 15px;
   }
-  footer .top-footer .nav-area h4 {
-    margin-bottom: 15px;
-  }
   footer .top-footer .nav-area ul {
     gap: 5px;
     margin: 0;
@@ -3164,15 +3285,26 @@ footer .copyright-area ul li a:hover {
     grid-template-columns: repeat(2, 1fr);
   }
   .x-states-section .seasons-team-list {
-    grid-template-columns: repeat(1, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+  .x-states-section .seasons-team-list li {
+    gap: 6px;
+    padding: 10px 5px;
   }
   .x-states-section .seasons-team-list li .lf {
-    width: 100px;
-    height: 80px;
+    width: 70px;
+    height: 50px;
   }
-  .x-states-section .seasons-team-list li .lf img {
-    max-width: 70px;
-    max-height: 50px;
+  .x-states-section .seasons-team-list li .rt h5 {
+    font-size: 15px;
+  }
+  .x-states-section .seasons-team-list li .rt span {
+    font-size: 13px;
+  }
+  .x-states-section .seasons-team-list li .rt span i {
+    margin-right: 2px;
+    font-size: 13px;
   }
   .x-states-section .banner-area .content-area h2 {
     font-size: 1.8rem;
@@ -3247,8 +3379,11 @@ footer .copyright-area ul li a:hover {
   .schedule-table tbody tr td:nth-child(1) br + span {
     color: #bf4545;
   }
+  .division-table-area .table tr th {
+    font-size: 14px;
+  }
   .schedules-section .schedule-body .right-side {
-    padding: 10px 0px !important;
+    padding: 6px 0px !important;
   }
   .schedules-section .schedule-body .right-side table tr td .main {
     gap: 15px;
@@ -3260,15 +3395,50 @@ footer .copyright-area ul li a:hover {
   .schedules-section .schedule-body .right-side table tr td .main .b span {
     font-size: 18px !important;
   }
+  .game-table-section .game-table .table tr th {
+    font-size: 14px;
+  }
+  .game-table-section .game-table .table tr td .vs {
+    width: 25px;
+    height: 25px;
+    font-size: 11px;
+    background: #f13b26;
+    color: #fff;
+    border: 0;
+  }
+  .game-table-section .game-table .table tr td:nth-child(3) span img, .game-table-section .game-table .table tr td:nth-child(6) span img {
+    margin: 0 !important;
+  }
+  .game-table-section .game-table .table tr td:nth-child(3) span span, .game-table-section .game-table .table tr td:nth-child(6) span span {
+    font-size: 12px;
+  }
+  table.states-table tr td:nth-child(2) {
+    display: block ruby;
+  }
+  table.states-table tr td:nth-child(2) img {
+    margin-right: 6px;
+  }
 }
 @media only screen and (max-width: 480px) {
   .sponsorship-section .form-area .col-6 {
     width: 100%;
     flex: 0 0 100%;
   }
+  .division-table-area .table tr > * {
+    padding: 10px 8px;
+  }
+  .team-point-section .container-fluid {
+    padding: 0 6px;
+  }
 }
 @media only screen and (max-width: 420px) {
   .contact-column {
+    width: 100%;
+    flex: 0 0 100%;
+  }
+}
+@media only screen and (max-width: 380px) {
+  .xflag-location .col-sm-6 {
     width: 100%;
     flex: 0 0 100%;
   }

@@ -44,12 +44,12 @@ export default async function Footer() {
                               ))}
 
                               {/* Contact column — dynamic */}
-                              <div className="col-xl-3 col-6 contact-column">
+                              <div className="col-xl col-6 contact-column">
                                   <div className="nav-area contact">
                                       <h4>Contact</h4>
                                       <ul>
-                                          <li><i><i className="fa-solid fa-phone"></i></i><Link href={`tel:${contactInfo?.phone}`}>{contactInfo?.phone}</Link></li>
-                                          <li><i><i className="fa-solid fa-envelope"></i></i><Link href={`mailto:${contactInfo?.email}`}>{contactInfo?.email}</Link></li>
+                                          <li><i className="fa-solid fa-phone"></i><Link href={`tel:${contactInfo?.phone}`}>{contactInfo?.phone}</Link></li>
+                                          <li><i className="fa-solid fa-envelope"></i><Link href={`mailto:${contactInfo?.email}`}>{contactInfo?.email}</Link></li>
                                           {/* <li><i><i className="fa-solid fa-location-dot"></i></i> {contactInfo?.address}</li> */}
                                       </ul>
                                   </div>
@@ -63,10 +63,10 @@ export default async function Footer() {
           <div className="copyright-area">
               <div className="container">
                   <div className="row align-items-center justify-content-between">
-                      <div className="col-lg-auto mb-2 mb-lg-0">
-                          <p>All Rights Reserved © 2026</p>
+                      <div className="col-md-auto">
+                          <p>All Rights Reserved © {new Date().getFullYear()}</p>
                       </div>
-                      <div className="col-lg-auto">
+                      <div className="col-md-auto">
                           <ul>
                               <li><Link href="#">privacy policy</Link></li>
                               <li><Link href="#">terms &amp; conditions</Link></li>

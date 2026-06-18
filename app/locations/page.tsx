@@ -44,7 +44,7 @@ export default async function Locations() {
 
       <section className="xflag-location section-padding">
         <div className="container">
-          <h2>XFLAG LOCATIONS</h2>
+          {/* <h2>XFLAG LOCATIONS</h2> */}
           <div className="row g-4">
             {venues.length > 0 ? venues.map((venue: any, i: number) => (
               <div key={i} className="col-sm-6 col-xl-3">

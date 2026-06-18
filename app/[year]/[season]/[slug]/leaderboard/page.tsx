@@ -50,7 +50,16 @@ export default async function LeagueLeaderboardPage({
       <section className="team-point-section section-padding">
         <div className="container-fluid">
           <div className="text-center">
-            <h2><span>{seasonName}</span> {leagueName} — Statistical Leaders</h2>
+            <h2 className='mb-3'><span>{seasonName}</span> {leagueName} — Statistical Leaders</h2>
+          </div>
+
+          <div className='text-center mb-3 w-100'>
+            <Link
+              href={`/${year}/${season}/${slug}`}
+              style={{margin: 'auto', display: 'inline-block'}}
+            >
+              <img style={{ maxWidth: '40px' }} src="/assets/images/back-icon.png" alt="" />
+            </Link>
           </div>
 
           <LeaderboardClient
