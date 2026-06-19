@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { getLiveSchedules, getLiveLeagues, getLiveOrganization, getLiveSeasons, getLiveVenues } from '@/lib/flagmag';
 import SchedulesClient from './SchedulesClient';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Schedules() {
   const [games, leagues, org, seasons, venues] = await Promise.all([getLiveSchedules(), getLiveLeagues(), getLiveOrganization(), getLiveSeasons(), getLiveVenues()]);
   const orgTimezone = org?.timezone || "America/Los_Angeles";

@@ -9,9 +9,9 @@ if (rawOrgSlug.includes('/organizations/')) {
 }
 const ORG_SLUG = rawOrgSlug;
 
-// 2-minute stale-while-revalidate: first request hits API and caches,
-// subsequent requests within 120s are served from cache instantly.
-const CACHE = { next: { revalidate: 120 } } as const;
+// 30-second data cache: keeps the flagmag API from being hammered on every
+// page load, while ensuring schedule changes appear within ~30 seconds.
+const CACHE = { next: { revalidate: 30 } } as const;
 
 export async function getLiveVenues() {
   try {
