@@ -30,12 +30,13 @@ export default async function PlayerStatsPage({
     }
   };
 
-  // Run leagues lookup and all three stat fetches in parallel
-  const [leagues, passingStats, receivingStats, rushingStats] = await Promise.all([
+  // Run leagues lookup and all four stat fetches in parallel
+  const [leagues, passingStats, receivingStats, rushingStats, defensiveStats] = await Promise.all([
     getLiveLeagues(),
     fetchStats('passing'),
     fetchStats('receiving'),
     fetchStats('rushing'),
+    fetchStats('defensive'),
   ]);
 
   const league = leagues.find((l: any) => l.slug === slug);
@@ -102,7 +103,7 @@ export default async function PlayerStatsPage({
                 </thead> 
                 <tbody>
                   {passingStats.length > 0 ? passingStats.map((p: any, i: number) => (
-                    <tr key={p.playerId || i}>
+                    <tr key={`${p.playerId || i}-${p.teamName || i}`}>
                       <td>{i + 1}</td>
                       <td>
                         <img src={getPlayerPhoto(p.playerPhoto)} alt={p.playerName} style={{width: '30px', height: '30px', borderRadius: '50%', objectFit: 'cover'}} /> 
@@ -144,7 +145,7 @@ export default async function PlayerStatsPage({
                 </thead> 
                 <tbody>
                   {receivingStats.length > 0 ? receivingStats.map((p: any, i: number) => (
-                    <tr key={p.playerId || i}>
+                    <tr key={`${p.playerId || i}-${p.teamName || i}`}>
                       <td>{i + 1}</td>
                       <td>
                         <img src={getPlayerPhoto(p.playerPhoto)} alt={p.playerName} style={{width: '30px', height: '30px', borderRadius: '50%', objectFit: 'cover'}} /> 
@@ -184,7 +185,7 @@ export default async function PlayerStatsPage({
                 </thead> 
                 <tbody>
                   {rushingStats.length > 0 ? rushingStats.map((p: any, i: number) => (
-                    <tr key={p.playerId || i}>
+                    <tr key={`${p.playerId || i}-${p.teamName || i}`}>
                       <td>{i + 1}</td>
                       <td>
                         <img src={getPlayerPhoto(p.playerPhoto)} alt={p.playerName} style={{width: '30px', height: '30px', borderRadius: '50%', objectFit: 'cover'}} /> 
@@ -201,6 +202,48 @@ export default async function PlayerStatsPage({
                     </tr>
                   )) : (
                     <tr><td colSpan={10} className="text-center">No rushing stats available</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Defensive Table */}
+            <div className="table-wrap">
+              <h4>Defensive</h4>
+              <table className="table states-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>NAME</th>
+                    <th>team</th>
+                    <th>INT</th>
+                    <th>INT TD</th>
+                    <th>DTD</th>
+                    <th>DPAT</th>
+                    <th>SCK</th>
+                    <th>SAF</th>
+                    <th>FP</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {defensiveStats.length > 0 ? defensiveStats.map((p: any, i: number) => (
+                    <tr key={`${p.playerId || i}-${p.teamName || i}`}>
+                      <td>{i + 1}</td>
+                      <td>
+                        <img src={getPlayerPhoto(p.playerPhoto)} alt={p.playerName} style={{width: '30px', height: '30px', borderRadius: '50%', objectFit: 'cover'}} />
+                        <Link href="#">{p.playerName} {p.jerseyNumber ? `(#${p.jerseyNumber})` : ''}</Link>
+                      </td>
+                      <td><Link href="#">{p.teamName}</Link></td>
+                      <td>{p.dint}</td>
+                      <td>{p.dintTD}</td>
+                      <td>{p.dtd}</td>
+                      <td>{p.dpat}</td>
+                      <td>{p.dsacks}</td>
+                      <td>{p.dsafety}</td>
+                      <td>{p.flagPulls}</td>
+                    </tr>
+                  )) : (
+                    <tr><td colSpan={10} className="text-center">No defensive stats available</td></tr>
                   )}
                 </tbody>
               </table>

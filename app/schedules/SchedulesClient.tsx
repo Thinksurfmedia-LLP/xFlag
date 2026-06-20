@@ -205,7 +205,14 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
   // Games for the current week — filteredGames already handles the league filter via selectedLeague
   const currentViewGames = weekGames;
 
-  // Group games by Exact Date + Time
+  // Extract field number from a location string like "North Park - Field 2"
+  const getFieldNum = (g: any): number => {
+    const loc = g.location || '';
+    const match = loc.match(/field\s*(\d+)/i);
+    return match ? parseInt(match[1], 10) : 999;
+  };
+
+  // Group games by Exact Date + Time, sorted by field number within each slot
   const gamesByDateTime = useMemo(() => {
     const map = new Map<string, any[]>();
     currentViewGames.forEach((g: any) => {
@@ -215,6 +222,8 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
       if (!map.has(key)) map.set(key, []);
       map.get(key)!.push(g);
     });
+    // Sort each slot's games by the field number in game.location so columns are always correct
+    map.forEach((slotGames) => slotGames.sort((a, b) => getFieldNum(a) - getFieldNum(b)));
     return Array.from(map.entries());
   }, [currentViewGames]);
 

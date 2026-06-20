@@ -123,7 +123,11 @@ export default async function GameStatsPage({
           </ul>
 
           <div className="text-center">
-            <h2><span>{seasonName}</span> Game Statistical Leaders</h2>
+            <h2>
+              <Link href={`/${year}/${season}/${slug}/player-stats`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                Game Statistical <span style={{ color: '#fff', backgroundColor: '#F13B26', padding: '2px 10px', borderRadius: '4px' }}>Leaders</span>
+              </Link>
+            </h2>
           </div>
 
           <div className="states-table-main">
