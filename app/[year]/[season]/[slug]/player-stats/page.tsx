@@ -2,6 +2,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { getLiveLeagues } from '@/lib/flagmag';
+import PlayerStatsClient from './PlayerStatsClient';
 
 export default async function PlayerStatsPage({ 
   params,
@@ -79,177 +80,12 @@ export default async function PlayerStatsPage({
             <h2><span>{seasonName}</span> {leagueName} - {teamName}</h2>
           </div>
 
-          <div className="states-table-main">
-
-            {/* Passing Table */}
-            <div className="table-wrap">
-              <h4>Passing</h4>
-              <table className="table states-table">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>NAME</th>
-                    <th>team</th>
-                    <th>atts</th>
-                    <th>comp</th>
-                    <th>%</th>
-                    <th>YDS</th>
-                    <th>TD</th>
-                    <th>PAT</th>
-                    <th>INT</th>
-                    <th>SACKS</th>
-                    <th>RATING</th>
-                  </tr>
-                </thead> 
-                <tbody>
-                  {passingStats.length > 0 ? passingStats.map((p: any, i: number) => (
-                    <tr key={`${p.playerId || i}-${p.teamName || i}`}>
-                      <td>{i + 1}</td>
-                      <td>
-                        <img src={getPlayerPhoto(p.playerPhoto)} alt={p.playerName} style={{width: '30px', height: '30px', borderRadius: '50%', objectFit: 'cover'}} /> 
-                        <Link href="#">{p.playerName} {p.jerseyNumber ? `(#${p.jerseyNumber})` : ''}</Link>
-                      </td>
-                      <td><Link href="#">{p.teamName}</Link></td>
-                      <td>{p.atts}</td>
-                      <td>{p.comp}</td>
-                      <td>{p.pct}</td>
-                      <td>{p.yards}</td>
-                      <td>{p.tds}</td>
-                      <td>{p.pat}</td>
-                      <td>{p.ints}</td>
-                      <td>{p.sacks}</td>
-                      <td>{p.rate}</td>
-                    </tr>
-                  )) : (
-                    <tr><td colSpan={13} className="text-center">No passing stats available</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Receiving Table */}
-            <div className="table-wrap">
-              <h4>Receiving</h4>
-              <table className="table states-table">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>NAME</th>
-                    <th>team</th>
-                    <th>REC</th>
-                    <th>YDS</th>
-                    <th>TD</th>
-                    <th>PAT</th>
-                    <th>Y/R</th>
-                  </tr>
-                </thead> 
-                <tbody>
-                  {receivingStats.length > 0 ? receivingStats.map((p: any, i: number) => (
-                    <tr key={`${p.playerId || i}-${p.teamName || i}`}>
-                      <td>{i + 1}</td>
-                      <td>
-                        <img src={getPlayerPhoto(p.playerPhoto)} alt={p.playerName} style={{width: '30px', height: '30px', borderRadius: '50%', objectFit: 'cover'}} /> 
-                        <Link href="#">{p.playerName} {p.jerseyNumber ? `(#${p.jerseyNumber})` : ''}</Link>
-                      </td>
-                      <td><Link href="#">{p.teamName}</Link></td>
-                      <td>{p.receptions}</td>
-                      <td>{p.yards}</td>
-                      <td>{p.tds}</td>
-                      <td>{p.pat}</td>
-                      <td>{p.ypr}</td>
-                    </tr>
-                  )) : (
-                    <tr><td colSpan={8} className="text-center">No receiving stats available</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Rushing Table */}
-            <div className="table-wrap">
-              <h4>Rushing</h4>
-              <table className="table states-table">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>NAME</th>
-                    <th>team</th>
-                    <th>ATT</th>
-                    <th>YDS</th>
-                    <th>TD</th>
-                    <th>PAT</th>
-                    <th>Y/C</th>
-                    <th>GP</th>
-                    <th>AVG/G</th>
-                  </tr>
-                </thead> 
-                <tbody>
-                  {rushingStats.length > 0 ? rushingStats.map((p: any, i: number) => (
-                    <tr key={`${p.playerId || i}-${p.teamName || i}`}>
-                      <td>{i + 1}</td>
-                      <td>
-                        <img src={getPlayerPhoto(p.playerPhoto)} alt={p.playerName} style={{width: '30px', height: '30px', borderRadius: '50%', objectFit: 'cover'}} /> 
-                        <Link href="#">{p.playerName} {p.jerseyNumber ? `(#${p.jerseyNumber})` : ''}</Link>
-                      </td>
-                      <td><Link href="#">{p.teamName}</Link></td>
-                      <td>{p.atts}</td>
-                      <td>{p.yards}</td>
-                      <td>{p.tds}</td>
-                      <td>{p.pat}</td>
-                      <td>{p.ypc}</td>
-                      <td>{p.gamesPlayed}</td>
-                      <td>{p.rushAvgPerGame}</td>
-                    </tr>
-                  )) : (
-                    <tr><td colSpan={10} className="text-center">No rushing stats available</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Defensive Table */}
-            <div className="table-wrap">
-              <h4>Defensive</h4>
-              <table className="table states-table">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>NAME</th>
-                    <th>team</th>
-                    <th>INT</th>
-                    <th>INT TD</th>
-                    <th>DTD</th>
-                    <th>DPAT</th>
-                    <th>SCK</th>
-                    <th>SAF</th>
-                    <th>FP</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {defensiveStats.length > 0 ? defensiveStats.map((p: any, i: number) => (
-                    <tr key={`${p.playerId || i}-${p.teamName || i}`}>
-                      <td>{i + 1}</td>
-                      <td>
-                        <img src={getPlayerPhoto(p.playerPhoto)} alt={p.playerName} style={{width: '30px', height: '30px', borderRadius: '50%', objectFit: 'cover'}} />
-                        <Link href="#">{p.playerName} {p.jerseyNumber ? `(#${p.jerseyNumber})` : ''}</Link>
-                      </td>
-                      <td><Link href="#">{p.teamName}</Link></td>
-                      <td>{p.dint}</td>
-                      <td>{p.dintTD}</td>
-                      <td>{p.dtd}</td>
-                      <td>{p.dpat}</td>
-                      <td>{p.dsacks}</td>
-                      <td>{p.dsafety}</td>
-                      <td>{p.flagPulls}</td>
-                    </tr>
-                  )) : (
-                    <tr><td colSpan={10} className="text-center">No defensive stats available</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-
-          </div>
+          <PlayerStatsClient
+            passing={passingStats}
+            receiving={receivingStats}
+            rushing={rushingStats}
+            defensive={defensiveStats}
+          />
         </div>
       </section>
 

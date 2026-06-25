@@ -71,10 +71,10 @@ export default async function LeaderboardPage({
           </div>
 
           <LeaderboardClient
-            passingStats={passingStats}
-            receivingStats={receivingStats}
-            rushingStats={rushingStats}
-            defenseStats={defenseStats}
+            passingStats={passingStats.slice(0, 50)}
+            receivingStats={receivingStats.slice(0, 50)}
+            rushingStats={rushingStats.slice(0, 50)}
+            defenseStats={defenseStats.slice(0, 50)}
           />
         </div>
       </section>

@@ -158,6 +158,7 @@ function aggregateStats(plays, rosterMap, teamNamesByAB) {
                 const defender = resolvePlayer(play.defender, otherTeam, rosterMap);
                 if (defender) {
                     const ds = getOrInit(defensive, defender, otherTeam);
+                    inc(ds, "fumbles");
                     if (isTD) inc(ds, "fumbleTD");
                     if (is2pt) inc(ds, "fumblePAT");
                 }
@@ -309,6 +310,7 @@ function aggregateStats(plays, rosterMap, teamNamesByAB) {
             teamName: d.teamName,
             dint: d.dint || 0,
             dintTD,
+            fumbles: d.fumbles || 0,
             dtd,
             dpat: (d.dpat || 0) + (d.fumblePAT || 0),
             dsacks: d.dsacks || 0,

@@ -2,6 +2,8 @@
 
 import { useState, useMemo } from 'react';
 
+const FLAGMAG_URL = (process.env.NEXT_PUBLIC_FLAGMAG_API_URL || 'https://flagmag.com').replace(/\/$/, '');
+
 type SortDir = 'asc' | 'desc';
 interface SortState { key: string; dir: SortDir; }
 
@@ -15,7 +17,6 @@ function SortIcon({ active, dir }: { active: boolean; dir: SortDir }) {
 
 function useSorted(rows: any[], defaultKey: string) {
   const [sort, setSort] = useState<SortState>({ key: defaultKey, dir: 'desc' });
-
   const toggle = (key: string) => {
     setSort(prev =>
       prev.key === key
@@ -23,7 +24,6 @@ function useSorted(rows: any[], defaultKey: string) {
         : { key, dir: 'desc' }
     );
   };
-
   const sorted = useMemo(() => {
     return [...rows].sort((a, b) => {
       const av = a[sort.key] ?? -Infinity;
@@ -34,22 +34,16 @@ function useSorted(rows: any[], defaultKey: string) {
       return sort.dir === 'desc' ? -cmp : cmp;
     });
   }, [rows, sort]);
-
   return { sorted, sort, toggle };
 }
 
 function Th({ label, sortKey, sort, toggle }: { label: string; sortKey: string; sort: SortState; toggle: (k: string) => void }) {
   return (
-    <th
-      onClick={() => toggle(sortKey)}
-      style={{ cursor: 'pointer', whiteSpace: 'nowrap', userSelect: 'none' }}
-    >
+    <th onClick={() => toggle(sortKey)} style={{ cursor: 'pointer', whiteSpace: 'nowrap', userSelect: 'none' }}>
       {label}<SortIcon active={sort.key === sortKey} dir={sort.dir} />
     </th>
   );
 }
-
-const FLAGMAG_URL = (process.env.NEXT_PUBLIC_FLAGMAG_API_URL || 'https://flagmag.com').replace(/\/$/, '');
 
 function PlayerCell({ p }: { p: any }) {
   const photo = !p.playerPhoto
@@ -75,8 +69,8 @@ function PassingTable({ rows }: { rows: any[] }) {
         <thead>
           <tr>
             <th>#</th>
-            {T('Name', 'playerName')}
-            {T('Team', 'teamName')}
+            {T('NAME', 'playerName')}
+            {T('TEAM', 'teamName')}
             {T('ATT', 'atts')}
             {T('COMP', 'comp')}
             {T('%', 'pct')}
@@ -84,7 +78,7 @@ function PassingTable({ rows }: { rows: any[] }) {
             {T('TD', 'tds')}
             {T('PAT', 'pat')}
             {T('INT', 'ints')}
-            {T('SCK', 'sacks')}
+            {T('SACKS', 'sacks')}
             {T('RATING', 'rate')}
           </tr>
         </thead>
@@ -122,8 +116,8 @@ function ReceivingTable({ rows }: { rows: any[] }) {
         <thead>
           <tr>
             <th>#</th>
-            {T('Name', 'playerName')}
-            {T('Team', 'teamName')}
+            {T('NAME', 'playerName')}
+            {T('TEAM', 'teamName')}
             {T('REC', 'receptions')}
             {T('YDS', 'yards')}
             {T('TD', 'tds')}
@@ -142,7 +136,7 @@ function ReceivingTable({ rows }: { rows: any[] }) {
               <td>{p.yards}</td>
               <td>{p.tds}</td>
               <td>{p.pat}</td>
-              <td>{(p.tds * 6) + p.pat}</td>
+              <td>{p.pts}</td>
               <td>{p.ypr}</td>
             </tr>
           )) : <tr><td colSpan={9} className="text-center">No receiving stats available</td></tr>}
@@ -162,13 +156,15 @@ function RushingTable({ rows }: { rows: any[] }) {
         <thead>
           <tr>
             <th>#</th>
-            {T('Name', 'playerName')}
-            {T('Team', 'teamName')}
+            {T('NAME', 'playerName')}
+            {T('TEAM', 'teamName')}
             {T('ATT', 'atts')}
             {T('YDS', 'yards')}
             {T('TD', 'tds')}
             {T('PAT', 'pat')}
             {T('Y/C', 'ypc')}
+            {T('GP', 'gamesPlayed')}
+            {T('AVG/G', 'rushAvgPerGame')}
           </tr>
         </thead>
         <tbody>
@@ -182,8 +178,10 @@ function RushingTable({ rows }: { rows: any[] }) {
               <td>{p.tds}</td>
               <td>{p.pat}</td>
               <td>{p.ypc}</td>
+              <td>{p.gamesPlayed}</td>
+              <td>{p.rushAvgPerGame}</td>
             </tr>
-          )) : <tr><td colSpan={8} className="text-center">No rushing stats available</td></tr>}
+          )) : <tr><td colSpan={10} className="text-center">No rushing stats available</td></tr>}
         </tbody>
       </table>
     </div>
@@ -200,8 +198,8 @@ function DefensiveTable({ rows }: { rows: any[] }) {
         <thead>
           <tr>
             <th>#</th>
-            {T('Name', 'playerName')}
-            {T('Team', 'teamName')}
+            {T('NAME', 'playerName')}
+            {T('TEAM', 'teamName')}
             {T('INT', 'dint')}
             {T('FMBL', 'fumbles')}
             {T('DTD', 'dtd')}
@@ -232,23 +230,20 @@ function DefensiveTable({ rows }: { rows: any[] }) {
   );
 }
 
-export default function LeaderboardClient({
-  passingStats,
-  receivingStats,
-  rushingStats,
-  defenseStats,
-}: {
-  passingStats: any[];
-  receivingStats: any[];
-  rushingStats: any[];
-  defenseStats: any[];
-}) {
+interface Props {
+  passing: any[];
+  receiving: any[];
+  rushing: any[];
+  defensive: any[];
+}
+
+export default function PlayerStatsClient({ passing, receiving, rushing, defensive }: Props) {
   return (
     <div className="states-table-main">
-      {passingStats.length > 0 && <PassingTable rows={passingStats} />}
-      {receivingStats.length > 0 && <ReceivingTable rows={receivingStats} />}
-      {rushingStats.length > 0 && <RushingTable rows={rushingStats} />}
-      {defenseStats.length > 0 && <DefensiveTable rows={defenseStats} />}
+      {passing.length > 0 && <PassingTable rows={passing} />}
+      {receiving.length > 0 && <ReceivingTable rows={receiving} />}
+      {rushing.length > 0 && <RushingTable rows={rushing} />}
+      {defensive.length > 0 && <DefensiveTable rows={defensive} />}
     </div>
   );
 }
