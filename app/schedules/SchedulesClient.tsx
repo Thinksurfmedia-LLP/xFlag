@@ -36,7 +36,7 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
   const [selectedLeague, setSelectedLeague] = useState('');
   const [selectedTeam, setSelectedTeam] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedWeek, setSelectedWeek] = useState(1);
+  const [selectedSection, setSelectedSection] = useState('');
   const leagueStripRef = useRef<HTMLDivElement>(null);
   const scrollStrip = (dir: 'left' | 'right') => {
     if (leagueStripRef.current) leagueStripRef.current.scrollBy({ left: dir === 'left' ? -280 : 280, behavior: 'smooth' });
@@ -47,7 +47,7 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
     setSelectedState('');
     setSelectedLeague('');
     setSelectedTeam('');
-    setSelectedWeek(1);
+    setSelectedSection('');
   };
 
   // Build venue lookup maps (exact match, lowercase+trimmed key)
@@ -178,32 +178,34 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
     });
   }, [filteredGames]);
 
-  // Group into weeks (7-day buckets from the earliest game)
-  const { weeks, weekCount } = useMemo(() => {
-    if (sortedGames.length === 0) return { weeks: new Map(), weekCount: 0 };
-    const firstDate = new Date(sortedGames[0].date);
-    firstDate.setHours(0, 0, 0, 0);
-    const map = new Map<number, any[]>();
+  // Group games by sectionName (the schedule's week/group/division name)
+  const sections = useMemo(() => {
+    const map = new Map<string, any[]>();
     sortedGames.forEach((g: any) => {
-      const d = new Date(g.date);
-      d.setHours(0, 0, 0, 0);
-      const diff = Math.floor((d.getTime() - firstDate.getTime()) / (7 * 24 * 60 * 60 * 1000));
-      const weekNum = diff + 1;
-      if (!map.has(weekNum)) map.set(weekNum, []);
-      map.get(weekNum)!.push(g);
+      const key = g.sectionName || 'All Games';
+      if (!map.has(key)) map.set(key, []);
+      map.get(key)!.push(g);
     });
-    return { weeks: map, weekCount: map.size };
+    return map;
   }, [sortedGames]);
 
-  const weekGames = weeks.get(selectedWeek) || [];
+  // Auto-select first section when sections change or current selection becomes invalid
+  useEffect(() => {
+    if (!sections.has(selectedSection)) {
+      const firstKey = Array.from(sections.keys())[0] ?? '';
+      setSelectedSection(firstKey);
+    }
+  }, [sections]);
+
+  const sectionGames = sections.get(selectedSection) || [];
+  const sectionKeys = Array.from(sections.keys());
 
   // Strip tabs = all leagues for the selected season (same source as dropdown)
   const leagueStripNames = useMemo(() => {
     return filteredLeagues.map((l: any) => l.name).filter(Boolean);
   }, [filteredLeagues]);
 
-  // Games for the current week — filteredGames already handles the league filter via selectedLeague
-  const currentViewGames = weekGames;
+  const currentViewGames = sectionGames;
 
   // Extract field number from a location string like "North Park - Field 2"
   const getFieldNum = (g: any): number => {
@@ -227,7 +229,6 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
     return Array.from(map.entries());
   }, [currentViewGames]);
 
-  const weekNumbers = Array.from({ length: weekCount }, (_, i) => i + 1);
 
   return (
     <section className="schedules-section section-padding">
@@ -252,7 +253,7 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
             className="form-select schedule-filter-select"
             style={{ backgroundColor: '#231F20', color: '#fff', border: 'none', width: 'auto', minWidth: '140px', flex: '0 0 auto' }}
             value={selectedState}
-            onChange={e => { setSelectedState(e.target.value); setSelectedLeague(''); setSelectedTeam(''); setSelectedWeek(1); }}
+            onChange={e => { setSelectedState(e.target.value); setSelectedLeague(''); setSelectedTeam(''); setSelectedSection(''); }}
           >
             <option value="">All States</option>
             {states.map(s => (
@@ -265,7 +266,7 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
             className="form-select schedule-filter-select"
             style={{ backgroundColor: '#231F20', color: '#fff', border: 'none', width: 'auto', minWidth: '150px', flex: '0 0 auto' }}
             value={selectedLeague}
-            onChange={e => { setSelectedLeague(e.target.value); setSelectedTeam(''); setSelectedWeek(1); }}
+            onChange={e => { setSelectedLeague(e.target.value); setSelectedTeam(''); setSelectedSection(''); }}
           >
             <option value="">All Leagues</option>
             {filteredLeagues.map((l: any) => (
@@ -278,7 +279,7 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
             className="form-select schedule-filter-select"
             style={{ backgroundColor: '#231F20', color: '#fff', border: 'none', width: 'auto', minWidth: '140px', flex: '0 0 auto' }}
             value={selectedTeam}
-            onChange={e => { setSelectedTeam(e.target.value); setSelectedWeek(1); }}
+            onChange={e => { setSelectedTeam(e.target.value); setSelectedSection(''); }}
           >
             <option value="">All Teams</option>
             {teams.map(t => (
@@ -311,21 +312,21 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
           {/* LEFT — Week sidebar */}
           <div className="left-side" style={{ width: '200px', backgroundColor: '#000', padding: '20px 0', minHeight: '400px' }}>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-              {weekNumbers.length > 0 ? weekNumbers.map(w => (
-                <li key={w} style={{ padding: '0 20px', marginBottom: '15px' }}>
+              {sectionKeys.length > 0 ? sectionKeys.map((sectionName) => (
+                <li key={sectionName} style={{ padding: '0 20px', marginBottom: '15px' }}>
                   <a
                     href="#"
-                    onClick={e => { e.preventDefault(); setSelectedWeek(w); }}
+                    onClick={e => { e.preventDefault(); setSelectedSection(sectionName); }}
                     style={{
-                      color: selectedWeek === w ? '#fff' : '#888',
-                      fontWeight: selectedWeek === w ? 700 : 400,
+                      color: selectedSection === sectionName ? '#fff' : '#888',
+                      fontWeight: selectedSection === sectionName ? 700 : 400,
                       textDecoration: 'none',
                       textTransform: 'capitalize',
                       fontSize: '15px',
                       display: 'block'
                     }}
                   >
-                    Week {w}
+                    {sectionName}
                   </a>
                 </li>
               )) : (
@@ -344,7 +345,7 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
                 {leagueStripNames.length > 0 ? leagueStripNames.map(name => (
                   <button
                     key={name}
-                    onClick={() => { setSelectedLeague(selectedLeague === name ? '' : name); setSelectedTeam(''); setSelectedWeek(1); }}
+                    onClick={() => { setSelectedLeague(selectedLeague === name ? '' : name); setSelectedTeam(''); setSelectedSection(''); }}
                     style={{
                       flexShrink: 0,
                       border: 'none',
@@ -363,7 +364,7 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
                     {name}
                   </button>
                 )) : (
-                  <div style={{ padding: '10px', color: '#888', fontSize: '13px', fontWeight: 600 }}>NO LEAGUES FOR WEEK {selectedWeek}</div>
+                  <div style={{ padding: '10px', color: '#888', fontSize: '13px', fontWeight: 600 }}>NO LEAGUES</div>
                 )}
               </div>
               <button onClick={() => scrollStrip('right')} style={{ flexShrink: 0, border: 'none', background: '#666', color: '#fff', padding: '5px 15px', borderRadius: '4px', cursor: 'pointer' }}>&gt;</button>
@@ -381,7 +382,10 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
 
               const getLogoUrl = (url?: string) => {
                 if (!url) return '/assets/images/team-placeholder.svg';
-                if (url.startsWith('/api/')) return `https://flagmag.com${url}`;
+                if (url.startsWith('/api/') || url.startsWith('/assets/')) {
+                  const base = (process.env.NEXT_PUBLIC_FLAGMAG_API_URL || 'https://www.flagmag.com').replace(/\/$/, '');
+                  return `${base}${url}`;
+                }
                 return url;
               };
 

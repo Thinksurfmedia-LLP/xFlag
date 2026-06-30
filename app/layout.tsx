@@ -4,8 +4,29 @@ import Script from "next/script";
 import ScriptReinit from "./ScriptReinit";
 
 export const metadata: Metadata = {
-  title: "XFlag",
+  title: "XFlag Football",
   description: "Experience the Power & Passion of FLAG FOOTBALL",
+  openGraph: {
+    title: "XFlag Football",
+    description: "Experience the Power & Passion of FLAG FOOTBALL",
+    url: "https://xflagfootball.com",
+    siteName: "XFlag Football",
+    images: [
+      {
+        url: "https://xflagfootball.com/assets/images/banner1.jpg",
+        width: 1920,
+        height: 959,
+        alt: "XFlag Football",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "XFlag Football",
+    description: "Experience the Power & Passion of FLAG FOOTBALL",
+    images: ["https://xflagfootball.com/assets/images/banner1.jpg"],
+  },
 };
 
 export const viewport = {
