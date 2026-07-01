@@ -9,13 +9,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: "XFlag Football",
     description: "Experience the Power & Passion of FLAG FOOTBALL",
-    url: "https://xflagfootball.com",
+    url: "https://www.xflagfootball.com",
     siteName: "XFlag Football",
     images: [
       {
-        url: "https://xflagfootball.com/assets/images/banner1.jpg",
-        width: 1920,
-        height: 959,
+        url: "https://www.xflagfootball.com/assets/images/logo1.png",
+        width: 1200,
+        height: 630,
         alt: "XFlag Football",
       },
     ],
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "XFlag Football",
     description: "Experience the Power & Passion of FLAG FOOTBALL",
-    images: ["https://xflagfootball.com/assets/images/banner1.jpg"],
+    images: ["https://www.xflagfootball.com/assets/images/logo1.png"],
   },
 };
 
