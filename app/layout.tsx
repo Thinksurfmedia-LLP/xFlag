@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     siteName: "XFlag Football",
     images: [
       {
-        url: "https://www.xflagfootball.com/assets/images/logo1.png",
+        url: "https://www.xflagfootball.com/assets/images/og-logo.jpg",
         width: 1200,
         height: 630,
         alt: "XFlag Football",
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "XFlag Football",
     description: "Experience the Power & Passion of FLAG FOOTBALL",
-    images: ["https://www.xflagfootball.com/assets/images/logo1.png"],
+    images: ["https://www.xflagfootball.com/assets/images/og-logo.jpg"],
   },
 };
 
