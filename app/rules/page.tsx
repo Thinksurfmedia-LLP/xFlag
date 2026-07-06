@@ -605,23 +605,55 @@ export default function Rules() {
 
                   <h5>Team Rosters</h5>
                   <ul>
-                    <li>Maximum 12 players; may be added through the 5th game.</li>
-                    <li>All players must sign the XFF waiver and be on the official roster.</li>
+                    <li>Maximum <strong>14 players</strong> per roster.</li>
+                    <li>Players must play 4 games to be eligible for playoffs &amp; Counties.</li>
+                    <li>All players must sign both the XFF waiver and roster before playing — team captains must verify both are signed before any game.</li>
+                    <li>League discretion determines whether a player may play on multiple teams in one league. As a rule, a &quot;B&quot; player may play on an &quot;A&quot; team, but not vice versa (or on a &quot;C&quot; team).</li>
+                    <li>Players may only play on one team per division in any XFF tournament.</li>
+                  </ul>
+
+                  <h5>The XFF Grid</h5>
+                  <ul>
+                    <li>Field: 80 yards × 30 yards — a 60-yard field of play plus two 10-yard end zones.</li>
+                    <li>Yard markers denote mid-field (the 30-yard line) and both 10-yard lines; end zone pylons mark the goal line.</li>
+                  </ul>
+
+                  <h5>Scheduling</h5>
+                  <ul>
+                    <li>XFF reserves the right to modify the schedule and will notify team captains as soon as possible; changes are also posted on the XFF website.</li>
+                    <li>Captains are responsible for notifying their teammates of any schedule changes.</li>
                   </ul>
 
                   <h5>Equipment</h5>
                   <ul>
-                    <li>Same-color jerseys with permanent numbers, tucked in; caps backward; no jewelry.</li>
-                    <li>Official Sonic pop flag belts; molded or detachable cleats only — <strong>no metal cleats</strong>.</li>
-                    <li>Starting Week 2: teams penalized <strong>2 points per player</strong> found wearing an illegal jersey.</li>
+                    <li>Same-color jerseys with permanent numbers, tucked in at all times; caps may be worn backward; no jewelry.</li>
+                    <li>Official Sonic pop flag belts (provided at the field), worn around the waist with flags on the hips.</li>
+                    <li>Cleats: molded or detachable allowed, tennis shoes acceptable but not recommended. <strong>Metal cleats are strictly prohibited</strong> — baseball &quot;spikes&quot; result in ejection.</li>
+                    <li>Starting Week 2: teams are penalized <strong>2 points per player</strong> wearing an illegal jersey.</li>
+                  </ul>
+
+                  <h5>Code of Conduct</h5>
+                  <ul>
+                    <li>Respect the calls of XFF officials at all times.</li>
+                    <li>Fighting results in immediate ejection and possible suspension; games may be double-forfeited, and teams instigating fights are expelled from the league with no refund of league fees.</li>
+                    <li>Unsportsmanlike conduct, trash talking, and rough play are not tolerated. No littering (including sunflower seeds) — clean your sideline immediately after the game.</li>
+                    <li>Threatening or abusing an XFF official (physically or verbally) results in at least a 1-week suspension; reinstatement depends on the severity of the incident.</li>
+                    <li>A 2nd personal foul in the same game is an automatic ejection, intentional or not.</li>
+                    <li>Counting the 5-second play clock out loud is illegal — one warning, then a 15-yard unsportsmanlike conduct penalty.</li>
+                    <li>Only offensive or defensive captains may discuss calls or decisions with officials during the game.</li>
+                    <li>Officials may penalize violations not clearly outlined in the rules; the ref&apos;s decision is final and binding.</li>
+                    <li>XFF may suspend any player(s) or team(s) from any location(s) for an indefinite period to keep the league safe and non-violent.</li>
                   </ul>
 
                   <h5>Game Clock</h5>
                   <ul>
-                    <li>Two 20-minute halves; 3 timeouts per half (no timeouts if leading 28+).</li>
-                    <li>25-second play clock.</li>
-                    <li>Last 2 minutes (if within 14 points): clock stops on — incomplete passes, out-of-bounds, extra-point attempts, defensive penalties (except offsides), QB sacks, 5-second violations, turnovers; clock also stops for first downs, defensive offsides, and offensive penalties (except sack + 5-second).</li>
-                    <li>Clock does <strong>not</strong> stop if the losing team commits a penalty.</li>
+                    <li>Two 20-minute halves.</li>
+                    <li>3 timeouts per half per team; no timeouts may be used if leading by more than 28 points in the second half.</li>
+                    <li>Offense has 25 seconds between plays (counted from when officials set the markers). Delay of game = 5 yards, replay the down.</li>
+                    <li>Game clock is kept by an XFF official and may be stopped at their discretion.</li>
+                    <li>Last 2 minutes of the second half, if the score is within 14 points (&quot;Regulation Clock&quot;): clock stops on incomplete passes, receiver stepping out of bounds, extra-point attempts, defensive penalties (except offsides), QB sacks, 5-second penalties, and turnovers/changes of possession.</li>
+                    <li>During Regulation Clock: clock stops until the ball and markers are reset on first downs, defensive offsides, and offensive penalties (except QB sacks and 5-second penalties).</li>
+                    <li>The clock will <strong>not</strong> stop if the losing team commits a penalty.</li>
                   </ul>
 
                   <h5>Scoring</h5>
@@ -631,51 +663,87 @@ export default function Rules() {
 
                   <h5>Forfeits</h5>
                   <ul>
-                    <li>Minimum 4 players; forfeiting team surrenders $60 forfeit bond.</li>
+                    <li>A game is forfeited if a team can&apos;t start or complete it with at least 4 players.</li>
+                    <li>The forfeiting team surrenders their <strong>$70 forfeit bond</strong>, covering both teams&apos; game fees, and must replace it to keep playing that season.</li>
                   </ul>
 
                   <h5>Overtime</h5>
                   <ul>
-                    <li>College-style from the 10-yard line; 3rd OT = must go for 2.</li>
+                    <li>Tied games go to a tiebreaker. Captains meet the official for a coin toss to determine possession.</li>
+                    <li>Both teams get 2 plays, with no timeouts, from the opponent&apos;s 10-yard line (college-style overtime).</li>
+                    <li>If the first team fails to score, the opposing team gets 2 plays from the 10-yard line — scoring wins the game.</li>
+                    <li>If the first team scores, they choose to go for 1 or 2 points. The opposing team then gets its 2 plays and, if it scores, attempts a conversion to tie or win. If it doesn&apos;t score a touchdown or match the extra points, the first team wins.</li>
+                    <li>An interception during overtime gives the defense the ball at the 10-yard line, unless it&apos;s returned for a touchdown — the defense is then awarded 6 points and the game ends.</li>
+                    <li>A 3rd overtime requires both teams to attempt 2-point conversions.</li>
+                  </ul>
+
+                  <h5>Coin Toss</h5>
+                  <ul>
+                    <li>Officials call each team captain for a coin toss before the game. The winner chooses offense or defense; the loser picks the direction of the ball.</li>
+                    <li>Teams switch sides after halftime. The team that started the game on defense receives the ball.</li>
                   </ul>
 
                   <h5>Matriculation</h5>
                   <ul>
-                    <li>Start at own 10-yard line → 4 downs to midfield → 4 downs to 10-yard line → 3 downs to score.</li>
+                    <li>Teams start possession at the 10-yard line — there are no kickoffs.</li>
+                    <li>Offense gets 4 downs to reach the first down at midfield (the 30-yard line), then 4 more downs for a first down at the 10-yard line.</li>
+                    <li>Inside the 10-yard line, the offense has only 3 downs to score. If stopped on 4th and goal, the ball is placed back at the 10-yard line regardless of where the stop occurred.</li>
                   </ul>
 
-                  <h5>Key Differences from Coed Format</h5>
+                  <h5>Game Play</h5>
                   <ul>
-                    <li>Pass rusher must start at least <strong>5 yards</strong> back (not 7 yards).</li>
-                    <li>Bull rushing is illegal — rusher must choose one side of the blocker.</li>
-                    <li><strong>Bump-and-run coverage is allowed:</strong> within 1 yard of the LOS, extended for up to 5 yards, open hands, waist-to-shoulder contact only, no head or face contact.</li>
-                    <li>Defender <strong>cannot</strong> contact a receiver beyond 5 yards or when the ball is in the air.</li>
-                    <li>Face guarding <strong>is</strong> pass interference — the defender must turn and look for the ball.</li>
-                    <li>PI in the end zone = 1st & goal at the 1-yard line.</li>
-                    <li>Center may block the pass rusher; "canning" (bumping or blocking the center) is <strong>not</strong> allowed unless the center crosses the LOS.</li>
-                    <li>No trips formation; motion player must clear the formation before the snap.</li>
-                    <li>Outlawed: QB passing to themselves; QB bouncing off center's back.</li>
+                    <li>At least one player must line up on each side of the center and QB. No &quot;trips&quot; formation at the snap — 3 receivers on one side must shift out of it before the snap.</li>
+                    <li>The receiver needs control of the ball with at least one foot in bounds. Leaving their feet (jumping/diving) to avoid a defender is a 5-yard penalty.</li>
+                    <li>Taking a knee does not stop the clock — it runs until the ball carrier is touched by a defender.</li>
+                    <li>The QB may intentionally ground the ball — it&apos;s legal, with no penalty.</li>
+                    <li>Inadvertent whistle: the offense may replay the down or take the play at the whistle spot (interception returns are spotted where the whistle blew).</li>
+                    <li>All players are eligible to catch a forward pass once beyond the line of scrimmage.</li>
+                    <li>QB has 5 seconds (from the snap) to release the ball — late release is a 5-yard penalty and loss of down. This includes on a muffed snap, which stays live and may be recovered and thrown (by the offense) or recovered and returned (by the defense).</li>
+                    <li>Defense may not count the 5 seconds out loud, even from the sidelines — one warning, then a 15-yard unsportsmanlike conduct penalty.</li>
+                    <li>If the QB catches a deflected or batted ball, he may run with it but may not throw it again.</li>
+                    <li>The snap may come between the center&apos;s legs, or via a standing &quot;turn and throw.&quot;</li>
+                    <li>Double passes (&quot;throwbacks&quot;) are legal if the first pass is lateral or backward and the second is released before the 5-second play clock expires. Dropped double passes are down at the spot.</li>
+                    <li>Hand-offs, pitches, and laterals are legal but can&apos;t be advanced beyond the line of scrimmage — the receiver must throw to someone beyond the LOS (or pitch again) before the 5-second clock expires.</li>
+                    <li>Hook-and-ladder plays are legal (the 2nd receiver must be even with or behind the 1st). Intercepted pitches are live and returnable; a pitch that hits the ground is dead at the spot.</li>
+                    <li>Flag guarding is illegal: 10-yard penalty + loss of down. Flag guarding by the QB in the end zone is a safety.</li>
+                    <li>The center may block the pass rusher (arms extended, no blocking in the back). No cross-blocking, pulling the defender down, holding, or blocks in the back — violations may draw an unsportsmanlike conduct penalty and the play is blown dead.</li>
+                    <li>Pass rusher must start at least <strong>5 yards</strong> from the line of scrimmage (no 5-yard rule on a double pass). Rushing is only for the QB&apos;s flags — no stripping or trying to knock the ball loose.</li>
+                    <li>Roughing the passer (contact with any part of the QB&apos;s hand) = 10-yard penalty + automatic first down.</li>
+                    <li>Bull rushing is illegal — the rusher must pick a side of the blocker, arms fully extended, and may not lower the shoulder.</li>
+                    <li>Receivers can&apos;t interfere with the pass rusher&apos;s path beyond the line of scrimmage, but may block the rusher if engaged behind the line.</li>
+                    <li>&quot;Canning&quot; (blocking/bumping/checking) the center is not allowed unless the center crosses the line of scrimmage.</li>
+                    <li>Bump-and-run is allowed within 1 yard of the LOS, continuing up to 5 yards, with open hands between the waist and shoulders (no head or face contact). A receiver bumped out of bounds may re-enter but can&apos;t be the first to touch the ball.</li>
+                    <li>Defender can&apos;t contact the receiver beyond 5 yards or while the ball is in the air. Face guarding <strong>is</strong> pass interference — the defender must turn and look for the ball. PI in the end zone = 1st &amp; goal at the 1-yard line.</li>
+                    <li>No stripping the ball — defenders must pull flags. The ball may only be knocked away before possession is established.</li>
+                    <li>Interceptions are live and returnable, with one pitch or lateral allowed. An INT in (or returned to inside) the 10-yard line without advancing past it is spotted at the 10.</li>
+                    <li>Fumbles are dead at the spot of the fumble — no change of possession, no piling on.</li>
+                    <li>Offensive offsides = dead-ball penalty, 5 yards, replay the down. Defensive offsides = free play for the offense, 5 yards, replay the down (or take the result of the play).</li>
+                    <li>A ball carrier who falls untouched may get up and run, unless touched while down.</li>
+                    <li>All offensive players must be set for one second before the snap. Only one player may be in motion, laterally only; if multiple players shift, all must be set for one second before the snap.</li>
+                    <li>If the last defender impedes a ball carrier&apos;s progress (holds/pushes/tackles) without pulling flags, the result is a touchdown unless declined by the offense — it&apos;s the official&apos;s judgment call.</li>
                   </ul>
 
-                  <h5>Rain Policy</h5>
+                  <h5>Outlawed Plays</h5>
                   <ul>
-                    <li>Games are played unless the field is unplayable. Check the schedule page.</li>
-                    <li>If no cancellation is posted, <strong>games are on.</strong></li>
+                    <li>The QB cannot throw a forward pass to himself — it must be touched by another player first (with some intent of doing so).</li>
+                    <li>The QB cannot bounce a pass off the center&apos;s back and run with it as a completed pass. Both are ruled an incomplete pass at official discretion.</li>
+                    <li>The referee must blow the whistle in on every change of possession.</li>
+                    <li>The defense may only call for offsides if the play results in a first down.</li>
                   </ul>
 
                   <h5>Offensive Penalties</h5>
                   <table className="table table-bordered table-sm mt-2">
                     <thead className="table-dark"><tr><th>Foul</th><th>Penalty</th></tr></thead>
                     <tbody>
-                      <tr><td>Offsides</td><td>5 yards, replay down</td></tr>
-                      <tr><td>Delay of game</td><td>5 yards, replay down</td></tr>
-                      <tr><td>Holding / Illegal block</td><td>5 yards + loss of down</td></tr>
+                      <tr><td>Offsides</td><td>5 yards, replay the down</td></tr>
+                      <tr><td>Delay of Game</td><td>5 yards, replay the down</td></tr>
+                      <tr><td>Offensive Holding / Illegal Block</td><td>5 yards + loss of down</td></tr>
                       <tr><td>QB crossing LOS before pass</td><td>5 yards + loss of down</td></tr>
-                      <tr><td>Forward pass behind LOS</td><td>5 yards + loss of down</td></tr>
-                      <tr><td>Illegal procedure (trips)</td><td>5 yards, replay down</td></tr>
+                      <tr><td>Forward pass caught behind LOS</td><td>5 yards + loss of down</td></tr>
+                      <tr><td>Illegal procedure (&quot;trips&quot;)</td><td>5 yards, replay the down</td></tr>
                       <tr><td>Offensive pass interference</td><td>5 yards + loss of down</td></tr>
-                      <tr><td>Flag guarding</td><td>10 yards + loss of down</td></tr>
-                      <tr><td>Unsportsmanlike conduct</td><td>15 yards (personal foul)</td></tr>
+                      <tr><td>Flag guarding</td><td>10 yards from spot + loss of down (only if flag is not pulled)</td></tr>
+                      <tr><td>Unsportsmanlike conduct</td><td>15 yards from end of play — 1st offense sits out a series, 2nd offense suspended rest of game</td></tr>
                       <tr><td>Impeding the rusher</td><td>5 yards + loss of down</td></tr>
                     </tbody>
                   </table>
@@ -684,18 +752,31 @@ export default function Rules() {
                   <table className="table table-bordered table-sm mt-2">
                     <thead className="table-dark"><tr><th>Foul</th><th>Penalty</th></tr></thead>
                     <tbody>
-                      <tr><td>Holding / Illegal flag pull</td><td>+5 yards</td></tr>
-                      <tr><td>Stripping the ball</td><td>+5 yards</td></tr>
+                      <tr><td>Holding ball carrier / Illegal flag pull</td><td>5 yards added to end of the run</td></tr>
+                      <tr><td>Stripping</td><td>5 yards from spot of the foul</td></tr>
                       <tr><td>Roughing the passer</td><td>10 yards + automatic first down</td></tr>
-                      <tr><td>Illegal rush (not 5 yards back)</td><td>5 yards, replay down</td></tr>
-                      <tr><td>Bull rush</td><td>10 yards, replay down</td></tr>
-                      <tr><td>Illegal contact</td><td>10 yards, replay down</td></tr>
-                      <tr><td>Pass interference</td><td>Automatic first down at spot</td></tr>
-                      <tr><td>PI in end zone</td><td>1st & goal at 1-yard line</td></tr>
+                      <tr><td>Illegal rush (not 5 yards back)</td><td>5 yards, replay the down or result of the play (offense may decline)</td></tr>
+                      <tr><td>Bull rush</td><td>10 yards, replay the down</td></tr>
+                      <tr><td>Illegal contact (ball not yet released)</td><td>10 yards, replay the down</td></tr>
+                      <tr><td>Pass interference</td><td>Automatic first down at spot of foul</td></tr>
+                      <tr><td>PI in end zone</td><td>1st &amp; goal at the 1-yard line</td></tr>
                       <tr><td>Unsportsmanlike conduct</td><td>15 yards + automatic first down</td></tr>
                       <tr><td>Force out</td><td>Spot foul + automatic first down</td></tr>
                     </tbody>
                   </table>
+
+                  <h5>General</h5>
+                  <ul>
+                    <li>1st personal foul = player sits out 1 series (offense or defense). 2nd personal foul = ejection.</li>
+                    <li>Fighting = ejection, possible suspension, expulsion from XFF, and loss of the team&apos;s forfeit bond.</li>
+                    <li>Zero tolerance for verbal or physical abuse toward any XFF official — may result in automatic ejection and further discipline.</li>
+                  </ul>
+
+                  <h5>Rain Policy</h5>
+                  <ul>
+                    <li>Games are played unless the field is unplayable. Check the schedule page.</li>
+                    <li>If no cancellation is posted, <strong>games are on.</strong></li>
+                  </ul>
 
                   <PdfDownload filename="5-man-rules.pdf" />
 
@@ -856,139 +937,130 @@ export default function Rules() {
                   <h5>The Field</h5>
                   <ul>
                     <li>Elite / A / B Divisions: 45 yards × 100 yards with 10-yard end zones.</li>
-                    <li>C Division and some B: 45 yards × 80 yards.</li>
-                    <li>All teams play on the larger field for playoffs and championships.</li>
-                    <li>First down system: 4 zones of 20 yards each; once a zone line is crossed, it cannot be re-crossed in the same series.</li>
+                    <li>C Division and some B Division games: 45 yards × 80 yards. All teams may play on the larger field during playoffs and championship games.</li>
+                    <li>First down system: 4 &quot;zones to gain&quot; of 20 yards each. Once a first down is gained, it may not be re-crossed in the same series.</li>
                   </ul>
 
                   <h5>Timing</h5>
                   <ul>
-                    <li>4 quarters of 12 minutes each.</li>
-                    <li>Clock stops only on timeouts or injuries.</li>
-                    <li>Last 2 minutes: stop-clock rules — incomplete pass, timeout, out-of-bounds, and penalty.</li>
-                    <li>25-second play clock.</li>
-                    <li>3 timeouts per half; unused timeouts do not carry over to the next half.</li>
+                    <li>4 quarters of 12 minutes each. Clock stops only on a called timeout or injury.</li>
+                    <li>Last 2 minutes of the half and game: regular &quot;Stop Clock&quot; rules apply.</li>
+                    <li>Clock stops on: incomplete pass, timeout, out of bounds, and penalty (an intentional penalty to stop the clock is a 15-yard unsportsmanlike conduct penalty plus a 30-second run-off).</li>
+                    <li>Offense has 25 seconds to snap the ball after the official declares it ready.</li>
+                    <li>3 timeouts per half per team; unused timeouts do not carry over. Any player on the field may call a timeout.</li>
                   </ul>
 
                   <h5>Format &amp; Rosters</h5>
                   <ul>
-                    <li>8 players per side; game may start with 7.</li>
-                    <li>If a team is reduced to only 6 players, the opposing team takes the score or wins 7–0.</li>
-                    <li>Maximum 20 players on the roster; due before the first game.</li>
-                    <li>Rosters are frozen after the 4th game.</li>
-                    <li>Within the first 2 weeks, players may switch teams but may only play 1 game per day.</li>
-                    <li>Elite Division players <strong>cannot</strong> fill in for lower-division teams.</li>
+                    <li>8 players per side; a team may start with 7.</li>
+                    <li>If a team is reduced to only 6 players, the game is called — the opposing team may take the score at the time of the forfeit or a 7–0 win.</li>
+                    <li>Maximum 20 players on the roster, due before the first game of the season. Rosters freeze after a team&apos;s 4th game.</li>
+                    <li>Within the first 2 weeks of the season and before the 4th game, a player may switch to another team in the league — but may still only play in one game per day.</li>
+                    <li>Elite Division players <strong>cannot</strong> fill in for lower-division teams that need players to start a game.</li>
                   </ul>
 
-                  <h5>Padding &amp; Equipment</h5>
+                  <h5>Equipment</h5>
                   <ul>
-                    <li>No pads on upper torso, arms, or hands. Kneepads are allowed.</li>
-                    <li>Ace bandages for muscle pulls are permitted.</li>
-                    <li>Mouthpieces and eye protection are encouraged.</li>
-                    <li>Knee brace or prosthesis hinges must be covered.</li>
-                    <li>No hats with brims; no casts; no metal cleats.</li>
-                    <li>Same-colored uniform required (bring dark and light sets — coin toss decides if colors conflict).</li>
-                    <li>Teams provide their own flags and footballs; balls must be official collegiate or NFL size.</li>
+                    <li>No pads on any part of the upper torso, arms, or hands (kneepads are OK). No casts of any kind. <strong>No metal cleats.</strong></li>
+                    <li>Ace bandages are accepted for muscle pulls, but not to support other padding. Mouthpieces and eye protection are encouraged.</li>
+                    <li>Knee braces and lower-limb prosthesis hinges must be covered with a neoprene wrap.</li>
+                    <li>No brimmed hats (e.g. baseball caps) and no headgear with ends that could be pulled.</li>
+                    <li>Teams must always wear the same-colored uniform and bring an opposite-color (dark/light) set of tops — a coin toss decides who wears team colors if both teams match.</li>
+                    <li>Teams must provide their own flags and footballs (official collegiate or NFL size/weight).</li>
                   </ul>
 
                   <h5>Kick-offs &amp; Punts</h5>
                   <ul>
-                    <li><strong>No kickoffs.</strong> Ball is placed on the team's own 20-yard line at the start, second half, and after scores.</li>
-                    <li>All punts must be declared to the referee before the play.</li>
-                    <li>No direct snap for a punt; punter must kick immediately in continuous forward motion upon the snap.</li>
-                    <li>A scrimmage kick that fails to cross the line of scrimmage: all players are eligible to receive.</li>
-                    <li>Receiving team muffs a punt = ball spotted at point of muff; punter muffs the ball = not dead, may pick up and punt.</li>
+                    <li><strong>No kickoffs.</strong> Ball is placed on the team&apos;s own 20-yard line at the start of the game, the start of the second half, and after all scores.</li>
+                    <li>Declared punts must be announced to the referee before the ball is ready for play, and re-declared on any replay of down (including timeouts).</li>
+                    <li>No direct snap on a punt. Upon receiving the snap, the punter must immediately attempt to kick the ball in one continuous forward motion, using the same ball the offense is using.</li>
+                    <li>A scrimmage kick that fails to cross the line of scrimmage stays in play — any player may catch and advance it.</li>
                   </ul>
 
                   <h5>Scoring</h5>
                   <ul>
-                    <li>TD = 6 pts | 1 PAT from 5 yd | 2 PAT from 10 yd | Safety = 2 pts</li>
-                    <li>Defense can score on PAT attempts: interception returned = 2 points.</li>
-                    <li>After a safety, the scoring team regains the ball at their own 40-yard line (20-yard line in C Division).</li>
+                    <li>TD = 6 pts | 1-pt PAT from the 5-yard line | 2-pt PAT from the 10-yard line.</li>
+                    <li>Defense can score 2 points on a PAT attempt if the situation allows (e.g. an intercepted pass).</li>
+                    <li>Safety = 2 points; the scoring team regains possession at their own 40-yard line (20-yard line on the C Division field), or at midfield during overtime.</li>
                   </ul>
 
                   <h5>Fumbles</h5>
                   <ul>
-                    <li>All fumbles and muffed catches are dead; the last possessing team keeps the ball at the spot.</li>
+                    <li>All fumbles and muffs (whether or not possession was established) are dead at the spot and belong to the team last in possession.</li>
+                    <li>Exception: a punt muffed by the receiving team goes to the receiving team at the spot of the touch.</li>
+                    <li>Exception: a punt muffed by the punter stays live — the punter may recover it and still punt.</li>
                   </ul>
 
                   <h5>Offensive Formations</h5>
                   <ul>
-                    <li>All 8 players are eligible receivers.</li>
-                    <li>Minimum 4 players on the line of scrimmage at the snap.</li>
-                    <li>Shifts are allowed; 1 player in motion (a receiver from the LOS must retreat 5 yards first).</li>
-                    <li>3-point and 4-point stances are allowed; shoulders must be square to the LOS.</li>
-                    <li>Direct runs are allowed — no handoff or pass is required.</li>
+                    <li>All 8 players are eligible receivers. Direct runs are allowed — no handoff or pass is required.</li>
+                    <li>Minimum 4 players on the line of scrimmage at the snap. Shifts are allowed; 3- and 4-point stances are allowed.</li>
+                    <li>One player may go in motion, laterally only. A receiver going in motion from the LOS must first retreat at least 5 yards.</li>
+                    <li>Players on the line of scrimmage must keep their shoulders square to the line.</li>
                   </ul>
 
                   <h5>Blocking</h5>
                   <ul>
-                    <li>Open hands with palms facing; stay on feet at all times.</li>
-                    <li>No chop blocks, no leaving feet to block, no contact above shoulders or below the waist, no tripping.</li>
-                    <li>Offensive linemen on pass blocking: limited hands (thrust forward, contact inside the defender's frame).</li>
-                    <li>No forearms or elbows.</li>
-                    <li>"Two-on-one" blocking: only from the LOS and behind.</li>
+                    <li>Open hands, palms facing the opponent, arms extended — stay on your feet at all times. No chop blocks, no leaving your feet to block.</li>
+                    <li>No contact above the shoulders or below the waist, no tripping, no forearms or elbows.</li>
+                    <li>Limited hand use is permitted on pass blocking (hands may thrust forward, but contact must stay inside the frame). &quot;Two-on-one&quot; blocking is only permitted from the line of scrimmage and behind.</li>
                   </ul>
 
                   <h5>Passing</h5>
                   <ul>
-                    <li>Unlimited forward passes from behind the line of scrimmage.</li>
-                    <li>Passer may immediately spike the ball to stop the clock.</li>
+                    <li>Unlimited forward passes are allowed as long as the passer is behind the line of scrimmage.</li>
+                    <li>The passer may immediately spike the ball to the ground to stop the clock.</li>
                   </ul>
 
                   <h5>Running</h5>
                   <ul>
-                    <li>No flag guarding, stiff-arming, or charging.</li>
-                    <li>Ball carrier must attempt to avoid defenders.</li>
-                    <li>Flags must be worn at the start of each play.</li>
-                    <li>If flags are lost inadvertently, a one-hand touch between the shoulders and knees ends the play.</li>
+                    <li>The runner may not guard flags, straight-arm, or charge into a defender — must attempt to avoid the defender.</li>
+                    <li>The player must start the play with flags.</li>
+                    <li>A runner who loses their flags mid-play, without being de-flagged by an opponent, is simply down when touched between the shoulders and knees.</li>
                   </ul>
 
                   <h5>Defense</h5>
                   <ul>
-                    <li>Any formation is permitted.</li>
-                    <li>Defenders may use hands but may not hold.</li>
-                    <li>Bump-and-run until the ball is thrown (NFL 5-yard rule and one-bump rule do <strong>not</strong> apply).</li>
-                    <li>Defensive interference applies only once the pass crosses the line of scrimmage.</li>
-                    <li>No holding, tackling, or pushing a player out of bounds.</li>
-                    <li>May attempt to strip the ball without fouling.</li>
+                    <li>Any formation is allowed. Defense may use hands but may not hold the opponent.</li>
+                    <li>Bump-and-run coverage is allowed until the ball is thrown — the NFL 5-yard/one-bump rules do <strong>not</strong> apply, and defensive interference doesn&apos;t apply until the pass crosses the line of scrimmage.</li>
+                    <li>Defense may not hold, tackle, or push a runner out of bounds.</li>
+                    <li>Defense may strip the ball from the runner or QB only if, in the official&apos;s judgment, no foul (holding, roughing, or tackling) was committed.</li>
                   </ul>
 
                   <h5>Overtime (Hybrid College Rules)</h5>
                   <ul>
-                    <li>Coin toss; winner picks offense or defense.</li>
-                    <li>Each team starts at the 20-yard line going toward the goal line, with 4 plays.</li>
-                    <li>If the first team doesn't score, note the yardage gained — the second team must out-gain them or score a TD.</li>
-                    <li>If the first team scores, they choose 1 or 2 PAT; the second team must match.</li>
-                    <li>If the second team gains more total yards = game over. If both TDs and PATs match = 2nd OT (opposite team starts).</li>
-                    <li>3rd OT: teams must go for the 2-point PAT.</li>
-                    <li>Penalties are enforced as normal during OT.</li>
+                    <li>Coin toss — winner picks offense or defense. Each team starts at the 20-yard line going toward the goal line, with 4 plays.</li>
+                    <li>If the first team doesn&apos;t score, note the yardage gained — the second team must out-gain them or score a touchdown to win.</li>
+                    <li>If the first team scores, they choose to go for 1 or 2 points; the second team must match. A higher point total by the 2nd team ends the game; if both score a touchdown and match PATs, a 2nd overtime is played with the opposite team starting with the ball.</li>
+                    <li>3rd overtime: both teams must go for a 2-point conversion after scoring; play continues until a team wins.</li>
+                    <li>Penalties are enforced as normal. All penalties are 5, 10, or 15 yards.</li>
                   </ul>
 
                   <h5>Protests</h5>
                   <ul>
-                    <li>Manager uses a timeout to question a rule interpretation. If the ruling is wrong, the timeout is returned; if it stands, the timeout is forfeited.</li>
-                    <li>Illegal-player protest: make the request before the game (official asks the opposing manager) or during the game (official notes the name, notifies the manager, play resumes, submitted to League Director).</li>
-                    <li>Ineligible player = automatic forfeit; player and manager suspended.</li>
-                    <li>Opposing manager may accept the game result or take a 7–0 forfeit win.</li>
+                    <li>Rule interpretation: the manager must use a timeout to question a call. If officials rule the play was enforced incorrectly, the timeout is returned; if the play stands, the timeout is forfeited.</li>
+                    <li>Illegal player, before the game: request the official ask the opposing manager about a player&apos;s eligibility.</li>
+                    <li>Illegal player, during the game: the manager may protest a player&apos;s eligibility any time before the game ends. If the roster can&apos;t be verified on the spot, the official notes the protested player on the stat card, notifies the opposing manager the game is under protest, and play resumes — the League Director then checks the official roster.</li>
+                    <li>Playing an ineligible player results in an automatic forfeit and suspension of that player and the manager (determined by the League Director). The opposing manager may take the result/score of the game played, or a 7–0 forfeit win.</li>
                   </ul>
 
-                  <h5>Ejections</h5>
+                  <h5>Conduct &amp; Discipline</h5>
                   <ul>
-                    <li>Ejected player must leave the playing area (including sidelines) within 3 minutes.</li>
-                    <li>Manager provides the player's full name; automatic 1-game suspension.</li>
-                    <li>Multiple ejections may result in removal for the season.</li>
+                    <li>Rough or dangerous play is never tolerated — officials strictly enforce safety and sportsmanship rules. After one warning, if a manager can&apos;t control their team or player, the official may forfeit the game.</li>
+                    <li>Profanity (including sideline conduct) draws a 15-yard unsportsmanlike conduct penalty; a 2nd penalty is an ejection.</li>
+                    <li>Zero tolerance for physical or verbal abuse of any player, official, or spectator. Bodily harm results in immediate removal from the league and an incident report filed with SDPD — all threats are taken seriously.</li>
+                    <li>Ejected players must leave the playing area (including sidelines) within 3 minutes if directed by an official or League Director; the manager must give the official the ejected player&apos;s full name.</li>
+                    <li>Ejection = automatic 1-game suspension. Officials can only eject for the game being played; further discipline is at the League Director&apos;s discretion. Players ejected in more than one game in a season are removed for the rest of the season.</li>
+                    <li>Blood rule: a bleeding player, coach, or official must leave until all bleeding has stopped, any open cut is fully covered, and any bloody clothing is removed and replaced.</li>
+                    <li>Alcohol is not allowed on the field or while playing — visibly inebriated players will not be allowed to play.</li>
                   </ul>
 
-                  <h5>Conduct &amp; Miscellaneous</h5>
+                  <h5>Miscellaneous</h5>
                   <ul>
-                    <li>Zero tolerance for physical or verbal abuse. Bodily harm = immediate removal + incident report to SDPD. All threats are taken seriously.</li>
-                    <li>Profanity: 15-yard unsportsmanlike; 2nd penalty = ejection.</li>
-                    <li>Blood rule: bleeding player removed until wound is treated, bleeding stopped, and bloody clothing replaced.</li>
-                    <li>No alcoholic beverages on the field or consumed by players during games. Inebriated players are not allowed.</li>
-                    <li>Children must be supervised and kept 15 yards from the sideline. Spectators must stay 10 yards from the sideline.</li>
-                    <li>No vehicles, glass containers, smoking, dogs, or bicycles on the field.</li>
-                    <li>Managers are responsible for ensuring all trash is removed.</li>
+                    <li>Children must be supervised at all times, kept at least 15 yards from the sideline, and may not hold the down marker.</li>
+                    <li>Spectators must stay at least 10 yards from the sideline.</li>
+                    <li>No vehicles, glass containers, smoking, dogs, or bicycles on or around the field — lock bikes at the racks provided.</li>
+                    <li>Managers are responsible for making sure their team&apos;s trash is cleaned up and placed in the provided receptacles.</li>
                   </ul>
 
                   <PdfDownload filename="8-man-eligible-rules.pdf" />
