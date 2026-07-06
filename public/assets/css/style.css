@@ -608,6 +608,20 @@ header .nav-area-main .navbar ul.navbar-nav li a.active {
   color: #fff;
   font-weight: 700;
 }
+/* The rule above colors every nav link white, including the nested
+   .dropdown-item links inside .dropdown-menu (e.g. About Us > Rules &
+   Policies). Bootstrap's dropdown-menu background is white, so that white
+   text was invisible until some other state (focus outline, etc.)
+   happened to change it. Give dropdown items their own readable color. */
+header .nav-area-main .navbar ul.navbar-nav .dropdown-menu .dropdown-item {
+  color: #212529;
+  text-transform: none;
+}
+header .nav-area-main .navbar ul.navbar-nav .dropdown-menu .dropdown-item:hover,
+header .nav-area-main .navbar ul.navbar-nav .dropdown-menu .dropdown-item:focus {
+  color: #fff;
+  background-color: #F13B26;
+}
 header .nav-area-main .right-part {
   flex: 1 0 0;
   display: flex;
@@ -3442,4 +3456,28 @@ footer .copyright-area ul li a:hover {
     width: 100%;
     flex: 0 0 100%;
   }
-}/*# sourceMappingURL=style.css.map */
+}
+
+/* Show header nav dropdowns (e.g. About Us > Rules & Policies) on hover for
+   desktop, instead of requiring a click. Scoped to the same lg breakpoint
+   used by the desktop nav (d-lg-flex) so the mobile offcanvas menu is
+   unaffected. Explicit position/top/left are required because Bootstrap
+   only sets those via its JS-driven [data-bs-popper] attribute, which a
+   pure CSS hover never triggers. */
+@media (min-width: 992px) {
+  .nav-area-main .navbar-nav .nav-item.dropdown {
+    position: relative;
+  }
+  .nav-area-main .navbar-nav .nav-item.dropdown:hover > .dropdown-menu {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 0;
+    z-index: 1050;
+  }
+}
+/*# sourceMappingURL=style.css.map */
