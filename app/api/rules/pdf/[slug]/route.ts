@@ -3,6 +3,10 @@ export const dynamic = 'force-dynamic';
 import PDFDocument from 'pdfkit';
 import { rulebooks } from '../../content';
 
+// Strip the **bold** markdown markers used for webpage emphasis — the
+// PDF renders plain text.
+const plain = (value: string) => value.replace(/\*\*/g, '');
+
 export async function GET(_req: Request, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const book = rulebooks.find((r) => r.filename === slug);
@@ -25,7 +29,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ slug: s
       .fontSize(22)
       .fillColor('#c8102e')
       .font('Helvetica-Bold')
-      .text(book.title, { align: 'left' });
+      .text(plain(book.title), { align: 'left' });
 
     doc.moveDown(0.5);
     doc
@@ -38,29 +42,32 @@ export async function GET(_req: Request, { params }: { params: Promise<{ slug: s
 
     for (const section of book.sections) {
       // Section heading — add page if less than 60px remain
-      if (doc.y > doc.page.height - 100) doc.addPage();
-      doc
-        .fontSize(13)
-        .fillColor('#111111')
-        .font('Helvetica-Bold')
-        .text(section.heading);
-      doc.moveDown(0.3);
+      if (section.heading) {
+        if (doc.y > doc.page.height - 100) doc.addPage();
+        doc
+          .fontSize(13)
+          .fillColor('#111111')
+          .font('Helvetica-Bold')
+          .text(plain(section.heading));
+        doc.moveDown(0.3);
+      }
 
       for (const block of section.content) {
         if (block.type === 'list') {
-          for (const item of block.items) {
+          block.items.forEach((item, i) => {
+            const bullet = block.ordered ? `${i + 1}.` : '•';
             doc
               .fontSize(10)
               .fillColor('#333333')
               .font('Helvetica')
-              .text(`• ${item}`, { indent: 12, lineGap: 2 });
-          }
+              .text(`${bullet} ${plain(item)}`, { indent: 12, lineGap: 2 });
+          });
         } else if (block.type === 'text') {
           doc
             .fontSize(10)
             .fillColor('#333333')
             .font('Helvetica')
-            .text(block.value, { lineGap: 2 });
+            .text(plain(block.value), { lineGap: 2 });
         } else if (block.type === 'table') {
           const colWidths = [280, 222];
           const rowHeight = 18;
@@ -87,8 +94,8 @@ export async function GET(_req: Request, { params }: { params: Promise<{ slug: s
             doc.rect(startX, y, colWidths[0], rowHeight).fillAndStroke(fill, '#dddddd');
             doc.rect(startX + colWidths[0], y, colWidths[1], rowHeight).fillAndStroke(fill, '#dddddd');
             doc.fontSize(9).fillColor('#333333').font('Helvetica')
-              .text(foul, startX + 4, y + 5, { width: colWidths[0] - 8 });
-            doc.text(penalty, startX + colWidths[0] + 4, y + 5, { width: colWidths[1] - 8 });
+              .text(plain(foul), startX + 4, y + 5, { width: colWidths[0] - 8 });
+            doc.text(plain(penalty), startX + colWidths[0] + 4, y + 5, { width: colWidths[1] - 8 });
             y += rowHeight;
           });
 
