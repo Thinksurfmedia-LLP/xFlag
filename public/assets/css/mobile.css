@@ -9,34 +9,41 @@
      ≤480px  → extra-small
 ============================================================ */
 
+#rulesAccordion .accordion-button {
+  font-family: "Inter", sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+#rulesAccordion .accordion-button::before {
+  display: none !important;
+}
+#rulesAccordion .accordion-button::after {
+  margin-left: auto !important;
+  flex-shrink: 0;
+  order: 2;
+}
+#rulesAccordion .accordion-button:hover {
+  background-color: #f33a26;
+  color: #fff;
+}
+#rulesAccordion .accordion-button:not(.collapsed) {
+  background-color: #f33a26;
+  color: #fff;
+}
+.accordion-button:not(.collapsed)::after {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+}
 
-
-      #rulesAccordion .accordion-button {
-        font-family: 'Inter', sans-serif;
-        font-size: 18px;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-      }
-      #rulesAccordion .accordion-button::before {
-        display: none !important;
-      }
-      #rulesAccordion .accordion-button::after {
-        margin-left: auto !important;
-        flex-shrink: 0;
-        order: 2;
-      }
-      #rulesAccordion .accordion-button:hover {background-color: #f33a26; color: #fff;}
-      #rulesAccordion .accordion-button:not(.collapsed) {background-color: #f33a26; color: #fff;}
-      .accordion-button:not(.collapsed)::after {background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");}
-
-      #rulesAccordion .accordion-button:focus {
-        box-shadow: none; outline: none;
-      }
-
+#rulesAccordion .accordion-button:focus {
+  box-shadow: none;
+  outline: none;
+}
 
 /* ─── GLOBAL VIEWPORT FIX ─────────────────────────────── */
-html, body {
+html,
+body {
   overflow-x: hidden;
   max-width: 100%;
 }
@@ -46,7 +53,8 @@ html, body {
 }
 
 /* Restore natural min-width for table cells so tables can force horizontal scroll */
-th, td {
+th,
+td {
   min-width: auto;
 }
 
@@ -70,7 +78,6 @@ th, td {
 
 /* ─── ≤991px: Tablet / Mobile ──────────────────────────── */
 @media all and (max-width: 991px) {
-
   /* Header */
   header .container-fluid {
     padding: 0 15px;
@@ -142,20 +149,18 @@ th, td {
   .team-point-section .team-heading-nav li a {
     font-size: 1.8rem;
   }
-
 }
-
 
 /* ─── ≤767px: Mobile ───────────────────────────────────── */
 @media all and (max-width: 767px) {
-
   /* General */
   .section-padding {
     padding-top: 3rem;
     padding-bottom: 3rem;
   }
 
-  .container, .container-fluid {
+  .container,
+  .container-fluid {
     padding-left: 15px;
     padding-right: 15px;
   }
@@ -165,8 +170,6 @@ th, td {
     max-height: 80px;
     width: auto;
   }
-
-
 
   /* Inner banner */
   .inner-banner-section {
@@ -240,7 +243,6 @@ th, td {
   .x-states-section {
     padding: 2rem 0;
   }
-
 
   .x-states-section .banner-area {
     flex-direction: column;
@@ -444,14 +446,12 @@ th, td {
   .upcoming-match-section .nav-area ul.nav li button {
     font-size: 18px;
   }
-
 }
-
 
 /* ─── ≤575px: Small Mobile ─────────────────────────────── */
 @media all and (max-width: 575px) {
-
-  h1, h2 {
+  h1,
+  h2 {
     font-size: 1.8rem !important;
   }
 
@@ -463,20 +463,16 @@ th, td {
     font-size: 1.2rem;
   }
 
-
   /* Buttons */
   .btn {
     padding: 12px 20px;
     font-size: 0.85rem;
   }
 
-
   .schedules-section {
     padding-top: 1.5rem;
     padding-bottom: 1.5rem;
   }
-
-
 
   .design1 {
     font-size: 1.5rem;
@@ -535,8 +531,6 @@ th, td {
     font-size: 0.95rem;
   }
 
-
-
   footer .top-footer .nav-area ul li {
     font-size: 14px;
   }
@@ -592,22 +586,15 @@ th, td {
     margin-bottom: 20px;
     text-align: center;
   }
-
 }
-
 
 /* ─── ≤480px: Extra-small ──────────────────────────────── */
 @media all and (max-width: 480px) {
-
   /* Sponsor form full-width cols */
   .sponsorship-section .form-area .col-6 {
     width: 100%;
     flex: 0 0 100%;
   }
-
-
-
-
 
   /* Team heading nav full width */
   .team-point-section .team-heading-nav {
@@ -618,27 +605,23 @@ th, td {
   .team-point-section .team-heading-nav li {
     text-align: center;
   }
-
 }
-
 
 /* ─── ≤380px: Very small ───────────────────────────────── */
 @media all and (max-width: 380px) {
-
   .btn {
     padding: 10px 14px;
     font-size: 0.8rem;
   }
 
-  h1, h2 {
+  h1,
+  h2 {
     font-size: 1.5rem !important;
   }
-
 
   .x-states-section .years-item {
     grid-template-columns: repeat(2, 1fr) !important;
   }
-
 }
 
 /* ===== RESULTS TICKER — mobile ===== */

@@ -608,20 +608,6 @@ header .nav-area-main .navbar ul.navbar-nav li a.active {
   color: #fff;
   font-weight: 700;
 }
-/* The rule above colors every nav link white, including the nested
-   .dropdown-item links inside .dropdown-menu (e.g. About Us > Rules &
-   Policies). Bootstrap's dropdown-menu background is white, so that white
-   text was invisible until some other state (focus outline, etc.)
-   happened to change it. Give dropdown items their own readable color. */
-header .nav-area-main .navbar ul.navbar-nav .dropdown-menu .dropdown-item {
-  color: #212529;
-  text-transform: none;
-}
-header .nav-area-main .navbar ul.navbar-nav .dropdown-menu .dropdown-item:hover,
-header .nav-area-main .navbar ul.navbar-nav .dropdown-menu .dropdown-item:focus {
-  color: #fff;
-  background-color: #F13B26;
-}
 header .nav-area-main .right-part {
   flex: 1 0 0;
   display: flex;
@@ -768,33 +754,29 @@ header .hdr-mob-area {
 }
 
 .banner-section {
-  min-height: 100vh;
   background: url(../images/banner.jpg) center top no-repeat;
   background-size: cover;
   position: relative;
-  padding: 6.5rem 0 4.5rem;
   display: flex;
   align-items: center;
 }
 .banner-section .image-area {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  position: relative;
   z-index: 1;
 }
 .banner-section .image-area img {
   width: 100%;
   height: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
-  -o-object-position: center center;
-     object-position: center center;
 }
 .banner-section .container-fluid {
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: 2;
+  display: flex;
+  align-items: center;
 }
 .banner-section .banner-area {
   max-width: 100%;
@@ -804,8 +786,11 @@ header .hdr-mob-area {
   display: flex;
   flex-direction: column;
   align-items: start;
-  gap: 20px;
+  gap: 8px;
   padding: 50px 0;
+}
+.banner-section .banner-area h1, .banner-section .banner-area h2, .banner-section .banner-area h5 {
+  text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.45);
 }
 .banner-section .banner-area h1 {
   font-size: 5.5rem;
@@ -3000,8 +2985,22 @@ footer .copyright-area ul li a:hover {
   .homepage-banner .owl-dots {
     bottom: 5px;
   }
+  .homepage-banner .banner-section .container-fluid {
+    position: relative;
+    gap: 15px;
+  }
+  .homepage-banner .banner-section .container-fluid .image-area {
+    display: block !important;
+    position: relative;
+  }
+  .homepage-banner .banner-section > .image-area {
+    display: none !important;
+  }
   .homepage-banner .banner-section .banner-area {
-    padding: 0 20px 30px;
+    padding: 0 20px 40px;
+  }
+  .homepage-banner .banner-section .banner-area h1, .homepage-banner .banner-section .banner-area h2 {
+    line-height: 1.2;
   }
   .homepage-banner .banner-section .banner-area h2 {
     margin-bottom: 10px;
@@ -3129,20 +3128,12 @@ footer .copyright-area ul li a:hover {
     min-height: auto;
     padding: 0;
   }
-  .banner-section > .image-area {
-    display: none !important;
-  }
   .banner-section .container-fluid {
     display: flex;
     flex-direction: column;
-    gap: 20px;
     align-items: center;
     justify-content: center;
     padding: 0 0px;
-  }
-  .banner-section .container-fluid .image-area {
-    display: block !important;
-    position: relative;
   }
   .banner-section .banner-area {
     width: 100%;
@@ -3456,28 +3447,4 @@ footer .copyright-area ul li a:hover {
     width: 100%;
     flex: 0 0 100%;
   }
-}
-
-/* Show header nav dropdowns (e.g. About Us > Rules & Policies) on hover for
-   desktop, instead of requiring a click. Scoped to the same lg breakpoint
-   used by the desktop nav (d-lg-flex) so the mobile offcanvas menu is
-   unaffected. Explicit position/top/left are required because Bootstrap
-   only sets those via its JS-driven [data-bs-popper] attribute, which a
-   pure CSS hover never triggers. */
-@media (min-width: 992px) {
-  .nav-area-main .navbar-nav .nav-item.dropdown {
-    position: relative;
-  }
-  .nav-area-main .navbar-nav .nav-item.dropdown:hover > .dropdown-menu {
-    display: block;
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    margin-top: 0;
-    z-index: 1050;
-  }
-}
-/*# sourceMappingURL=style.css.map */
+}/*# sourceMappingURL=style.css.map */
