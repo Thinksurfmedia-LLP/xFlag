@@ -169,6 +169,8 @@ function RushingTable({ rows }: { rows: any[] }) {
             {T('TD', 'tds')}
             {T('PAT', 'pat')}
             {T('Y/C', 'ypc')}
+            {T('GP', 'gamesPlayed')}
+            {T('AVG/G', 'rushAvgPerGame')}
           </tr>
         </thead>
         <tbody>
@@ -182,8 +184,10 @@ function RushingTable({ rows }: { rows: any[] }) {
               <td>{p.tds}</td>
               <td>{p.pat}</td>
               <td>{p.ypc}</td>
+              <td>{p.gamesPlayed ?? 0}</td>
+              <td>{p.rushAvgPerGame ?? 0}</td>
             </tr>
-          )) : <tr><td colSpan={8} className="text-center">No rushing stats available</td></tr>}
+          )) : <tr><td colSpan={10} className="text-center">No rushing stats available</td></tr>}
         </tbody>
       </table>
     </div>
@@ -209,6 +213,7 @@ function DefensiveTable({ rows }: { rows: any[] }) {
             {T('SCK', 'dsacks')}
             {T('SAF', 'dsafety')}
             {T('FP', 'flagPulls')}
+            {T('FP/G', 'flagPullsPerGame')}
           </tr>
         </thead>
         <tbody>
@@ -218,14 +223,15 @@ function DefensiveTable({ rows }: { rows: any[] }) {
               <PlayerCell p={p} />
               <td>{p.teamName}</td>
               <td>{p.dint}</td>
-              <td>{p.fumbles}</td>
+              <td>{p.fumbles ?? 0}</td>
               <td>{p.dtd}</td>
               <td>{p.dpat}</td>
               <td>{p.dsacks}</td>
               <td>{p.dsafety}</td>
               <td>{p.flagPulls}</td>
+              <td>{p.flagPullsPerGame ?? 0}</td>
             </tr>
-          )) : <tr><td colSpan={10} className="text-center">No defensive stats available</td></tr>}
+          )) : <tr><td colSpan={11} className="text-center">No defensive stats available</td></tr>}
         </tbody>
       </table>
     </div>

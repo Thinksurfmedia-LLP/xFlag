@@ -36,8 +36,9 @@ export default function StatsClient({ leagues, seasons }: { leagues: any[]; seas
       .sort((a, b) => {
         const idxA = seasonOrder.indexOf(a.label);
         const idxB = seasonOrder.indexOf(b.label);
-        if (idxA !== -1 && idxB !== -1) return idxA - idxB;
-        return a.label.localeCompare(b.label);
+        // Descending — the latest season of the year shows first.
+        if (idxA !== -1 && idxB !== -1) return idxB - idxA;
+        return b.label.localeCompare(a.label);
       });
   }, [seasons, selectedYear]);
 
