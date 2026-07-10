@@ -63,10 +63,10 @@ export default async function LeagueLeaderboardPage({
           </div>
 
           <LeaderboardClient
-            passingStats={passingStats.slice(0, 50)}
-            receivingStats={receivingStats.slice(0, 50)}
-            rushingStats={rushingStats.slice(0, 50)}
-            defenseStats={defenseStats.slice(0, 50)}
+            passingStats={[...passingStats].sort((a: any, b: any) => (b.yards ?? 0) - (a.yards ?? 0)).slice(0, 50)}
+            receivingStats={[...receivingStats].sort((a: any, b: any) => (b.yards ?? 0) - (a.yards ?? 0)).slice(0, 50)}
+            rushingStats={[...rushingStats].sort((a: any, b: any) => (b.yards ?? 0) - (a.yards ?? 0)).slice(0, 50)}
+            defenseStats={[...defenseStats].sort((a: any, b: any) => (b.flagPulls ?? 0) - (a.flagPulls ?? 0)).slice(0, 50)}
           />
         </div>
       </section>

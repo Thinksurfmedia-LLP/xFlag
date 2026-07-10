@@ -41,6 +41,16 @@ export default async function LeaderboardPage({
   const seasonObj = seasons.find((s: any) => s._id === seasonId || String(s._id) === seasonId);
   const seasonName = seasonObj?.name || 'Season';
 
+  // The API returns rows in arbitrary (DB iteration) order, not ranked by any
+  // stat. Sort by each table's real leaderboard metric BEFORE truncating to
+  // the top 50, otherwise slice() keeps whatever rows happened to load first
+  // and silently drops the actual leaders.
+  const byDesc = (key: string) => (a: any, b: any) => (b[key] ?? 0) - (a[key] ?? 0);
+  const topPassing = [...passingStats].sort(byDesc('yards')).slice(0, 50);
+  const topReceiving = [...receivingStats].sort(byDesc('yards')).slice(0, 50);
+  const topRushing = [...rushingStats].sort(byDesc('yards')).slice(0, 50);
+  const topDefense = [...defenseStats].sort(byDesc('flagPulls')).slice(0, 50);
+
   return (
     <div className="wrapper">
       <Header />
@@ -71,10 +81,10 @@ export default async function LeaderboardPage({
           </div>
 
           <LeaderboardClient
-            passingStats={passingStats.slice(0, 50)}
-            receivingStats={receivingStats.slice(0, 50)}
-            rushingStats={rushingStats.slice(0, 50)}
-            defenseStats={defenseStats.slice(0, 50)}
+            passingStats={topPassing}
+            receivingStats={topReceiving}
+            rushingStats={topRushing}
+            defenseStats={topDefense}
           />
         </div>
       </section>
