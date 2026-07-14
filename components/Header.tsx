@@ -66,10 +66,17 @@ export default async function Header() {
                           <ul className="navbar-nav">
                               {navLinks.map(link => (
                                 link.dropdown.length > 0 ? (
-                                  <li key={link.id} className="nav-item dropdown">
-                                      <Link className="nav-link dropdown-toggle" href={link.href} data-bs-toggle="dropdown">
+                                  <li key={link.id} className="nav-item dropdown nav-item-has-dropdown">
+                                      <Link className="nav-link" href={link.href}>
                                         {link.label}
                                       </Link>
+                                      <button
+                                        type="button"
+                                        className="dropdown-toggle dropdown-toggle-caret"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false"
+                                        aria-label={`Toggle ${link.label} submenu`}
+                                      ></button>
                                       <ul className="dropdown-menu">
                                           {link.dropdown.map(sub => (
                                             <li key={sub.id}>
@@ -97,10 +104,17 @@ export default async function Header() {
                               <ul className="navbar-nav">
                                   {navLinks.map(link => (
                                     link.dropdown.length > 0 ? (
-                                      <li key={link.id} className="nav-item dropdown">
-                                          <Link className="nav-link dropdown-toggle" href={link.href} data-bs-toggle="dropdown">
+                                      <li key={link.id} className="nav-item dropdown nav-item-has-dropdown">
+                                          <Link className="nav-link" href={link.href}>
                                             {link.label}
                                           </Link>
+                                          <button
+                                            type="button"
+                                            className="dropdown-toggle dropdown-toggle-caret"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false"
+                                            aria-label={`Toggle ${link.label} submenu`}
+                                          ></button>
                                           <ul className="dropdown-menu">
                                               {link.dropdown.map(sub => (
                                                 <li key={sub.id}>

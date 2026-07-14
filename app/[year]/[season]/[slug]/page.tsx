@@ -1,20 +1,19 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
-import { getLiveLeagues, getLiveStandings, getLiveSchedules } from '@/lib/flagmag';
+import { getLiveLeagues, getLiveStandings, getLiveLeagueSchedule } from '@/lib/flagmag';
 import GameRow from './GameRow';
 
 export default async function GameStatsPage({ params }: { params: { year: string; season: string; slug: string } }) {
   const { year, season, slug } = await params;
 
-  const [leagues, standings, schedules] = await Promise.all([
+  const [leagues, standings, weeks] = await Promise.all([
     getLiveLeagues(),
     getLiveStandings(slug),
-    getLiveSchedules(),
+    getLiveLeagueSchedule(slug),
   ]);
 
   const league = leagues.find((l: any) => l.slug === slug);
-  const leagueSchedules = schedules.filter((s: any) => s.league === league?._id);
 
   // Create a quick lookup for Team W-L records from the standings data
   const teamRecords: Record<string, string> = {};
@@ -23,24 +22,6 @@ export default async function GameStatsPage({ params }: { params: { year: string
       teamRecords[row.name] = `${row.wins}-${row.losses}`;
     });
   });
-
-  // Group schedules by week (7-day buckets from the earliest game date)
-  const sortedSchedules = [...leagueSchedules].sort((a: any, b: any) =>
-    new Date(a.date).getTime() - new Date(b.date).getTime()
-  );
-
-  const gamesByWeek: Map<number, any[]> = new Map();
-  if (sortedSchedules.length > 0) {
-    const firstDate = new Date(sortedSchedules[0].date);
-    firstDate.setHours(0, 0, 0, 0);
-    sortedSchedules.forEach((game: any) => {
-      const d = new Date(game.date);
-      d.setHours(0, 0, 0, 0);
-      const weekNum = Math.floor((d.getTime() - firstDate.getTime()) / (7 * 24 * 60 * 60 * 1000)) + 1;
-      if (!gamesByWeek.has(weekNum)) gamesByWeek.set(weekNum, []);
-      gamesByWeek.get(weekNum)!.push(game);
-    });
-  }
 
   const getLogoUrl = (url?: string) => {
     if (!url) return '/assets/images/team-placeholder.svg';
@@ -137,36 +118,34 @@ export default async function GameStatsPage({ params }: { params: { year: string
             <h2>Games</h2>
           </div>
 
-          {gamesByWeek.size > 0 ? (
+          {weeks.length > 0 ? (
             <div className="row gx-3 gy-4 justify-content-center">
-              {Array.from(gamesByWeek.entries()).map(([weekNum, weekGames]) => {
-                return (
-                  <div key={weekNum} className="col-xl-6">
-                    <div className="division-table-area game-table">
-                      <div className="table-wrap">
-                        <h4>Week {weekNum}</h4>
-                        <table className="table table-hover" style={{ fontSize: '13px' }}>
-                          <thead>
-                            <tr>
-                              <th>Date</th>
-                              <th>Pts</th>
-                              <th>Team</th>
-                              <th></th>
-                              <th>Pts</th>
-                              <th>Team</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {weekGames.map((game: any, gIdx: number) => (
-                              <GameRow key={gIdx} game={game} year={year} season={season} slug={slug} showDate={true} />
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
+              {[...weeks].reverse().map((week: any) => (
+                <div key={week.weekStart} className="col-xl-6">
+                  <div className="division-table-area game-table">
+                    <div className="table-wrap">
+                      <h4>Week {week.weekNum}</h4>
+                      <table className="table table-hover" style={{ fontSize: '13px' }}>
+                        <thead>
+                          <tr>
+                            <th>Date</th>
+                            <th>Pts</th>
+                            <th>Team</th>
+                            <th></th>
+                            <th>Pts</th>
+                            <th>Team</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {week.games.map((game: any) => (
+                            <GameRow key={game._id} game={game} year={year} season={season} slug={slug} showDate={true} />
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
-                );
-              })}
+                </div>
+              ))}
             </div>
           ) : (
             <div className="col-12 text-center py-5">

@@ -596,6 +596,21 @@ header .nav-area-main .navbar ul.navbar-nav {
 header .nav-area-main .navbar ul.navbar-nav li {
   margin: 0;
 }
+header .nav-area-main .navbar ul.navbar-nav li.nav-item-has-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+header .nav-area-main .navbar ul.navbar-nav li .dropdown-toggle-caret {
+  background: none;
+  border: 0;
+  padding: 4px;
+  line-height: 0;
+  color: #fff;
+}
+header .nav-area-main .navbar ul.navbar-nav li .dropdown-toggle-caret::after {
+  margin-left: 0;
+}
 header .nav-area-main .navbar ul.navbar-nav li a {
   color: #fff;
   font-weight: 500;

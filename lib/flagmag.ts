@@ -46,6 +46,21 @@ export async function getLiveSchedules() {
   }
 }
 
+// Week grouping (name, boundaries, game membership) is computed once, server-side,
+// by flagmag itself — this is the single source of truth every consumer must use
+// instead of re-deriving week numbers from raw game dates, which drifts out of
+// sync whenever schedules have gaps or reschedules.
+export async function getLiveLeagueSchedule(leagueSlug: string) {
+  try {
+    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/season/${leagueSlug}/schedule`, CACHE);
+    const data = await res.json();
+    return data.success ? data.weeks : [];
+  } catch (error) {
+    console.error(`Failed to fetch league schedule for ${leagueSlug}:`, error);
+    return [];
+  }
+}
+
 export async function getLiveLeagues() {
   try {
     const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/leagues`, CACHE);

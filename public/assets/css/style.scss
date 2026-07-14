@@ -763,6 +763,24 @@ header {
 					}
 				}
 
+				li.nav-item-has-dropdown {
+					display: flex;
+					align-items: center;
+					gap: 4px;
+				}
+
+				.dropdown-toggle-caret {
+					background: none;
+					border: 0;
+					padding: 4px;
+					line-height: 0;
+					color: #fff;
+
+					&::after {
+						margin-left: 0;
+					}
+				}
+
 				.dropdown-menu {
 					background: #fff;
 					border: 1px solid rgba(0, 0, 0, 0.1);
