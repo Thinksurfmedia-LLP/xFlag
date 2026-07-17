@@ -67,9 +67,9 @@ export default async function Header() {
                               {navLinks.map(link => (
                                 link.dropdown.length > 0 ? (
                                   <li key={link.id} className="nav-item dropdown nav-item-has-dropdown">
-                                      <Link className="nav-link" href={link.href}>
+                                      <span className="nav-link nav-link-no-click">
                                         {link.label}
-                                      </Link>
+                                      </span>
                                       <button
                                         type="button"
                                         className="dropdown-toggle dropdown-toggle-caret"
@@ -105,13 +105,14 @@ export default async function Header() {
                                   {navLinks.map(link => (
                                     link.dropdown.length > 0 ? (
                                       <li key={link.id} className="nav-item dropdown nav-item-has-dropdown">
-                                          <Link className="nav-link" href={link.href}>
+                                          <span className="nav-link nav-link-no-click">
                                             {link.label}
-                                          </Link>
+                                          </span>
                                           <button
                                             type="button"
                                             className="dropdown-toggle dropdown-toggle-caret"
                                             data-bs-toggle="dropdown"
+                                            data-bs-display="static"
                                             aria-expanded="false"
                                             aria-label={`Toggle ${link.label} submenu`}
                                           ></button>

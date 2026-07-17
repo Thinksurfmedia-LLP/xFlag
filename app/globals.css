@@ -13,6 +13,62 @@ body {
   overflow-x: hidden;
 }
 
+header .nav-area-main .navbar-nav .nav-link-no-click {
+  cursor: default;
+  display: inline-block;
+  color: #fff;
+  font-weight: 500;
+  font-family: "Inter", sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.5px;
+}
+
+@media only screen and (max-width: 1399px) {
+  header .nav-area-main .navbar-nav .nav-link-no-click {
+    font-size: 15px;
+  }
+}
+
+/* Mobile offcanvas dropdown: Bootstrap's Popper-based positioning miscalculates
+   inside the offcanvas panel, floating the menu off to the side. Force it
+   static and stacked below the label+caret row instead.
+   Note: the toggle button and .dropdown-menu must stay direct siblings —
+   Bootstrap's dropdown JS looks up the menu relative to the toggle, so
+   wrapping them in separate containers breaks the click handler. Getting the
+   menu onto its own line is done with the flex-wrap + flex-basis:100% trick
+   below instead of restructuring the DOM. */
+#mobileMenu .nav-item-has-dropdown {
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+}
+
+#mobileMenu .dropdown-menu {
+  flex-basis: 100%;
+  position: static;
+  inset: auto;
+  transform: none !important;
+  width: 100%;
+  margin: 8px 0 0;
+  background: #2b2724;
+  border: none;
+  border-radius: 8px;
+  box-shadow: none;
+  padding: 6px 10px;
+}
+
+#mobileMenu .dropdown-menu .dropdown-item {
+  color: #fff !important;
+  background: transparent;
+  text-align: left;
+}
+
+#mobileMenu .dropdown-menu .dropdown-item:hover,
+#mobileMenu .dropdown-menu .dropdown-item:focus {
+  color: #F13B26 !important;
+  background: transparent;
+}
+
 body {
   min-height: 100%;
   display: flex;
