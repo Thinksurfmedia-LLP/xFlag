@@ -13,9 +13,15 @@ const ORG_SLUG = rawOrgSlug;
 // page load, while ensuring schedule changes appear within ~30 seconds.
 const CACHE = { next: { revalidate: 30 } } as const;
 
+// Without an explicit timeout, a hung/unreachable FLAGMAG_API_URL (e.g. a
+// misconfigured localhost URL in production) leaves fetch() pending forever,
+// which stalls the whole RSC stream with no error surfaced anywhere.
+const FETCH_TIMEOUT_MS = 8000;
+const withTimeout = () => ({ signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
+
 export async function getLiveVenues() {
   try {
-    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/venues`, CACHE);
+    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/venues`, { ...CACHE, ...withTimeout() });
     const data = await res.json();
     return data.success ? data.data : [];
   } catch (error) {
@@ -26,7 +32,7 @@ export async function getLiveVenues() {
 
 export async function getLiveOrganization() {
   try {
-    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}`, CACHE);
+    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}`, { ...CACHE, ...withTimeout() });
     const data = await res.json();
     return data.success ? data.data : null;
   } catch (error) {
@@ -37,7 +43,7 @@ export async function getLiveOrganization() {
 
 export async function getLiveSchedules() {
   try {
-    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/games`, CACHE);
+    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/games`, { ...CACHE, ...withTimeout() });
     const data = await res.json();
     return data.success ? data.data : [];
   } catch (error) {
@@ -52,7 +58,7 @@ export async function getLiveSchedules() {
 // sync whenever schedules have gaps or reschedules.
 export async function getLiveLeagueSchedule(leagueSlug: string) {
   try {
-    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/season/${leagueSlug}/schedule`, CACHE);
+    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/season/${leagueSlug}/schedule`, { ...CACHE, ...withTimeout() });
     const data = await res.json();
     return data.success ? data.weeks : [];
   } catch (error) {
@@ -63,7 +69,7 @@ export async function getLiveLeagueSchedule(leagueSlug: string) {
 
 export async function getLiveLeagues() {
   try {
-    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/leagues`, CACHE);
+    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/leagues`, { ...CACHE, ...withTimeout() });
     const data = await res.json();
     return data.success ? data.data : [];
   } catch (error) {
@@ -76,7 +82,7 @@ export async function getLiveLeagueLeaderboard(leagueSlug: string, statType: str
   try {
     const res = await fetch(
       `${API_URL}/organizations/${ORG_SLUG}/season/${leagueSlug}/stats/computed?statType=${statType}`,
-      CACHE
+      { ...CACHE, ...withTimeout() }
     );
     const data = await res.json();
     return data.players || [];
@@ -90,7 +96,7 @@ export async function getLiveSeasonLeaderboard(seasonId: string, statType: strin
   try {
     const res = await fetch(
       `${API_URL}/organizations/${ORG_SLUG}/seasons/leaderboard?seasons=${seasonId}&statType=${statType}`,
-      CACHE
+      { ...CACHE, ...withTimeout() }
     );
     const data = await res.json();
     return data.players || [];
@@ -102,7 +108,7 @@ export async function getLiveSeasonLeaderboard(seasonId: string, statType: strin
 
 export async function getLiveSeasons() {
   try {
-    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/seasons`, CACHE);
+    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/seasons`, { ...CACHE, ...withTimeout() });
     const data = await res.json();
     return data.success ? data.data : [];
   } catch (error) {
@@ -113,7 +119,7 @@ export async function getLiveSeasons() {
 
 export async function getLiveStandings(leagueSlug: string) {
   try {
-    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/season/${leagueSlug}/standings`, CACHE);
+    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/season/${leagueSlug}/standings`, { ...CACHE, ...withTimeout() });
     const data = await res.json();
     return data.divisionGroups || [];
   } catch (error) {
