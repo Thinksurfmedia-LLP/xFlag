@@ -41,15 +41,13 @@ export default async function LeaderboardPage({
   const seasonObj = seasons.find((s: any) => s._id === seasonId || String(s._id) === seasonId);
   const seasonName = seasonObj?.name || 'Season';
 
-  // The API returns rows in arbitrary (DB iteration) order, not ranked by any
-  // stat. Sort by each table's real leaderboard metric BEFORE truncating to
-  // the top 50, otherwise slice() keeps whatever rows happened to load first
-  // and silently drops the actual leaders.
-  const byDesc = (key: string) => (a: any, b: any) => (b[key] ?? 0) - (a[key] ?? 0);
-  const topPassing = [...passingStats].sort(byDesc('yards')).slice(0, 50);
-  const topReceiving = [...receivingStats].sort(byDesc('yards')).slice(0, 50);
-  const topRushing = [...rushingStats].sort(byDesc('yards')).slice(0, 50);
-  const topDefense = [...defenseStats].sort(byDesc('flagPulls')).slice(0, 50);
+  // Do NOT pre-sort/truncate here: each table lets the viewer re-sort by any
+  // column (INT, SCK, DTD, ...), and a player who ranks outside the top 50 by
+  // the default column (yards/flagPulls) may well be top-50 by another one.
+  // Truncating to one fixed key here would permanently drop them before the
+  // client ever gets a chance to sort by the column that matters. The
+  // top-50 cutoff is instead applied client-side, after sorting by whichever
+  // column is currently active (see LeaderboardClient's useSorted).
 
   return (
     <div className="wrapper">
@@ -81,10 +79,10 @@ export default async function LeaderboardPage({
           </div>
 
           <LeaderboardClient
-            passingStats={topPassing}
-            receivingStats={topReceiving}
-            rushingStats={topRushing}
-            defenseStats={topDefense}
+            passingStats={passingStats}
+            receivingStats={receivingStats}
+            rushingStats={rushingStats}
+            defenseStats={defenseStats}
           />
         </div>
       </section>

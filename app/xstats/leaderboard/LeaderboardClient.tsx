@@ -32,7 +32,7 @@ function useSorted(rows: any[], defaultKey: string) {
         ? av - bv
         : String(av).localeCompare(String(bv));
       return sort.dir === 'desc' ? -cmp : cmp;
-    });
+    }).slice(0, 50);
   }, [rows, sort]);
 
   return { sorted, sort, toggle };

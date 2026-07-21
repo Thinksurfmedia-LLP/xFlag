@@ -13,6 +13,10 @@ const ORG_SLUG = rawOrgSlug;
 // page load, while ensuring schedule changes appear within ~30 seconds.
 const CACHE = { next: { revalidate: 30 } } as const;
 
+// Leaderboards/standings are edited live during games (a stat correction or a
+// new play should show up immediately, not up to 30s late) — never cache these.
+const LIVE_STATS_CACHE = { cache: 'no-store' } as const;
+
 // Without an explicit timeout, a hung/unreachable FLAGMAG_API_URL (e.g. a
 // misconfigured localhost URL in production) leaves fetch() pending forever,
 // which stalls the whole RSC stream with no error surfaced anywhere.
@@ -82,7 +86,7 @@ export async function getLiveLeagueLeaderboard(leagueSlug: string, statType: str
   try {
     const res = await fetch(
       `${API_URL}/organizations/${ORG_SLUG}/season/${leagueSlug}/stats/computed?statType=${statType}`,
-      { ...CACHE, ...withTimeout() }
+      { ...LIVE_STATS_CACHE, ...withTimeout() }
     );
     const data = await res.json();
     return data.players || [];
@@ -96,7 +100,7 @@ export async function getLiveSeasonLeaderboard(seasonId: string, statType: strin
   try {
     const res = await fetch(
       `${API_URL}/organizations/${ORG_SLUG}/seasons/leaderboard?seasons=${seasonId}&statType=${statType}`,
-      { ...CACHE, ...withTimeout() }
+      { ...LIVE_STATS_CACHE, ...withTimeout() }
     );
     const data = await res.json();
     return data.players || [];
@@ -119,7 +123,7 @@ export async function getLiveSeasons() {
 
 export async function getLiveStandings(leagueSlug: string) {
   try {
-    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/season/${leagueSlug}/standings`, { ...CACHE, ...withTimeout() });
+    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/season/${leagueSlug}/standings`, { ...LIVE_STATS_CACHE, ...withTimeout() });
     const data = await res.json();
     return data.divisionGroups || [];
   } catch (error) {
