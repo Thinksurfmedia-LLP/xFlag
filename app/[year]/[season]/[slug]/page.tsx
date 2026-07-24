@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { getLiveLeagues, getLiveStandings, getLiveLeagueSchedule } from '@/lib/flagmag';
 import GameRow from './GameRow';
 
+export const dynamic = 'force-dynamic';
+
 export default async function GameStatsPage({ params }: { params: { year: string; season: string; slug: string } }) {
   const { year, season, slug } = await params;
 

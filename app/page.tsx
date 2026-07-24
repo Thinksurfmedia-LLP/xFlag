@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { readCmsData } from '@/lib/cms';
 import { getLiveVenues, getLiveSchedules, getLiveLeagues, getLiveStandings } from '@/lib/flagmag';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
   const cmsData = await readCmsData();
   const hp = cmsData.homepage;

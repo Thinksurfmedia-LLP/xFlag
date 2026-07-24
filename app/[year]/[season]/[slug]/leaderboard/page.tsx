@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { getLiveLeagueLeaderboard, getLiveLeagues } from '@/lib/flagmag';
 import LeaderboardClient from '@/app/xstats/leaderboard/LeaderboardClient';
 
+export const dynamic = 'force-dynamic';
+
 export default async function LeagueLeaderboardPage({
   params,
 }: {

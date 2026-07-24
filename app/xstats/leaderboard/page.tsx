@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { getLiveSeasonLeaderboard, getLiveSeasons } from '@/lib/flagmag';
 import LeaderboardClient from './LeaderboardClient';
 
+export const dynamic = 'force-dynamic';
+
 export default async function LeaderboardPage({
   searchParams,
 }: {
