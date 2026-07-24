@@ -396,7 +396,10 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
                     <div className="main">
                       <div className="a">
                         <img src={getLogoUrl(game.teamA?.logo)} alt="" />
-                        <span>{game.teamA?.name || 'TBD'}</span>
+                        <span>
+                          {game.teamA?.name || 'TBD'}
+                          {game.teamA?.seedNumber != null && <span style={{ opacity: 0.7, fontWeight: 400 }}> #{game.teamA.seedNumber}</span>}
+                        </span>
                       </div>
                       <div className="b">
                         {game.status === 'completed'
@@ -407,7 +410,10 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
                       </div>
                       <div className="a">
                         <img src={getLogoUrl(game.teamB?.logo)} alt="" />
-                        <span>{game.teamB?.name || 'TBD'}</span>
+                        <span>
+                          {game.teamB?.name || 'TBD'}
+                          {game.teamB?.seedNumber != null && <span style={{ opacity: 0.7, fontWeight: 400 }}> #{game.teamB.seedNumber}</span>}
+                        </span>
                       </div>
                     </div>
                   </td>

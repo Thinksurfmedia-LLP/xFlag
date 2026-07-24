@@ -86,7 +86,7 @@ export default async function GameStatsPage({ params }: { params: { year: string
                             <tr key={rIdx}>
                               <td>
                                 <Link href={`/${year}/${season}/${slug}/player-stats?team=${encodeURIComponent(row.name)}`}>
-                                  <img src={getLogoUrl(row.logo)} alt={row.name} /> <span>{row.name}</span>
+                                  <img src={getLogoUrl(row.logo)} alt={row.name} /> <span>{row.name}{row.seedNumber != null && <span style={{ opacity: 0.7 }}> #{row.seedNumber}</span>}</span>
                                 </Link>
                               </td>
                               <td>{row.wins}-{row.losses}</td>
