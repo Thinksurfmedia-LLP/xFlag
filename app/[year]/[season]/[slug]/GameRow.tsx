@@ -24,7 +24,7 @@ export default function GameRow({ game, year, season, slug, showDate }: any) {
       <td>
         <span>
           <img src={getLogoUrl(game.teamA?.logo)} alt={game.teamA?.name} style={{ width: 22, height: 22, objectFit: 'contain', marginRight: 4, verticalAlign: 'middle' }} />
-          <span>{game.teamA?.name}{game.teamA?.seedNumber != null && <span style={{ opacity: 0.7 }}> #{game.teamA.seedNumber}</span>}</span>
+          <span>{game.teamA?.seedNumber != null && <span style={{ opacity: 0.7 }}>#{game.teamA.seedNumber} </span>}{game.teamA?.name}</span>
         </span>
       </td>
       <td><span className="vs">vs</span></td>
@@ -32,7 +32,7 @@ export default function GameRow({ game, year, season, slug, showDate }: any) {
       <td>
         <span>
           <img src={getLogoUrl(game.teamB?.logo)} alt={game.teamB?.name} style={{ width: 22, height: 22, objectFit: 'contain', marginRight: 4, verticalAlign: 'middle' }} />
-          <span>{game.teamB?.name}{game.teamB?.seedNumber != null && <span style={{ opacity: 0.7 }}> #{game.teamB.seedNumber}</span>}</span>
+          <span>{game.teamB?.seedNumber != null && <span style={{ opacity: 0.7 }}>#{game.teamB.seedNumber} </span>}{game.teamB?.name}</span>
         </span>
       </td>
     </tr>
