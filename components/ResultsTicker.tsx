@@ -1,12 +1,4 @@
-import { getLiveLeagues, getLiveSchedules } from '@/lib/flagmag';
-
-function getWeekStart(date: Date): string {
-  const d = new Date(date);
-  const day = d.getUTCDay();
-  const diff = day === 0 ? 6 : day - 1;
-  d.setUTCDate(d.getUTCDate() - diff);
-  return d.toISOString().split('T')[0];
-}
+import { getLiveLeagues, getLiveSchedules, getLiveLeagueSchedule } from '@/lib/flagmag';
 
 export default async function ResultsTicker() {
   const [leagues, allGames] = await Promise.all([
@@ -19,26 +11,26 @@ export default async function ResultsTicker() {
   const targetLeagues = defaultLeagues.length > 0 ? defaultLeagues : leagues.slice(0, 1);
   const defaultLeagueIds = new Set(targetLeagues.map((l: any) => String(l._id)));
 
-  // All games in those leagues (used for week-number computation)
+  // All games in those leagues (used for the ticker's score line)
   const defaultSeasonGames = allGames.filter(
     (g: any) => defaultLeagueIds.has(String(g.league))
   );
 
-  // Build a weekNum map per league: gameId → weekNum
+  // Week numbers come from the admin-curated schedule (same source of truth as
+  // the schedule pages) — never re-derived from raw game dates, which drifts
+  // whenever a single admin week spans more than one calendar date.
   const gameWeekMap = new Map<string, number>();
-  for (const leagueId of defaultLeagueIds) {
-    const leagueGames = defaultSeasonGames
-      .filter((g: any) => String(g.league) === leagueId)
-      .sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime());
-
-    const weekOrder = new Map<string, number>();
-    let wn = 1;
-    for (const g of leagueGames) {
-      const ws = getWeekStart(new Date(g.date));
-      if (!weekOrder.has(ws)) weekOrder.set(ws, wn++);
-      gameWeekMap.set(String(g._id), weekOrder.get(ws)!);
-    }
-  }
+  await Promise.all(
+    targetLeagues.map(async (league: any) => {
+      if (!league.slug) return;
+      const weeks = await getLiveLeagueSchedule(league.slug);
+      weeks.forEach((week: any) => {
+        (week.games || []).forEach((g: any) => {
+          gameWeekMap.set(String(g._id), week.weekNum);
+        });
+      });
+    })
+  );
 
   // Completed games only, most recent first
   const results = defaultSeasonGames
