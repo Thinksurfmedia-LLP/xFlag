@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
+import { sendMail } from '@/lib/mailer';
+import { contactSubmissionEmail } from '@/lib/emailTemplates';
 
 interface ContactPayload {
   firstName: string;
@@ -19,31 +20,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 });
     }
 
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT ?? 587),
-      secure: process.env.SMTP_SECURE === 'true',
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
+    const { html, attachments } = contactSubmissionEmail({ firstName, lastName, email, phone, company, message });
 
-    await transporter.sendMail({
-      from: `"xFlag Football Website" <${process.env.SMTP_USER}>`,
-      to: 'mzimmerman@xflagfootball.com',
+    await sendMail({
+      to: process.env.CONTACT_NOTIFY_EMAIL || process.env.GMAIL_USER || '',
       replyTo: email,
-      subject: `Website Query from ${firstName} ${lastName}`,
-      html: `
-        <h2>New Website Query</h2>
-        <table cellpadding="8" style="border-collapse:collapse;width:100%;max-width:600px">
-          <tr><td><strong>Name</strong></td><td>${firstName} ${lastName}</td></tr>
-          <tr><td><strong>Email</strong></td><td><a href="mailto:${email}">${email}</a></td></tr>
-          <tr><td><strong>Phone</strong></td><td>${phone}</td></tr>
-          ${company ? `<tr><td><strong>Company</strong></td><td>${company}</td></tr>` : ''}
-          <tr><td><strong>Message</strong></td><td style="white-space:pre-wrap">${message}</td></tr>
-        </table>
-      `,
+      subject: 'XFlagFootball - Contact Submission',
+      html,
+      attachments,
+      text: `New Website Query\n\nName: ${firstName} ${lastName}\nEmail: ${email}\nPhone: ${phone}\n${company ? `Company: ${company}\n` : ''}Message: ${message}`,
     });
 
     return NextResponse.json({ success: true });
