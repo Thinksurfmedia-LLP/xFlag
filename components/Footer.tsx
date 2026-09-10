@@ -68,7 +68,7 @@ export default async function Footer() {
                       </div>
                       <div className="col-md-auto">
                           <ul>
-                              <li><Link href="#">privacy policy</Link></li>
+                              <li><Link href="/privacy-policy">privacy policy</Link></li>
                               <li><Link href="#">terms &amp; conditions</Link></li>
                           </ul>
                       </div>
