@@ -3488,4 +3488,31 @@ footer .copyright-area ul li a:hover {
     width: 100%;
     flex: 0 0 100%;
   }
-}/*# sourceMappingURL=style.css.map */
+}
+
+/* ── Signup checkout (registration form + order summary split) ── */
+.signup-checkout-grid {
+  display: grid;
+  /* Right column needs real pixel width, not just a flex share — PayPal's
+     inline "Debit or Credit Card" fields render fluid-width inside it, and
+     at a plain 1fr split that card form comes out cramped. Fixed width
+     here gives it room without touching the form column's own layout. */
+  grid-template-columns: minmax(0, 1fr) 400px;
+  gap: 48px;
+  align-items: start;
+}
+.signup-checkout-summary {
+  position: sticky;
+  top: 24px;
+}
+@media only screen and (max-width: 991px) {
+  .signup-checkout-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .signup-checkout-summary {
+    position: static;
+    order: -1;
+  }
+}
+/*# sourceMappingURL=style.css.map */

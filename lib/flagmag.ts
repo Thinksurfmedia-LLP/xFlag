@@ -82,6 +82,24 @@ export async function getLiveLeagues() {
   }
 }
 
+// Signup checkout only wants leagues currently open for registration —
+// `showOnSignup` is an opt-in toggle organizers set per-league on flagmag,
+// so this deliberately narrows past what getLiveLeagues() returns elsewhere
+// (e.g. the schedules page, which wants every league regardless of that flag).
+export async function getLiveSignupLeagues() {
+  try {
+    const res = await fetch(
+      `${API_URL}/organizations/${ORG_SLUG}/leagues?type=active&showOnSignup=true`,
+      { ...CACHE, ...withTimeout() }
+    );
+    const data = await res.json();
+    return data.success ? data.data : [];
+  } catch (error) {
+    console.error('Failed to fetch flagmag signup leagues:', error);
+    return [];
+  }
+}
+
 export async function getLiveLeagueLeaderboard(leagueSlug: string, statType: string) {
   try {
     const res = await fetch(

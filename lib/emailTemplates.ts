@@ -100,3 +100,88 @@ export function contactSubmissionEmail(submission: ContactSubmission): EmailCont
     bodyHtml: `<table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rows}</table>`,
   });
 }
+
+interface RegistrationPayment {
+  name: string;
+  email: string;
+  phone?: string;
+  registrationType: 'free-agent' | 'team' | 'payment';
+  teamName?: string;
+  organizationName?: string;
+  leagueName?: string;
+  address?: string;
+  state?: string;
+  note?: string;
+  teamPaymentMethod?: 'deposit' | 'playerFees' | null;
+  playerCount?: number | null;
+  amount: number;
+  capturedAmount?: number | null;
+  currency?: string;
+}
+
+const REGISTRATION_TYPE_LABELS: Record<string, string> = {
+  'free-agent': 'Free Agent',
+  team: 'Team',
+  payment: 'Custom Payment',
+};
+
+const REGISTRATION_SUBJECT_LABELS: Record<string, string> = {
+  'free-agent': 'Free Agent Registration',
+  team: 'Team Registration',
+  payment: 'Custom Payment',
+};
+
+function formatCurrency(amount: number | null | undefined, currency?: string): string {
+  if (amount === null || amount === undefined) return '';
+  try {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: currency || 'USD' }).format(amount);
+  } catch {
+    return `$${Number(amount).toFixed(2)}`;
+  }
+}
+
+export function registrationSubject(payment: RegistrationPayment): string {
+  const typeLabel = REGISTRATION_SUBJECT_LABELS[payment.registrationType] || 'Registration';
+  return `XFlag Football | ${payment.organizationName || 'Organization'} - ${typeLabel}`;
+}
+
+/**
+ * Notification email sent to the xFlag Football team when a captured
+ * PayPal payment completes a signup (team or free-agent registration, or a
+ * custom payment).
+ */
+export function registrationEmail(payment: RegistrationPayment): EmailContent {
+  // Prefer what PayPal actually captured over the originally-requested
+  // amount — that's the number that actually landed, and the capture route
+  // already verifies the two match before marking this "captured".
+  const amountPaid = payment.capturedAmount ?? payment.amount;
+
+  const rows = [
+    fieldRow('Full Name', payment.name),
+    fieldRow('Email', payment.email, 'email'),
+    fieldRow('Phone', payment.phone, 'tel'),
+    fieldRow('Registration Type', REGISTRATION_TYPE_LABELS[payment.registrationType] || payment.registrationType),
+    ...(payment.teamName ? [fieldRow('Team Name', payment.teamName)] : []),
+    fieldRow('Organization', payment.organizationName),
+    ...(payment.leagueName ? [fieldRow('League', payment.leagueName)] : []),
+    ...(payment.address ? [fieldRow('Address', payment.address)] : []),
+    ...(payment.state ? [fieldRow('State', payment.state)] : []),
+    ...(payment.note ? [fieldRow('Note', payment.note)] : []),
+    ...(payment.teamPaymentMethod === 'deposit' ? [fieldRow('Payment For', 'Team Deposit')] : []),
+    ...(payment.teamPaymentMethod === 'playerFees' ? [fieldRow('Payment For', `Team Fee (${payment.playerCount || 0} players)`)] : []),
+    fieldRow('Amount Paid', formatCurrency(amountPaid, payment.currency)),
+  ].join('');
+
+  const firstName = (payment.name || '').trim().split(/\s+/)[0] || 'Someone';
+  const heading = payment.registrationType === 'free-agent'
+    ? `${firstName} Registered for Free Agent`
+    : payment.registrationType === 'team'
+      ? `${firstName} Registered for Team`
+      : `${firstName} Sent You a Custom Payment`;
+
+  return emailWrapper({
+    badge: 'New Registration',
+    heading,
+    bodyHtml: `<table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rows}</table>`,
+  });
+}

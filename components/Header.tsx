@@ -21,6 +21,13 @@ export default async function Header() {
 
                   <div className="col right-area">
                       <div className="header-btn-col">
+                          {/* Hardcoded (not CMS-driven) so it can't be removed or
+                              broken by an admin editing the header content — this
+                              is the entry point into the xflagfootball signup/
+                              payment flow, not marketing copy. */}
+                          <Link href="/signup" className="btn btn-primary book-btn">
+                              REGISTER NOW
+                          </Link>
                           {ctaButtons.map(btn => (
                             <Link
                               key={btn.id}
@@ -91,6 +98,9 @@ export default async function Header() {
                                   </li>
                                 )
                               ))}
+                              {/* <li className="nav-item">
+                                <Link className="nav-link" href="/signup">Sign Up</Link>
+                              </li> */}
                           </ul>
                       </div>
 
@@ -130,9 +140,13 @@ export default async function Header() {
                                       </li>
                                     )
                                   ))}
+                                  {/* <li className="nav-item">
+                                    <Link className="nav-link" href="/signup">Sign Up</Link>
+                                  </li> */}
                               </ul>
 
                               <div className="header-btn-col for-mobile">
+                                  <Link href="/signup" className="btn btn-primary">REGISTER NOW</Link>
                                   {ctaButtons.map(btn => (
                                     <Link key={btn.id} href={btn.href} className="btn btn-info-primary">{btn.label}</Link>
                                   ))}
