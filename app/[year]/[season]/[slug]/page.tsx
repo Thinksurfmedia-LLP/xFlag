@@ -84,7 +84,7 @@ export default async function GameStatsPage({ params }: { params: { year: string
                           </tr>
                         </thead>
                         <tbody>
-                          {division.rows.map((row: any, rIdx: number) => (
+                          {division.rows.filter((row: any) => !(row.wins === 0 && row.losses === 0)).map((row: any, rIdx: number) => (
                             <tr key={rIdx}>
                               <td>
                                 <Link href={`/${year}/${season}/${slug}/player-stats?team=${encodeURIComponent(row.name)}`}>
