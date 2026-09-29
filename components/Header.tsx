@@ -2,6 +2,9 @@ import Link from 'next/link';
 import { readCmsData } from '@/lib/cms';
 import ResultsTicker from './ResultsTicker';
 
+// CMS links use "#" (or nothing) for "no page of its own".
+const isRealHref = (href?: string) => Boolean(href && href !== '#');
+
 export default async function Header() {
   const cms = await readCmsData();
   const { logo1, logo2, navLinks, ctaButtons, socialLinks } = cms.header;
@@ -108,37 +111,35 @@ export default async function Header() {
                       <div className="offcanvas offcanvas-end d-lg-none" tabIndex={-1} id="mobileMenu">
                           <div className="offcanvas-header">
                               <div className="offcanvas-logo"><img src={logo2} alt="" /></div>
-                              <button type="button" className="btn-close" data-bs-dismiss="offcanvas"></button>
+                              <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close menu"></button>
                           </div>
                           <div className="offcanvas-body">
+                              {/* No Bootstrap dropdowns in here: a tiny caret toggle was
+                                  the only way to reach sub-links on a phone, and the
+                                  parent label itself wasn't tappable. Every item is a
+                                  plain link and sub-links are always listed under their
+                                  parent. ScriptReinit closes the panel when a link is
+                                  tapped (client-side navigation otherwise leaves it open
+                                  over the new page) — not data-bs-dismiss, which makes
+                                  Bootstrap preventDefault() the link's click. */}
                               <ul className="navbar-nav">
                                   {navLinks.map(link => (
-                                    link.dropdown.length > 0 ? (
-                                      <li key={link.id} className="nav-item dropdown nav-item-has-dropdown">
-                                          <span className="nav-link nav-link-no-click">
-                                            {link.label}
-                                          </span>
-                                          <button
-                                            type="button"
-                                            className="dropdown-toggle dropdown-toggle-caret"
-                                            data-bs-toggle="dropdown"
-                                            data-bs-display="static"
-                                            aria-expanded="false"
-                                            aria-label={`Toggle ${link.label} submenu`}
-                                          ></button>
-                                          <ul className="dropdown-menu">
-                                              {link.dropdown.map(sub => (
-                                                <li key={sub.id}>
-                                                  <Link className="dropdown-item" href={sub.href}>{sub.label}</Link>
-                                                </li>
-                                              ))}
-                                          </ul>
-                                      </li>
-                                    ) : (
-                                      <li key={link.id} className="nav-item">
+                                    <li key={link.id} className="nav-item mobile-nav-item">
+                                      {isRealHref(link.href) ? (
                                         <Link className="nav-link" href={link.href}>{link.label}</Link>
-                                      </li>
-                                    )
+                                      ) : (
+                                        <span className="nav-link nav-link-no-click">{link.label}</span>
+                                      )}
+                                      {link.dropdown.length > 0 && (
+                                        <ul className="mobile-submenu">
+                                          {link.dropdown.map(sub => (
+                                            <li key={sub.id}>
+                                              <Link className="mobile-submenu-link" href={sub.href}>{sub.label}</Link>
+                                            </li>
+                                          ))}
+                                        </ul>
+                                      )}
+                                    </li>
                                   ))}
                                   {/* <li className="nav-item">
                                     <Link className="nav-link" href="/signup">Sign Up</Link>

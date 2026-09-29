@@ -29,44 +29,42 @@ header .nav-area-main .navbar-nav .nav-link-no-click {
   }
 }
 
-/* Mobile offcanvas dropdown: Bootstrap's Popper-based positioning miscalculates
-   inside the offcanvas panel, floating the menu off to the side. Force it
-   static and stacked below the label+caret row instead.
-   Note: the toggle button and .dropdown-menu must stay direct siblings —
-   Bootstrap's dropdown JS looks up the menu relative to the toggle, so
-   wrapping them in separate containers breaks the click handler. Getting the
-   menu onto its own line is done with the flex-wrap + flex-basis:100% trick
-   below instead of restructuring the DOM. */
-#mobileMenu .nav-item-has-dropdown {
-  flex-wrap: wrap;
-  justify-content: center;
+/* Mobile offcanvas menu (#mobileMenu, see Header.tsx): no Bootstrap
+   dropdowns — every item is a plain link and any CMS sub-links are always
+   listed, indented under their parent, so everything is one tap away.
+   Tap targets are at least 44px tall for fingers. */
+#mobileMenu .mobile-nav-item {
   width: 100%;
+  text-align: center;
 }
 
-#mobileMenu .dropdown-menu {
-  flex-basis: 100%;
-  position: static;
-  inset: auto;
-  transform: none !important;
+#mobileMenu .mobile-nav-item > .nav-link {
+  display: block;
+  min-height: 44px;
+  padding: 10px 12px;
+}
+
+#mobileMenu .mobile-submenu {
+  list-style: none;
+  margin: 0 auto 6px;
+  padding: 4px 0;
   width: 100%;
-  margin: 8px 0 0;
   background: #2b2724;
-  border: none;
   border-radius: 8px;
-  box-shadow: none;
-  padding: 6px 10px;
 }
 
-#mobileMenu .dropdown-menu .dropdown-item {
-  color: #fff !important;
-  background: transparent;
-  text-align: left;
+#mobileMenu .mobile-submenu-link {
+  display: block;
+  min-height: 44px;
+  padding: 11px 12px;
+  color: #d8d4d2;
+  font-size: 15px;
+  text-align: center;
 }
 
-#mobileMenu .dropdown-menu .dropdown-item:hover,
-#mobileMenu .dropdown-menu .dropdown-item:focus {
-  color: #F13B26 !important;
-  background: transparent;
+#mobileMenu .mobile-submenu-link:hover,
+#mobileMenu .mobile-submenu-link:focus {
+  color: #F13B26;
 }
 
 body {

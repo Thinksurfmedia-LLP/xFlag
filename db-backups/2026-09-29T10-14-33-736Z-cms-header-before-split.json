@@ -1,0 +1,446 @@
+{
+  "_id": "6a2eab88151ae17a4bc53070",
+  "type": "global_cms",
+  "__v": 0,
+  "createdAt": "2026-06-14T13:23:38.864Z",
+  "data": {
+    "header": {
+      "logo1": "/assets/images/logo1.png",
+      "logo2": "/assets/images/logo2.png",
+      "navLinks": [
+        {
+          "id": "nav-1",
+          "label": "Home",
+          "href": "/",
+          "dropdown": []
+        },
+        {
+          "id": "id-1781616339922-jmo3e",
+          "label": "About Us",
+          "href": "/about-us",
+          "dropdown": [
+            {
+              "id": "id-1783061762751-w6jad",
+              "label": "About Us",
+              "href": "/about-us"
+            },
+            {
+              "id": "id-1784274405466-0natn",
+              "label": "Rules & Policies",
+              "href": "/rules"
+            }
+          ]
+        },
+        {
+          "id": "id-1781616380193-sbhv0",
+          "label": "Locations",
+          "href": "/locations",
+          "dropdown": []
+        },
+        {
+          "id": "id-1781616383550-rbs3p",
+          "label": "Schedules",
+          "href": "/schedules",
+          "dropdown": []
+        },
+        {
+          "id": "id-1781616384118-09jdc",
+          "label": "XStats",
+          "href": "/xstats",
+          "dropdown": []
+        },
+        {
+          "id": "id-1781686015440-rkdia",
+          "label": "Contact",
+          "href": "/contact-us",
+          "dropdown": []
+        }
+      ],
+      "ctaButtons": [],
+      "socialLinks": [
+        {
+          "id": "id-1781540043255-u6t91",
+          "platform": "Facebook",
+          "url": "https://www.facebook.com/profile.php?id=100063985898102",
+          "iconClass": "fa-brands fa-facebook-f"
+        },
+        {
+          "id": "id-1781540064195-0ijrl",
+          "platform": "Instagram",
+          "url": "https://www.instagram.com/xflagfootball_league/",
+          "iconClass": "fa-brands fa fa-instagram"
+        },
+        {
+          "id": "id-1781767881345-lotgs",
+          "platform": "YouTube",
+          "url": "https://www.youtube.com/@xflagfootball4536",
+          "iconClass": "fa-brands fa fa-youtube"
+        }
+      ]
+    },
+    "footer": {
+      "logo": "/assets/images/white-logo.png",
+      "navColumns": [
+        {
+          "id": "col-1",
+          "title": "Home",
+          "links": [
+            {
+              "id": "fc-1-2",
+              "label": "Locations",
+              "href": "/locations"
+            },
+            {
+              "id": "id-1781686631869-ahggq",
+              "label": "Schedules",
+              "href": "/schedules"
+            },
+            {
+              "id": "id-1781686682734-3dti8",
+              "label": "XStats",
+              "href": "/xstats"
+            }
+          ]
+        },
+        {
+          "id": "col-2",
+          "title": "About XFF",
+          "links": [
+            {
+              "id": "id-1781539398517-tx9l2",
+              "label": "About Us",
+              "href": "/about-us"
+            },
+            {
+              "id": "id-1781686702029-xf8b7",
+              "label": "Contact",
+              "href": "/contact-us"
+            }
+          ]
+        }
+      ],
+      "socialLinks": [
+        {
+          "id": "id-1781539424932-83xuc",
+          "platform": "Facebook",
+          "url": "https://www.facebook.com/profile.php?id=100063985898102",
+          "iconClass": "fa-brands fa-facebook-f"
+        },
+        {
+          "id": "id-1781539695056-z6txh",
+          "platform": "Instagram",
+          "url": "https://www.instagram.com/xflagfootball_league/",
+          "iconClass": "fa-brands fa fa-instagram"
+        },
+        {
+          "id": "id-1781686905215-txyah",
+          "platform": "YouTube",
+          "url": "https://www.youtube.com/@xflagfootball4536",
+          "iconClass": "fa-brands fa fa-youtube"
+        }
+      ],
+      "contactInfo": {
+        "phone": "+1 855-352-4411",
+        "email": "mzimmerman@xflagfootball.com",
+        "address": ""
+      },
+      "description": "Join a league, register as a free agent, or bring your team to experience the XFF difference.\n\nCompetitive. Safe. Community-Driven. Since 2007."
+    },
+    "homepage": {
+      "banners": [
+        {
+          "id": "banner-1",
+          "image": "/assets/images/banner-banner-1-1783506735811.webp",
+          "title": "Experience the Power & Passion of FLAG FOOTBALL",
+          "subtitle": "The only League Spanning Coast to Coast.",
+          "ctaText": "National Tournaments",
+          "ctaLink": "/"
+        },
+        {
+          "id": "banner-2",
+          "image": "/assets/images/banner-banner-2-1783507058998.webp",
+          "title": "Experience the Power & Passion of FLAG FOOTBALL",
+          "subtitle": "The only League Spanning Coast to Coast.",
+          "ctaText": "National Tournaments",
+          "ctaLink": "/"
+        },
+        {
+          "id": "banner-3",
+          "image": "/assets/images/banner-banner-3-1783507063256.webp",
+          "title": "Experience the Power & Passion of FLAG FOOTBALL",
+          "subtitle": "The only League Spanning Coast to Coast.",
+          "ctaText": "National Tournaments",
+          "ctaLink": "/"
+        }
+      ],
+      "successSection": {
+        "title": "Success in Numbers",
+        "stats": [
+          {
+            "id": "stat-1",
+            "number": "19+",
+            "label": "Years Of Experience"
+          },
+          {
+            "id": "stat-2",
+            "number": "59+",
+            "label": "Seasons"
+          },
+          {
+            "id": "stat-3",
+            "number": "20000+",
+            "label": "Games Played"
+          },
+          {
+            "id": "stat-4",
+            "number": "10000+",
+            "label": "All-time Players"
+          }
+        ]
+      },
+      "stripBanner": {
+        "image": "/assets/images/strip-banner1.jpg",
+        "ctaText": "Register now",
+        "ctaLink": "#"
+      },
+      "matchHighlights": {
+        "title": "match highlights",
+        "images": [
+          {
+            "id": "mh-1",
+            "image": "/assets/images/g1.jpg"
+          },
+          {
+            "id": "mh-2",
+            "image": "/assets/images/g2.jpg"
+          },
+          {
+            "id": "mh-3",
+            "image": "/assets/images/g3.jpg"
+          },
+          {
+            "id": "mh-4",
+            "image": "/assets/images/g4.jpg"
+          }
+        ]
+      },
+      "featuredLocations": {
+        "title": "Featured LOCATIONS",
+        "locations": [
+          {
+            "id": "loc-1",
+            "locationName": "Beverly Field",
+            "cityName": "Beverly",
+            "stateAbbr": "MA",
+            "countyName": "Essex",
+            "image": "/assets/images/location-loc-1-1781476176971.jpeg",
+            "title": "Beverly Field",
+            "address": "Beverly, MA",
+            "link": "/location-details",
+            "featured": false
+          },
+          {
+            "id": "loc-2",
+            "locationName": "Chino",
+            "cityName": "Chino",
+            "stateAbbr": "CA",
+            "countyName": "San Bernardino",
+            "image": "/assets/images/location-loc-2-1781476179062.jpeg",
+            "title": "Chino",
+            "address": "Chino, CA",
+            "link": "/location-details",
+            "featured": false
+          },
+          {
+            "id": "loc-3",
+            "locationName": "Irvine",
+            "cityName": "Irvine",
+            "stateAbbr": "CA",
+            "countyName": "Orange",
+            "image": "/assets/images/location-loc-3-1781476181387.jpeg",
+            "title": "Irvine",
+            "address": "Irvine, CA",
+            "link": "/location-details",
+            "featured": false
+          },
+          {
+            "id": "loc-4",
+            "locationName": "Mira Mesa",
+            "cityName": "San Diego",
+            "stateAbbr": "CA",
+            "countyName": "San Diego",
+            "image": "/assets/images/location-loc-4-1781476183077.jpeg",
+            "title": "Mira Mesa",
+            "address": "San Diego, CA",
+            "link": "/location-details",
+            "featured": false
+          },
+          {
+            "id": "loc-5",
+            "locationName": "North Park",
+            "cityName": "San Diego",
+            "stateAbbr": "CA",
+            "countyName": "San Diego",
+            "image": "/assets/images/location-loc-5-1781476185149.jpeg",
+            "title": "North Park",
+            "address": "San Diego, CA",
+            "link": "/location-details",
+            "featured": true
+          },
+          {
+            "id": "loc-6",
+            "locationName": "Oceanside",
+            "cityName": "Oceanside",
+            "stateAbbr": "CA",
+            "countyName": "San Diego",
+            "image": "/assets/images/location-loc-6-1781476187253.jpeg",
+            "title": "Oceanside",
+            "address": "Oceanside, CA",
+            "link": "/location-details",
+            "featured": false
+          },
+          {
+            "id": "loc-7",
+            "locationName": "Pomona",
+            "cityName": "Pomona",
+            "stateAbbr": "CA",
+            "countyName": "Los Angeles",
+            "image": "/assets/images/location-loc-7-1781476188898.jpeg",
+            "title": "Pomona",
+            "address": "Pomona, CA",
+            "link": "/location-details",
+            "featured": false
+          },
+          {
+            "id": "loc-8",
+            "locationName": "Poway",
+            "cityName": "Poway",
+            "stateAbbr": "CA",
+            "countyName": "San Diego",
+            "image": "/assets/images/location-loc-8-1781476190884.jpeg",
+            "title": "Poway",
+            "address": "Poway, CA",
+            "link": "/location-details",
+            "featured": true
+          },
+          {
+            "id": "loc-9",
+            "locationName": "Riverside",
+            "cityName": "Riverside",
+            "stateAbbr": "CA",
+            "countyName": "Riverside",
+            "image": "/assets/images/location-loc-9-1781476192626.jpeg",
+            "title": "Riverside",
+            "address": "Riverside, CA",
+            "link": "/location-details",
+            "featured": true
+          },
+          {
+            "id": "loc-10",
+            "locationName": "Temecula",
+            "cityName": "Temecula",
+            "stateAbbr": "CA",
+            "countyName": "Riverside",
+            "image": "/assets/images/location-loc-10-1781476195180.jpeg",
+            "title": "Temecula",
+            "address": "Temecula, CA",
+            "link": "/location-details",
+            "featured": true
+          }
+        ],
+        "ctaText": "VIEW ALL LOCATIONS",
+        "ctaLink": "/locations"
+      },
+      "scoreboardSection": {
+        "title": "League Scoreboard",
+        "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+        "ctaText": "VIEW MORE",
+        "ctaLink": "#"
+      },
+      "differenceSection": {
+        "title": "The Difference We Deliver",
+        "subtitle": "Experience, energy, and excellence in every match",
+        "items": [
+          {
+            "id": "diff-1",
+            "icon": "/assets/images/d1.png",
+            "title": "Professional Game Management",
+            "description": "Every match is organized with expert planning, from scheduling to scorekeeping."
+          },
+          {
+            "id": "diff-2",
+            "icon": "/assets/images/d2.png",
+            "title": "Fair Play & Safety First",
+            "description": "Certified referees and strict safety standards ensure every player enjoys the game."
+          },
+          {
+            "id": "diff-3",
+            "icon": "/assets/images/d3.png",
+            "title": "Top-Class Facilities",
+            "description": "We provide premium fields, quality gear, and smooth logistics for every event."
+          },
+          {
+            "id": "diff-4",
+            "icon": "/assets/images/d4.png",
+            "title": "Community & Team Spirit",
+            "description": "We bring players together — building friendships, sportsmanship, and a growing Flag Football community."
+          }
+        ],
+        "ctaText": "Read MORE",
+        "ctaLink": "#"
+      },
+      "sponsorsSection": {
+        "title": "Sponsors",
+        "sponsors": [
+          {
+            "id": "sponsor-1",
+            "image": "/assets/images/s1.jpg"
+          },
+          {
+            "id": "sponsor-2",
+            "image": "/assets/images/s2.jpg"
+          },
+          {
+            "id": "sponsor-3",
+            "image": "/assets/images/s3.jpg"
+          },
+          {
+            "id": "sponsor-4",
+            "image": "/assets/images/s4.jpg"
+          },
+          {
+            "id": "sponsor-5",
+            "image": "/assets/images/s5.jpg"
+          }
+        ],
+        "ctaText": "Want to Sponsor ?",
+        "ctaLink": "#"
+      },
+      "newsSection": {
+        "title": "League News and Updates"
+      },
+      "testimonialsSection": {
+        "title": "What Our Players Say",
+        "testimonials": [
+          {
+            "id": "test-1",
+            "rating": 5,
+            "text": "Best Flag Football Ever! Best Flag Football Ever! Best Flag Football Ever! Best Flag Football Ever! Best Flag Football Ever!",
+            "authorImage": "/assets/images/t1.png",
+            "authorName": "John Flores",
+            "date": "Aug 20, 2020"
+          },
+          {
+            "id": "test-2",
+            "rating": 5,
+            "text": "Best Flag Football Ever! Best Flag Football Ever! Best Flag Football Ever! Best Flag Football Ever! Best Flag Football Ever!",
+            "authorImage": "/assets/images/t1.png",
+            "authorName": "John Flores",
+            "date": "Aug 20, 2020"
+          }
+        ]
+      }
+    }
+  },
+  "updatedAt": "2026-09-14T06:50:10.664Z"
+}

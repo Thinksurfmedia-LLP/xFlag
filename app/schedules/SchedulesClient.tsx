@@ -207,11 +207,13 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
 
   const currentViewGames = sectionGames;
 
-  // Extract field number from a location string like "North Park - Field 2"
+  // Extract field number from a location string like "North Park - Field 2".
+  // Games whose location has no field number sort last, in a "Field TBD" column.
+  const UNKNOWN_FIELD = 999;
   const getFieldNum = (g: any): number => {
     const loc = g.location || '';
     const match = loc.match(/field\s*(\d+)/i);
-    return match ? parseInt(match[1], 10) : 999;
+    return match ? parseInt(match[1], 10) : UNKNOWN_FIELD;
   };
 
   // Group games by Exact Date + Time, sorted by field number within each slot
@@ -376,9 +378,14 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
                 No games scheduled for {selectedLeague || 'this week'}.
               </div>
             ) : (() => {
-              // Compute the maximum number of concurrent games across all time slots
-              const maxFields = Math.max(...gamesByDateTime.map(([, sg]) => sg.length), 1);
-              const fieldCols = Array.from({ length: maxFields }, (_, i) => i + 1);
+              // One column per field number that actually appears in this view
+              // (e.g. [1, 2]), NOT one per concurrent game — columns used to be
+              // filled by position within the time slot, so a slot whose only
+              // game was on Field 2 rendered it under "Field 1".
+              const fieldCols = Array.from(
+                new Set(gamesByDateTime.flatMap(([, sg]) => sg.map(getFieldNum)))
+              ).sort((a, b) => a - b);
+              const fieldLabel = (n: number) => (n === UNKNOWN_FIELD ? 'field TBD' : `field ${n}`);
 
               const getLogoUrl = (url?: string) => {
                 if (!url) return '/assets/images/team-placeholder.svg';
@@ -389,11 +396,23 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
                 return url;
               };
 
-              const renderGameCell = (game: any, fieldNum: number) => {
-                if (!game) return <td key={fieldNum} data-title={`Field ${fieldNum}`}></td>;
+              // Every game in this slot on this field — normally 0 or 1; more
+              // than one means a scheduling mistake, shown rather than hidden.
+              type SlotGame = (typeof gamesByDateTime)[number][1][number];
+              const renderGameCell = (slotGames: SlotGame[], fieldNum: number) => {
+                const title = fieldLabel(fieldNum).replace(/^field/, 'Field');
+                const cellGames = slotGames.filter((g) => getFieldNum(g) === fieldNum);
+                if (cellGames.length === 0) return <td key={fieldNum} data-title={title}></td>;
                 return (
-                  <td key={fieldNum} data-title={`Field ${fieldNum}`}>
-                    <div className="main">
+                  <td key={fieldNum} data-title={title}>
+                    {cellGames.map((game) => renderGame(game))}
+                  </td>
+                );
+              };
+
+              const renderGame = (game: SlotGame) => {
+                return (
+                    <div className="main" key={game._id}>
                       <div className="a">
                         <img src={getLogoUrl(game.teamA?.logo)} alt="" />
                         <span>
@@ -416,7 +435,6 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
                         </span>
                       </div>
                     </div>
-                  </td>
                 );
               };
 
@@ -427,7 +445,7 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
                       <tr>
                         <th>date/time</th>
                         {fieldCols.map(n => (
-                          <th key={n}>field {n}</th>
+                          <th key={n}>{fieldLabel(n)}</th>
                         ))}
                       </tr>
                     </thead>
@@ -441,7 +459,7 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
                               <br />
                               <span>{formatTimeWithZone(time, orgTimezone, slotGames[0]?.date)}</span>
                             </td>
-                            {fieldCols.map(n => renderGameCell(slotGames[n - 1], n))}
+                            {fieldCols.map(n => renderGameCell(slotGames, n))}
                           </tr>
                         );
                       })}
