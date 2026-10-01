@@ -4,8 +4,18 @@ import { useState, useEffect } from 'react';
 import type { FooterColumn, FooterLink } from '@/lib/types';
 
 import type { CmsData } from '@/lib/types';
+import ImageField from '@/components/admin/ImageField';
 
 type FooterData = CmsData['footer'];
+
+const TABS = [
+  { id: 'info', label: 'About & Contact' },
+  { id: 'social', label: 'Social Links' },
+  { id: 'columns', label: 'Link Columns' },
+  { id: 'logo', label: 'Logo' },
+] as const;
+
+type TabId = (typeof TABS)[number]['id'];
 
 function newId() {
   return `id-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
@@ -16,6 +26,7 @@ export default function FooterAdminPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [activeTab, setActiveTab] = useState<TabId>('info');
 
   useEffect(() => {
     fetch('/api/cms/footer')
@@ -145,8 +156,8 @@ export default function FooterAdminPage() {
     <div>
       <div className="cms-page-header">
         <div>
-          <h1 className="cms-page-title">Footer Navigation</h1>
-          <p className="cms-page-desc">Manage footer columns and their links.</p>
+          <h1 className="cms-page-title">Footer</h1>
+          <p className="cms-page-desc">Manage the site footer: description, contact info, social links, link columns and logo.</p>
         </div>
         <button className="cms-btn cms-btn-primary" onClick={handleSave} disabled={saving}>
           {saving ? 'Saving…' : 'Save Changes'}
@@ -160,10 +171,43 @@ export default function FooterAdminPage() {
         </div>
       )}
 
-      
+      <div className="cms-editor">
+      <div className="cms-tabs" role="tablist" aria-label="Footer sections">
+        <div className="cms-editor-nav-title">SECTIONS</div>
+        {TABS.map(t => (
+          <button
+            key={t.id}
+            type="button"
+            role="tab"
+            aria-selected={activeTab === t.id}
+            className={`cms-tab-btn${activeTab === t.id ? ' active' : ''}`}
+            onClick={() => setActiveTab(t.id)}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="cms-editor-main">
+
+      {activeTab === 'logo' && (
+      <div className="cms-panel">
+        <div className="cms-panel-header">
+          <div>
+            <h2>Footer Logo</h2>
+            <p>Usually the white/light version of the logo. JPEG, PNG, WebP or SVG (max 5 MB).</p>
+          </div>
+        </div>
+        <div className="cms-panel-body">
+          <ImageField uploadKey="footer-logo" dark value={data.logo} onChange={path => setData({ ...data, logo: path })} />
+        </div>
+      </div>
+      )}
+
+      {activeTab === 'info' && (
       <div className="cms-card cms-mb-4">
         <div className="cms-card-header">
-          <h2 className="cms-card-title">Global Footer Info</h2>
+          <h2 className="cms-card-title">About & Contact</h2>
         </div>
         <div className="cms-card-body">
           <div className="cms-form-group">
@@ -190,8 +234,16 @@ export default function FooterAdminPage() {
             <label className="cms-label">Contact Address</label>
             <input type="text" className="cms-input" value={data.contactInfo?.address || ''} onChange={e => updateContactInfo('address', e.target.value)} />
           </div>
-          
-          <h3 className="cms-section-title">Social Links</h3>
+        </div>
+      </div>
+      )}
+
+      {activeTab === 'social' && (
+      <div className="cms-card cms-mb-4">
+        <div className="cms-card-header">
+          <h2 className="cms-card-title">Footer Social Links</h2>
+        </div>
+        <div className="cms-card-body">
           {data.socialLinks?.map(social => (
             <div key={social.id} className="cms-social-row">
               <input type="text" className="cms-input" placeholder="Platform" value={social.platform} onChange={e => updateSocialLink(social.id, 'platform', e.target.value)} />
@@ -204,8 +256,10 @@ export default function FooterAdminPage() {
         </div>
       </div>
 
-      <h2 className="cms-section-title cms-mt-5 cms-mb-3">Footer Columns</h2>
-<div className="cms-grid">
+      )}
+
+      {activeTab === 'columns' && (
+      <div className="cms-grid">
         {data.navColumns.map((col) => (
           <div key={col.id} className="cms-col-card">
             <div className="cms-card h-100">
@@ -276,6 +330,10 @@ export default function FooterAdminPage() {
             <span>Add Column</span>
           </button>
         </div>
+      </div>
+      )}
+
+      </div>
       </div>
 
       <div className="cms-page-actions">

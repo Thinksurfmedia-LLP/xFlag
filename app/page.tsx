@@ -3,6 +3,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { readCmsData } from '@/lib/cms';
+import { isHomeSectionVisible, type HomeSectionId } from '@/lib/cms/homeSections';
 import { getLiveVenues, getLiveSchedules, getLiveLeagues, getLiveStandings } from '@/lib/flagmag';
 
 export const dynamic = 'force-dynamic';
@@ -11,6 +12,7 @@ export default async function Home() {
   const cmsData = await readCmsData();
   const hp = cmsData.homepage;
   if (!hp) return null;
+  const show = (id: HomeSectionId) => isHomeSectionVisible(hp.visibility, id);
 
   const allVenues = await getLiveVenues();
 
@@ -26,6 +28,7 @@ export default async function Home() {
   return (
     <div className="wrapper">
       <Header />
+      {show('hero') && (
       <section className="homepage-banner">
         <div className="owl-carousel owl-theme homepage-banner-carousel">
           {hp.banners.map((banner) => (
@@ -49,8 +52,10 @@ export default async function Home() {
           ))}
         </div>
       </section>
+      )}
 
 
+        {show('success') && (
         <section className="success-section section-padding">
             <div className="container">
                 <div className="text-center">
@@ -69,11 +74,12 @@ export default async function Home() {
                 </div>
             </div>
         </section>
+        )}
 
 
 
 
-        {/* UPCOMING / PREVIOUS GAMES â€” temporarily hidden
+        {show('games') && (
         <section className="upcoming-match-section">
             <div className="nav-area">
                 <div className="container">
@@ -154,13 +160,13 @@ export default async function Home() {
 
 
         </section>
-        */}
+        )}
 
 
 
 
 
-        {/* STRIP BANNER (Register Now) — temporarily hidden
+        {show('strip') && (
         <section className="strip-banner-section">
             <div className="image-area">
                 <img src={hp.stripBanner.image} alt="" />
@@ -169,13 +175,13 @@ export default async function Home() {
                 <Link href={hp.stripBanner.ctaLink} className="btn btn-primary">{hp.stripBanner.ctaText}</Link>
             </div>
         </section>
-        */}
+        )}
 
 
 
 
 
-        {/* MATCH HIGHLIGHTS — temporarily hidden
+        {show('highlights') && (
         <section className="upcoming-match-section match-highlights-section section-padding">
             <div className="container">
                 <div className="row align-items-center justify-content-between">
@@ -208,7 +214,7 @@ export default async function Home() {
                 </div>
             </div>
         </section>
-        */}
+        )}
 
 
 
@@ -217,6 +223,7 @@ export default async function Home() {
 
 
 
+        {show('locations') && (
         <section className="xflag-location section-padding bg-light-gray">
             <div className="container">
                 <div className="text-center">
@@ -261,9 +268,10 @@ export default async function Home() {
                 </div>
             </div>
         </section>
+        )}
 
 
-        {/* LEAGUE SCOREBOARD — temporarily hidden
+        {show('scoreboard') && (
         <section className="scoreboard-section section-padding">
             <div className="container">
                 <div className="row g-5 align-items-center">
@@ -307,10 +315,11 @@ export default async function Home() {
                 </div>
             </div>
         </section>
-        */}
+        )}
 
 
         
+        {show('difference') && (
         <section className="diffrence-section section-padding">
             <div className="container">
                 <div className="row justify-content-end">
@@ -333,17 +342,19 @@ export default async function Home() {
                                     </div>
                                 ))}
                             </div>
-                            {/* READ MORE button — temporarily hidden
+                            {show('differenceCta') && (
                             <Link href={hp.differenceSection.ctaLink} className="btn btn-primary">{hp.differenceSection.ctaText}</Link>
-                            */}
+                            )}
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+        )}
         
 
 
+        {show('sponsors') && (
         <section className="sponsors-section section-padding">
             <div className="container">
                 <h2>{hp.sponsorsSection.title}</h2>
@@ -356,15 +367,16 @@ export default async function Home() {
                         </div>
                     ))}
                 </div>
-                {/* Want to Sponsor button — temporarily hidden
+                {show('sponsorsCta') && (
                 <Link href={hp.sponsorsSection.ctaLink} className="btn btn-primary">{hp.sponsorsSection.ctaText}</Link>
-                */}
+                )}
             </div>
         </section>
+        )}
 
 
 
-        {/* LEAGUE NEWS AND UPDATES — temporarily hidden
+        {show('news') && (
         <section className="news-section section-padding">
             <div className="container">
                 <div className="text-center">
@@ -413,7 +425,7 @@ export default async function Home() {
                                 <img src="/assets/images/blog4.jpg" alt="" />
                             </div>
                             <div className="content-area">
-                                <h4><a href="#">Womenâ€™s North Park</a></h4>
+                                <h4><a href="#">Women’s North Park</a></h4>
                                 <p>Cash counties xxi! Come join the longest running flag league in the us! 10 stated games! <a href="#">Read more</a></p>
                             </div>
                         </div>
@@ -421,11 +433,11 @@ export default async function Home() {
                 </div>
             </div>
         </section>
-        */}
+        )}
 
 
 
-        {/* WHAT OUR PLAYERS SAY (testimonials) — temporarily hidden
+        {show('testimonials') && (
         <section className="testimonials-section section-padding">
             <div className="container">
                 <div className="text-center">
@@ -458,7 +470,7 @@ export default async function Home() {
                 </div>
             </div>
         </section>
-        */}
+        )}
       <Footer />
     </div>
   );

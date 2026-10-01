@@ -1,50 +1,59 @@
+import type { Metadata } from 'next';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import InnerPageBanner from '@/components/InnerPageBanner';
+import { readPageData } from '@/lib/cms/pageStore';
 import ContactForm from './ContactForm';
 
-export default function ContactUs() {
+// Saves revalidate instantly; this only bounds how long a DB-outage
+// fallback render can stay cached.
+export const revalidate = 300;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { seo } = await readPageData('contact');
+  return { title: seo.metaTitle, description: seo.metaDescription };
+}
+
+export default async function ContactUs() {
+  const { banner, contactInfo, form } = await readPageData('contact');
+  const showBoth = contactInfo.enabled && form.enabled;
+
   return (
     <div className="wrapper">
       <Header />
-      <div className="breadcrumb-section">
-        <div className="container">
-          <ul>
-            <li><a href="/">Home</a></li>
-            <li>contact us</li>
-          </ul>
-        </div>
-      </div>
+      <InnerPageBanner banner={banner} />
 
-      <section className="inner-banner-section">
-        <div className="image-area">
-          <img src="/assets/images/about-banner.jpg" alt="" />
-        </div>
-        <div className="container">
-          <h1>contact us</h1>
-        </div>
-      </section>
-
-      <section className="sponsorship-section contactus-section section-padding">
-        <div className="container">
-          <div className="row gy-4 gx-5">
-            <div className="col-lg-6">
-              <div className="contact-area-wrap">
-                <div className="contact-area">
-                  <h2>contact info</h2>
-                  <ul>
-                    <li><span><i className="fa-solid fa-phone"></i></span> <a href="tel:8553524411">855 - 3524 - 411</a></li>
-                    <li><span><i className="fa-solid fa-envelope"></i></span> <a href="mailto:mzimmerman@xflagfootball.com">mzimmerman@xflagfootball.com</a></li>
-                  </ul>
+      {(contactInfo.enabled || form.enabled) && (
+        <section className="sponsorship-section contactus-section section-padding">
+          <div className="container">
+            <div className="row gy-4 gx-5">
+              {contactInfo.enabled && (
+                <div className={showBoth ? 'col-lg-6' : 'col-12'}>
+                  <div className="contact-area-wrap">
+                    <div className="contact-area">
+                      {contactInfo.heading && <h2>{contactInfo.heading}</h2>}
+                      <ul>
+                        {contactInfo.phoneDisplay && (
+                          <li><span><i className="fa-solid fa-phone"></i></span> <a href={`tel:${contactInfo.phone.replace(/[^\d+]/g, '')}`}>{contactInfo.phoneDisplay}</a></li>
+                        )}
+                        {contactInfo.email && (
+                          <li><span><i className="fa-solid fa-envelope"></i></span> <a href={`mailto:${contactInfo.email}`}>{contactInfo.email}</a></li>
+                        )}
+                      </ul>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
+              )}
 
-            <div className="col-lg-6">
-              <ContactForm />
+              {form.enabled && (
+                <div className={showBoth ? 'col-lg-6' : 'col-12'}>
+                  <ContactForm heading={form.heading} description={form.description} />
+                </div>
+              )}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
       <Footer />
     </div>
   );

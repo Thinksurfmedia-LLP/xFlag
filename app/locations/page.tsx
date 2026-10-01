@@ -1,12 +1,23 @@
-
+import type { Metadata } from 'next';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import Link from 'next/link';
+import InnerPageBanner from '@/components/InnerPageBanner';
+import PageIntro from '@/components/PageIntro';
+import { readPageData } from '@/lib/cms/pageStore';
 import { getLiveVenues } from '@/lib/flagmag';
 import { readCmsData } from '@/lib/cms';
 
+// Saves revalidate instantly; this only bounds how long a DB-outage
+// fallback render can stay cached.
+export const revalidate = 300;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { seo } = await readPageData('locations');
+  return { title: seo.metaTitle, description: seo.metaDescription };
+}
+
 export default async function Locations() {
-  const [venues, cmsData] = await Promise.all([getLiveVenues(), readCmsData()]);
+  const [venues, cmsData, page] = await Promise.all([getLiveVenues(), readCmsData(), readPageData('locations')]);
 
   // Build lookup map: venue name (lowercase) → CMS entry (for images)
   const cmsMap = new Map(
@@ -23,28 +34,13 @@ export default async function Locations() {
     <div className="wrapper">
       <Header />
 
-      <div className="breadcrumb-section">
-        <div className="container">
-          <ul>
-            <li><Link href="/">Home</Link></li>
-            <li>Locations</li>
-          </ul>
-        </div>
-      </div>
-
-      <section className="inner-banner-section">
-        <div className="image-area">
-          <img src="/assets/images/about-banner.jpg" alt="" />
-        </div>
-        <div className="container">
-          <h1>LOCATIONS</h1>
-        </div>
-      </section>
+      <InnerPageBanner banner={page.banner} />
+      <PageIntro intro={page.intro} />
 
 
       <section className="xflag-location section-padding">
         <div className="container">
-          {/* <h2>XFLAG LOCATIONS</h2> */}
+          {page.listing.heading && <h2>{page.listing.heading}</h2>}
           <div className="row g-4">
             {venues.length > 0 ? venues.map((venue: any, i: number) => (
               <div key={i} className="col-sm-6 col-xl-3">
@@ -60,7 +56,7 @@ export default async function Locations() {
                 </div>
               </div>
             )) : (
-              <div className="col-12 text-center text-muted py-5">No locations found.</div>
+              <div className="col-12 text-center text-muted py-5">{page.listing.emptyText}</div>
             )}
           </div>
         </div>

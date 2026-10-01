@@ -1,28 +1,15 @@
-// NOTE: This is the SINGLE SOURCE OF TRUTH for the Rules page.
-// app/rules/page.tsx renders this data on the webpage, and the PDF
-// download route (app/api/rules/pdf/[slug]/route.ts) renders the exact
-// same data into a PDF. Edit content here ONLY -- never hardcode rule
-// text separately in the page or the PDF generator, or the two will
-// drift out of sync again.
+// NOTE: SEED DATA ONLY. The live rulebooks are stored in the CMS
+// (admin → Rules & Policies) and read via readPageData('rules'); both the
+// Rules page and the PDF route render from that CMS data. This file is
+// used as the default until an admin saves the Rules page for the first
+// time. Editing it after that has no effect on the site.
 //
 // Use **bold** inside any string to render emphasis (both on the
 // webpage and, stripped, in the PDF).
 
-export type RuleItem =
-  | { type: 'text'; value: string }
-  | { type: 'list'; items: string[]; ordered?: boolean; indent?: boolean }
-  | { type: 'table'; rows: [string, string][] };
+import type { Rulebook } from '@/lib/cms/pageTypes';
 
-export type RuleSection = {
-  heading?: string;
-  content: RuleItem[];
-};
-
-export type Rulebook = {
-  title: string;
-  filename: string;
-  sections: RuleSection[];
-};
+export type { RuleItem, RuleSection, Rulebook } from '@/lib/cms/pageTypes';
 
 export const rulebooks: Rulebook[] = [
   {

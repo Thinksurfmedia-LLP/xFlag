@@ -1,8 +1,11 @@
+import type { Metadata } from 'next';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import Link from 'next/link';
-import type { ReactNode } from 'react';
-import { rulebooks, type RuleItem } from '@/app/api/rules/content';
+import InnerPageBanner from '@/components/InnerPageBanner';
+import PageIntro from '@/components/PageIntro';
+import { readPageData } from '@/lib/cms/pageStore';
+import { renderInline } from '@/lib/cms/inline';
+import type { RuleItem } from '@/lib/cms/pageTypes';
 
 function PdfDownload({ filename }: { filename: string }) {
   const slug = filename.replace('.pdf', '');
@@ -15,14 +18,6 @@ function PdfDownload({ filename }: { filename: string }) {
       Download PDF
     </a>
   );
-}
-
-// Renders **bold** markdown spans inside rule text as <strong> elements,
-// so the webpage stays in sync with the same source data used for the PDF.
-function renderInline(text: string): ReactNode {
-  const parts = text.split('**');
-  if (parts.length === 1) return text;
-  return parts.map((part, i) => (i % 2 === 1 ? <strong key={i}>{part}</strong> : part));
 }
 
 function RuleContentBlock({ block }: { block: RuleItem }) {
@@ -55,12 +50,19 @@ function RuleContentBlock({ block }: { block: RuleItem }) {
   );
 }
 
-export const metadata = {
-  title: 'Rules | XFlag Football',
-  description: 'Official XFlag Football rules for all leagues and formats.',
-};
+// Saves revalidate instantly; this only bounds how long a DB-outage
+// fallback render can stay cached.
+export const revalidate = 300;
 
-export default function Rules() {
+export async function generateMetadata(): Promise<Metadata> {
+  const { seo } = await readPageData('rules');
+  return { title: seo.metaTitle, description: seo.metaDescription };
+}
+
+export default async function Rules() {
+  const { banner, intro, rulebooks: rulebooksSection } = await readPageData('rules');
+  const rulebooks = rulebooksSection.enabled ? rulebooksSection.rulebooks : [];
+
   return (
     <>
     <style>{`
@@ -90,22 +92,9 @@ export default function Rules() {
     `}</style>
     <div className="wrapper">
       <Header />
-      <div className="breadcrumb-section">
-        <div className="container">
-          <ul>
-            <li><Link href="/">Home</Link></li>
-            <li>Rules</li>
-          </ul>
-        </div>
-      </div>
-      <section className="inner-banner-section">
-        <div className="image-area">
-          <img src="/assets/images/about-banner.jpg" alt="" />
-        </div>
-        <div className="container">
-          <h1>Rules</h1>
-        </div>
-      </section>
+      <InnerPageBanner banner={banner} />
+      <PageIntro intro={intro} />
+      {rulebooks.length > 0 && (
       <section className="section-padding bg-white text-dark rules-page-content">
         <div className="container">
           <div className="accordion" id="rulesAccordion">
@@ -137,6 +126,7 @@ export default function Rules() {
           </div>
         </div>
       </section>
+      )}
       <Footer />
     </div>
     </>

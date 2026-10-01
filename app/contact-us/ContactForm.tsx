@@ -20,7 +20,12 @@ const EMPTY_FORM: FormState = {
   message: '',
 };
 
-export default function ContactForm() {
+interface ContactFormProps {
+  heading: string;
+  description: string;
+}
+
+export default function ContactForm({ heading, description }: ContactFormProps) {
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
@@ -59,8 +64,8 @@ export default function ContactForm() {
   return (
     <div className="form-area">
       <div className="heading-area">
-        <h2>Get in touch</h2>
-        <p>Fill out the form below to let us know what interest you may have and we will reach out to set up an official meeting shortly.</p>
+        {heading && <h2>{heading}</h2>}
+        {description && <p>{description}</p>}
       </div>
 
       {status === 'success' && (

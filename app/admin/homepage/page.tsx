@@ -1,14 +1,40 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import type { CmsData, HomepageBanner, SuccessStat, StripBanner, MatchHighlight, FeaturedLocation, DifferenceItem, Sponsor, Testimonial } from '@/lib/types';
+import type { CmsData } from '@/lib/types';
+import { isHomeSectionVisible, type HomeSectionId } from '@/lib/cms/homeSections';
+import VisibilitySwitch from '@/components/admin/VisibilitySwitch';
+
+interface HomeTab {
+  id: HomeSectionId;
+  label: string;
+  title: string;
+  description: string;
+  cta?: { id: HomeSectionId; label: string };
+}
+
+// One tab per homepage section, in page order. Each tab's header carries the
+// same show/hide switch used by the other page editors.
+const TABS: HomeTab[] = [
+  { id: 'hero', label: 'Hero Banners', title: 'Hero Banner Slider', description: 'Full-width slides at the top of the homepage.' },
+  { id: 'success', label: 'Success Stats', title: 'Success in Numbers', description: 'Headline numbers shown under the hero.' },
+  { id: 'games', label: 'Games', title: 'Upcoming / Previous Games', description: 'Game carousel. Games are pulled live from FlagMag — nothing to edit here.' },
+  { id: 'strip', label: 'Strip Banner', title: 'Strip Banner', description: 'Wide image banner with a "Register now" button.' },
+  { id: 'highlights', label: 'Highlights', title: 'Match Highlights', description: 'Photo carousel of recent games.' },
+  { id: 'locations', label: 'Locations', title: 'Featured Locations', description: 'Up to 4 locations shown on the homepage, plus photos used on the Locations page.' },
+  { id: 'scoreboard', label: 'Scoreboard', title: 'League Scoreboard', description: 'Intro text beside the live standings table.' },
+  { id: 'difference', label: 'Difference', title: 'The Difference We Deliver', description: 'Feature list with icons.', cta: { id: 'differenceCta', label: '"Read More" button' } },
+  { id: 'sponsors', label: 'Sponsors', title: 'Sponsors', description: 'Sponsor logo carousel.', cta: { id: 'sponsorsCta', label: '"Want to Sponsor?" button' } },
+  { id: 'news', label: 'News', title: 'League News and Updates', description: 'News cards. The cards currently show sample content; only the title is editable.' },
+  { id: 'testimonials', label: 'Testimonials', title: 'What Our Players Say', description: 'Player quotes carousel.' },
+];
 
 export default function HomepageAdminPage() {
   const [data, setData] = useState<CmsData['homepage'] | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
-  const [activeTab, setActiveTab] = useState('hero');
+  const [activeTab, setActiveTab] = useState<HomeSectionId>('hero');
   const [uploadStatus, setUploadStatus] = useState<Record<string, string>>({});
   const [liveLocations, setLiveLocations] = useState<{ locationName: string; cityName: string; stateAbbr: string; countyName: string }[]>([]);
 
@@ -68,24 +94,13 @@ export default function HomepageAdminPage() {
   if (loading) return <div className="cms-page-loading">Loading…</div>;
   if (!data) return <div className="cms-alert cms-alert-error">Failed to load data.</div>;
 
-  const tabs = [
-    { id: 'hero', label: 'Hero Banners' },
-    { id: 'success', label: 'Success Stats' },
-    { id: 'strip', label: 'Strip Banner' },
-    { id: 'highlights', label: 'Highlights' },
-    { id: 'locations', label: 'Locations' },
-    { id: 'difference', label: 'Difference' },
-    { id: 'sponsors', label: 'Sponsors' },
-    { id: 'testimonials', label: 'Testimonials' },
-    { id: 'titles', label: 'Section Titles' },
-  ];
 
   return (
     <div>
       <div className="cms-page-header">
         <div>
-          <h1 className="cms-page-title">Homepage Content</h1>
-          <p className="cms-page-desc">Manage all dynamic sections of the homepage.</p>
+          <h1 className="cms-page-title">Homepage</h1>
+          <p className="cms-page-desc">Edit every homepage section and choose which ones appear on the site.</p>
         </div>
         <button className="cms-btn cms-btn-primary" onClick={handleSave} disabled={saving}>
           {saving ? 'Saving…' : 'Save Changes'}
@@ -99,23 +114,55 @@ export default function HomepageAdminPage() {
         </div>
       )}
 
-      <div className="cms-tabs">
-        {tabs.map(t => (
+      <div className="cms-editor">
+      <div className="cms-tabs" role="tablist" aria-label="Homepage sections">
+        <div className="cms-editor-nav-title">SECTIONS</div>
+        {TABS.map(t => (
           <button 
             key={t.id} 
+            type="button"
+            role="tab"
+            aria-selected={activeTab === t.id}
             className={`cms-tab-btn ${activeTab === t.id ? 'active' : ''}`}
             onClick={() => setActiveTab(t.id)}
           >
             {t.label}
+            {!isHomeSectionVisible(data.visibility, t.id) && <span className="cms-tab-hidden-badge">Hidden</span>}
           </button>
         ))}
       </div>
 
-      <div className="cms-tab-content">
+      <div className="cms-tab-content cms-editor-main">
+        {(() => {
+          const tab = TABS.find(t => t.id === activeTab) ?? TABS[0];
+          const setVisible = (id: HomeSectionId, value: boolean) =>
+            setData({ ...data, visibility: { ...data.visibility, [id]: value } });
+          return (
+            <div className="cms-panel cms-section-head">
+              <div className="cms-panel-header">
+                <div>
+                  <h2>{tab.title}</h2>
+                  <p>{tab.description}</p>
+                </div>
+                <VisibilitySwitch checked={isHomeSectionVisible(data.visibility, tab.id)} onChange={v => setVisible(tab.id, v)} />
+              </div>
+              {tab.cta && (
+                <div className="cms-section-head-sub">
+                  <span>{tab.cta.label}</span>
+                  <VisibilitySwitch
+                    checked={isHomeSectionVisible(data.visibility, tab.cta.id)}
+                    onChange={v => setVisible(tab.cta!.id, v)}
+                    onLabel="Shown"
+                  />
+                </div>
+              )}
+            </div>
+          );
+        })()}
+
         {/* HERO BANNERS */}
         {activeTab === 'hero' && (
           <div className="cms-section">
-            <h2 className="cms-section-title">Hero Banner Slider</h2>
             <div className="cms-grid">
               {data.banners.map((b, idx) => (
                 <div key={b.id} className="cms-card">
@@ -220,30 +267,44 @@ export default function HomepageAdminPage() {
           </div>
         )}
 
-        {/* SECTION TITLES */}
-        {activeTab === 'titles' && (
+        {/* GAMES */}
+        {activeTab === 'games' && (
+          <div className="cms-alert cms-alert-info">
+            <span className="cms-alert-icon">ℹ</span>
+            Upcoming and previous games come straight from FlagMag. Use the switch above to show or hide this section.
+          </div>
+        )}
+
+        {/* SCOREBOARD */}
+        {activeTab === 'scoreboard' && (
           <div className="cms-section">
-            <h2 className="cms-section-title">Other Section Texts</h2>
-            <div className="cms-card p-4 mb-4">
-              <h5>Scoreboard Section</h5>
-              <div className="cms-form-group mt-2">
+            <div className="cms-card p-4" style={{maxWidth: 640}}>
+              <div className="cms-form-group">
                 <label>Title</label>
                 <input type="text" className="cms-input" value={data.scoreboardSection.title} onChange={e => setData({...data, scoreboardSection: {...data.scoreboardSection, title: e.target.value}})} />
               </div>
               <div className="cms-form-group">
                 <label>Description</label>
-                <textarea className="cms-input" value={data.scoreboardSection.description} onChange={e => setData({...data, scoreboardSection: {...data.scoreboardSection, description: e.target.value}})} />
+                <textarea rows={3} className="cms-input" value={data.scoreboardSection.description} onChange={e => setData({...data, scoreboardSection: {...data.scoreboardSection, description: e.target.value}})} />
               </div>
               <div className="cms-form-group">
-                <label>CTA Text</label>
+                <label>Button text</label>
                 <input type="text" className="cms-input" value={data.scoreboardSection.ctaText} onChange={e => setData({...data, scoreboardSection: {...data.scoreboardSection, ctaText: e.target.value}})} />
               </div>
+              <div className="cms-form-group">
+                <label>Button link</label>
+                <input type="text" className="cms-input" value={data.scoreboardSection.ctaLink} onChange={e => setData({...data, scoreboardSection: {...data.scoreboardSection, ctaLink: e.target.value}})} />
+              </div>
             </div>
+          </div>
+        )}
 
-            <div className="cms-card p-4 mb-4">
-              <h5>News Section</h5>
-              <div className="cms-form-group mt-2">
-                <label>Title</label>
+        {/* NEWS */}
+        {activeTab === 'news' && (
+          <div className="cms-section">
+            <div className="cms-card p-4" style={{maxWidth: 640}}>
+              <div className="cms-form-group">
+                <label>Section title</label>
                 <input type="text" className="cms-input" value={data.newsSection.title} onChange={e => setData({...data, newsSection: {...data.newsSection, title: e.target.value}})} />
               </div>
             </div>
@@ -253,7 +314,14 @@ export default function HomepageAdminPage() {
         {/* MATCH HIGHLIGHTS */}
         {activeTab === 'highlights' && (
           <div className="cms-section">
-            <h2 className="cms-section-title">Match Highlights</h2>
+            <div className="cms-card p-4 mb-4 cms-settings-card">
+              <div className="cms-settings-grid">
+                <div className="cms-form-group">
+                  <label>Section title</label>
+                  <input type="text" className="cms-input" value={data.matchHighlights.title} onChange={e => setData({...data, matchHighlights: {...data.matchHighlights, title: e.target.value}})} />
+                </div>
+              </div>
+            </div>
             <div className="cms-grid">
               {data.matchHighlights.images.map((img, idx) => (
                 <div key={img.id} className="cms-card">
@@ -318,7 +386,6 @@ export default function HomepageAdminPage() {
 
           return (
             <div className="cms-section">
-              <h2 className="cms-section-title">Featured Locations</h2>
               <div className="cms-alert cms-alert-info">
                 <span className="cms-alert-icon">ℹ</span>
                 Toggle <strong>Show on Homepage</strong> for up to 4 locations. Upload a photo for each. All locations are pulled live from flagmagMVP.
@@ -399,7 +466,26 @@ export default function HomepageAdminPage() {
         {/* DIFFERENCE SECTION */}
         {activeTab === 'difference' && (
           <div className="cms-section">
-            <h2 className="cms-section-title">The Difference We Deliver</h2>
+            <div className="cms-card p-4 mb-4 cms-settings-card">
+              <div className="cms-settings-grid">
+                <div className="cms-form-group">
+                  <label>Section title</label>
+                  <input type="text" className="cms-input" value={data.differenceSection.title} onChange={e => setData({...data, differenceSection: {...data.differenceSection, title: e.target.value}})} />
+                </div>
+                <div className="cms-form-group">
+                  <label>Subtitle</label>
+                  <input type="text" className="cms-input" value={data.differenceSection.subtitle} onChange={e => setData({...data, differenceSection: {...data.differenceSection, subtitle: e.target.value}})} />
+                </div>
+                <div className="cms-form-group">
+                  <label>Button text</label>
+                  <input type="text" className="cms-input" value={data.differenceSection.ctaText} onChange={e => setData({...data, differenceSection: {...data.differenceSection, ctaText: e.target.value}})} />
+                </div>
+                <div className="cms-form-group">
+                  <label>Button link</label>
+                  <input type="text" className="cms-input" value={data.differenceSection.ctaLink} onChange={e => setData({...data, differenceSection: {...data.differenceSection, ctaLink: e.target.value}})} />
+                </div>
+              </div>
+            </div>
             <div className="cms-grid">
               {data.differenceSection.items.map((item, idx) => (
                 <div key={item.id} className="cms-card">
@@ -447,7 +533,22 @@ export default function HomepageAdminPage() {
         {/* SPONSORS */}
         {activeTab === 'sponsors' && (
           <div className="cms-section">
-            <h2 className="cms-section-title">Sponsors</h2>
+            <div className="cms-card p-4 mb-4 cms-settings-card">
+              <div className="cms-settings-grid">
+                <div className="cms-form-group">
+                  <label>Section title</label>
+                  <input type="text" className="cms-input" value={data.sponsorsSection.title} onChange={e => setData({...data, sponsorsSection: {...data.sponsorsSection, title: e.target.value}})} />
+                </div>
+                <div className="cms-form-group">
+                  <label>Button text</label>
+                  <input type="text" className="cms-input" value={data.sponsorsSection.ctaText} onChange={e => setData({...data, sponsorsSection: {...data.sponsorsSection, ctaText: e.target.value}})} />
+                </div>
+                <div className="cms-form-group">
+                  <label>Button link</label>
+                  <input type="text" className="cms-input" value={data.sponsorsSection.ctaLink} onChange={e => setData({...data, sponsorsSection: {...data.sponsorsSection, ctaLink: e.target.value}})} />
+                </div>
+              </div>
+            </div>
             <div className="cms-grid">
               {data.sponsorsSection.sponsors.map((s, idx) => (
                 <div key={s.id} className="cms-card">
@@ -481,7 +582,14 @@ export default function HomepageAdminPage() {
         {/* TESTIMONIALS */}
         {activeTab === 'testimonials' && (
           <div className="cms-section">
-            <h2 className="cms-section-title">Player Testimonials</h2>
+            <div className="cms-card p-4 mb-4 cms-settings-card">
+              <div className="cms-settings-grid">
+                <div className="cms-form-group">
+                  <label>Section title</label>
+                  <input type="text" className="cms-input" value={data.testimonialsSection.title} onChange={e => setData({...data, testimonialsSection: {...data.testimonialsSection, title: e.target.value}})} />
+                </div>
+              </div>
+            </div>
             <div className="cms-grid">
               {data.testimonialsSection.testimonials.map((t, idx) => (
                 <div key={t.id} className="cms-card">
@@ -540,6 +648,7 @@ export default function HomepageAdminPage() {
           </div>
         )}
 
+      </div>
       </div>
 
       <style>{`

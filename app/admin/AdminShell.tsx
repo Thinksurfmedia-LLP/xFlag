@@ -2,6 +2,43 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { PAGE_REGISTRY } from '@/lib/cms/pageRegistry';
+
+interface NavItem {
+  href: string;
+  label: string;
+  icon: string;
+}
+
+const NAV_GROUPS: { title: string; items: NavItem[] }[] = [
+  {
+    title: 'SITE',
+    items: [
+      { href: '/admin/header', label: 'Header', icon: '☰' },
+      { href: '/admin/footer', label: 'Footer', icon: '☷' },
+    ],
+  },
+  {
+    title: 'PAGES',
+    items: [
+      { href: '/admin/homepage', label: 'Homepage', icon: '⌂' },
+      { href: '/admin/pages/about-us', label: PAGE_REGISTRY['about-us'].label, icon: 'ℹ' },
+      { href: '/admin/pages/rules', label: PAGE_REGISTRY.rules.label, icon: '§' },
+      { href: '/admin/pages/locations', label: PAGE_REGISTRY.locations.label, icon: '⌖' },
+      { href: '/admin/pages/schedules', label: PAGE_REGISTRY.schedules.label, icon: '▦' },
+      { href: '/admin/pages/xstats', label: PAGE_REGISTRY.xstats.label, icon: '▤' },
+      { href: '/admin/pages/contact', label: PAGE_REGISTRY.contact.label, icon: '✉' },
+    ],
+  },
+];
+
+const ACCOUNT_ITEM: NavItem = { href: '/admin/change-password', label: 'Change Password', icon: '🔐' };
+
+const ALL_ITEMS = [...NAV_GROUPS.flatMap(g => g.items.map(item => ({ ...item, group: g.title }))), { ...ACCOUNT_ITEM, group: 'ACCOUNT' }];
+
+function isActive(pathname: string, href: string): boolean {
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 interface Props {
   children: React.ReactNode;
@@ -25,14 +62,19 @@ export default function AdminShell({ children }: Props) {
     router.refresh();
   }
 
-  const navItems = [
-    { href: '/admin', label: 'Dashboard', icon: '⬛' },
-    { href: '/admin/header', label: 'Header Nav', icon: '☰' },
-    { href: '/admin/footer', label: 'Footer Nav', icon: '☷' },
-    { href: '/admin/homepage', label: 'Homepage', icon: '⌂' },
-    { href: '/admin/logos', label: 'Logos', icon: '◈' },
-    { href: '/admin/change-password', label: 'Change Password', icon: '🔐' },
-  ];
+  const current = ALL_ITEMS.find(item => isActive(pathname, item.href));
+
+  const renderItem = (item: NavItem) => (
+    <Link
+      key={item.href}
+      href={item.href}
+      className={`cms-nav-item${isActive(pathname, item.href) ? ' active' : ''}`}
+      aria-current={isActive(pathname, item.href) ? 'page' : undefined}
+    >
+      <span className="cms-nav-icon" aria-hidden="true">{item.icon}</span>
+      <span className="cms-nav-label">{item.label}</span>
+    </Link>
+  );
 
   return (
     <div className="cms-shell">
@@ -43,21 +85,17 @@ export default function AdminShell({ children }: Props) {
           </Link>
         </div>
 
-        <div className="cms-nav-section-title">MANAGEMENT</div>
-        <nav className="cms-nav">
-          {navItems.map(item => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`cms-nav-item${pathname === item.href ? ' active' : ''}`}
-            >
-              <span className="cms-nav-icon">{item.icon}</span>
-              <span className="cms-nav-label">{item.label}</span>
-            </Link>
+        <nav className="cms-nav" aria-label="CMS">
+          {NAV_GROUPS.map(group => (
+            <div key={group.title} className="cms-nav-group">
+              <div className="cms-nav-section-title">{group.title}</div>
+              {group.items.map(renderItem)}
+            </div>
           ))}
         </nav>
 
         <div className="cms-sidebar-footer">
+          {renderItem(ACCOUNT_ITEM)}
           <button className="cms-logout-btn" onClick={handleLogout}>
             <span className="cms-nav-icon">⎋</span>
             Sign Out
@@ -68,7 +106,9 @@ export default function AdminShell({ children }: Props) {
       <main className="cms-content-wrapper">
         <header className="cms-topbar">
           <div className="cms-topbar-breadcrumb">
-            Dashboard <span className="text-muted mx-2">/</span> {navItems.find(i => i.href === pathname)?.label || 'Overview'}
+            {current ? (
+              <>{current.group.charAt(0) + current.group.slice(1).toLowerCase()} <span className="text-muted mx-2">/</span> {current.label}</>
+            ) : 'XFlag CMS'}
           </div>
         </header>
         <div className="cms-content">
@@ -133,12 +173,23 @@ export default function AdminShell({ children }: Props) {
           display: flex;
           flex-direction: column;
           gap: 4px;
+          overflow-y: auto;
+          min-height: 0;
+        }
+        .cms-nav-group {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+          margin-bottom: 12px;
+        }
+        .cms-nav-group .cms-nav-section-title {
+          padding: 0 16px;
         }
         .cms-nav-item {
           display: flex;
           align-items: center;
           gap: 12px;
-          padding: 12px 16px;
+          padding: 10px 16px;
           color: #94a3b8;
           text-decoration: none;
           font-size: 0.95rem;
@@ -166,8 +217,16 @@ export default function AdminShell({ children }: Props) {
           color: #38bdf8;
         }
         .cms-sidebar-footer {
-          padding: 24px 16px;
+          padding: 16px;
           margin-top: auto;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          border-top: 1px solid #1e293b;
+        }
+        .cms-nav-item:focus-visible, .cms-logout-btn:focus-visible {
+          outline: 2px solid #38bdf8;
+          outline-offset: 2px;
         }
         .cms-logout-btn {
           width: 100%;
@@ -217,7 +276,6 @@ export default function AdminShell({ children }: Props) {
         .cms-content {
           flex: 1;
           padding: 40px;
-          overflow-y: auto;
         }
         @media (max-width: 768px) {
           .cms-sidebar { display: none; }

@@ -1,14 +1,22 @@
+import type { Metadata } from 'next';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import Link from 'next/link';
+import InnerPageBanner from '@/components/InnerPageBanner';
+import PageIntro from '@/components/PageIntro';
+import { readPageData } from '@/lib/cms/pageStore';
 import { getLiveSchedules, getLiveLeagues, getLiveOrganization, getLiveSeasons, getLiveVenues } from '@/lib/flagmag';
 import { getGameRefSectionMap } from '@/lib/scheduleUtils';
 import SchedulesClient from './SchedulesClient';
 
 export const dynamic = 'force-dynamic';
 
+export async function generateMetadata(): Promise<Metadata> {
+  const { seo } = await readPageData('schedules');
+  return { title: seo.metaTitle, description: seo.metaDescription };
+}
+
 export default async function Schedules() {
-  const [rawGames, leagues, org, seasons, venues] = await Promise.all([getLiveSchedules(), getLiveLeagues(), getLiveOrganization(), getLiveSeasons(), getLiveVenues()]);
+  const [rawGames, leagues, org, seasons, venues, page] = await Promise.all([getLiveSchedules(), getLiveLeagues(), getLiveOrganization(), getLiveSeasons(), getLiveVenues(), readPageData('schedules')]);
   const orgTimezone = org?.timezone || "America/Los_Angeles";
 
   // Enrich sectionName from Schedule docs directly (bypasses external API)
@@ -32,23 +40,8 @@ export default async function Schedules() {
   return (
     <div className="wrapper">
       <Header />
-      <div className="breadcrumb-section">
-            <div className="container">
-                <ul>
-                    <li><Link href="/">Home</Link></li>
-                    <li>schedules</li>
-                </ul>
-            </div>
-        </div>
-
-        <section className="inner-banner-section">
-            <div className="image-area">
-                <img src="/assets/images/about-banner.jpg" alt="" />
-            </div>
-            <div className="container">
-                <h1>Schedules</h1>
-            </div>
-        </section>
+      <InnerPageBanner banner={page.banner} />
+      <PageIntro intro={page.intro} />
 
         <SchedulesClient games={games} leagues={leagues} seasons={seasons} venues={venues} orgTimezone={orgTimezone} />
 

@@ -2,8 +2,18 @@
 
 import { useState, useEffect } from 'react';
 import type { CmsData, NavLink, CtaButton, DropdownItem } from '@/lib/types';
+import ImageField from '@/components/admin/ImageField';
 
 type HeaderData = CmsData['header'];
+
+const TABS = [
+  { id: 'nav', label: 'Navigation Links' },
+  { id: 'cta', label: 'CTA Buttons' },
+  { id: 'social', label: 'Social Links' },
+  { id: 'logos', label: 'Logos' },
+] as const;
+
+type TabId = (typeof TABS)[number]['id'];
 
 function newId() {
   return `id-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
@@ -14,6 +24,7 @@ export default function HeaderAdminPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [activeTab, setActiveTab] = useState<TabId>('nav');
 
   useEffect(() => {
     fetch('/api/cms/header')
@@ -161,8 +172,8 @@ export default function HeaderAdminPage() {
     <div>
       <div className="cms-page-header">
         <div>
-          <h1 className="cms-page-title">Header Navigation</h1>
-          <p className="cms-page-desc">Manage the main navigation links and top CTA buttons.</p>
+          <h1 className="cms-page-title">Header</h1>
+          <p className="cms-page-desc">Manage the site header: navigation links, CTA buttons, social links and logos.</p>
         </div>
         <button className="cms-btn cms-btn-primary" onClick={handleSave} disabled={saving}>
           {saving ? 'Saving…' : 'Save Changes'}
@@ -176,7 +187,49 @@ export default function HeaderAdminPage() {
         </div>
       )}
 
+      <div className="cms-editor">
+      <div className="cms-tabs" role="tablist" aria-label="Header sections">
+        <div className="cms-editor-nav-title">SECTIONS</div>
+        {TABS.map(t => (
+          <button
+            key={t.id}
+            type="button"
+            role="tab"
+            aria-selected={activeTab === t.id}
+            className={`cms-tab-btn${activeTab === t.id ? ' active' : ''}`}
+            onClick={() => setActiveTab(t.id)}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="cms-editor-main">
+
+      {/* Logos */}
+      {activeTab === 'logos' && (
+      <div className="cms-panel">
+        <div className="cms-panel-header">
+          <div>
+            <h2>Header Logos</h2>
+            <p>Accepted formats: JPEG, PNG, WebP, SVG (max 5 MB).</p>
+          </div>
+        </div>
+        <div className="cms-panel-body cms-grid-2">
+          <div className="cms-form-group">
+            <label>Logo 1 — left logo in the top header bar (desktop)</label>
+            <ImageField uploadKey="header-logo1" value={data.logo1} onChange={path => setData({ ...data, logo1: path })} />
+          </div>
+          <div className="cms-form-group">
+            <label>Logo 2 — secondary logo, also used in the mobile menu</label>
+            <ImageField uploadKey="header-logo2" value={data.logo2} onChange={path => setData({ ...data, logo2: path })} />
+          </div>
+        </div>
+      </div>
+      )}
+
       {/* Nav Links */}
+      {activeTab === 'nav' && (
       <div className="cms-card">
         <div className="cms-card-header">
           <div className="cms-card-title">
@@ -269,8 +322,11 @@ export default function HeaderAdminPage() {
         </div>
       </div>
 
+      )}
+
       {/* CTA Buttons */}
-      <div className="cms-card mt-5">
+      {activeTab === 'cta' && (
+      <div className="cms-card">
         <div className="cms-card-header">
           <div className="cms-card-title">
             <span className="cms-card-icon">⚡</span>
@@ -327,8 +383,11 @@ export default function HeaderAdminPage() {
         </div>
       </div>
 
+      )}
+
       {/* Social Links */}
-      <div className="cms-card mt-5">
+      {activeTab === 'social' && (
+      <div className="cms-card">
         <div className="cms-card-header">
           <div className="cms-card-title">
             <span className="cms-card-icon">🔗</span>
@@ -351,6 +410,11 @@ export default function HeaderAdminPage() {
             )}
           </div>
         </div>
+      </div>
+
+      )}
+
+      </div>
       </div>
 
       <div className="cms-page-actions">

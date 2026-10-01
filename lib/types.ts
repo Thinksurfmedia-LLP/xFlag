@@ -1,3 +1,5 @@
+import type { HomeVisibility } from './cms/homeSections';
+
 export interface DropdownItem {
   id: string;
   label: string;
@@ -117,6 +119,7 @@ export interface CmsData {
     navColumns: FooterColumn[];
   };
   homepage?: {
+    visibility?: HomeVisibility;
     banners: HomepageBanner[];
     successSection: {
       title: string;
