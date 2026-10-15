@@ -18,7 +18,12 @@ export default async function Home() {
 
   const liveGames = await getLiveSchedules();
   const upcomingGames = liveGames.filter((g: any) => g.status !== 'completed').slice(0, 4);
-  const pastGames = liveGames.filter((g: any) => g.status === 'completed').slice(0, 4);
+  // Games arrive oldest-first; "past games" should be the most recent results,
+  // not the org's oldest ones (imported past seasons go back to 2022).
+  const pastGames = liveGames
+    .filter((g: any) => g.status === 'completed')
+    .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime() || String(b.time || '').localeCompare(String(a.time || '')))
+    .slice(0, 4);
 
   const leagues = await getLiveLeagues();
   const firstLeagueSlug = leagues[0]?.slug;
