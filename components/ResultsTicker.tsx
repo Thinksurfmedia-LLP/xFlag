@@ -1,9 +1,11 @@
-import { getLiveLeagues, getLiveSchedules, getLiveLeagueSchedule } from '@/lib/flagmag';
+import { getLiveLeagues, getLiveRecentResults, getLiveLeagueSchedule } from '@/lib/flagmag';
+
+const MAX_RESULTS = 20;
 
 export default async function ResultsTicker() {
   const [leagues, allGames] = await Promise.all([
     getLiveLeagues(),
-    getLiveSchedules(),
+    getLiveRecentResults(MAX_RESULTS),
   ]);
 
   // Use leagues whose season has isDefault=true; fall back to the first season found
@@ -36,7 +38,7 @@ export default async function ResultsTicker() {
   const results = defaultSeasonGames
     .filter((g: any) => g.status === 'completed' && g.teamA?.name && g.teamB?.name)
     .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 20);
+    .slice(0, MAX_RESULTS);
 
   if (results.length === 0) return null;
 
