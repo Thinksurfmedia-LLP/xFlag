@@ -196,13 +196,13 @@ function DefenseTable({ rows }: { rows: any[] }) {
             <th>#</th>
             {T('NAME', 'playerName')}
             {T('TEAM', 'teamName')}
+            {T('FP', 'flagPulls')}
             {T('INT', 'dint')}
-            {T('FMBL', 'fumbles')}
             {T('DTD', 'dtd')}
             {T('DPAT', 'dpat')}
             {T('SCK', 'dsacks')}
             {T('SAF', 'dsafety')}
-            {T('FP', 'flagPulls')}
+            {T('FMBL', 'fumbles')}
           </tr>
         </thead>
         <tbody>
@@ -211,13 +211,13 @@ function DefenseTable({ rows }: { rows: any[] }) {
               <td>{i + 1}</td>
               <PlayerCell p={p} />
               <td>{p.teamName}</td>
+              <td>{p.flagPulls}</td>
               <td>{p.dint}</td>
-              <td>{p.fumbles}</td>
               <td>{p.dtd}</td>
               <td>{p.dpat}</td>
               <td>{p.dsacks}</td>
               <td>{p.dsafety}</td>
-              <td>{p.flagPulls}</td>
+              <td>{p.fumbles}</td>
             </tr>
           )) : <tr><td colSpan={10} className="text-center">No defensive stats available</td></tr>}
         </tbody>

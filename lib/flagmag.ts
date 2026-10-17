@@ -21,7 +21,11 @@ const LIVE_STATS_CACHE = { cache: 'no-store' } as const;
 // misconfigured localhost URL in production) leaves fetch() pending forever,
 // which stalls the whole RSC stream with no error surfaced anywhere.
 const FETCH_TIMEOUT_MS = 8000;
-const withTimeout = () => ({ signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
+// Leaderboards are served from flagmag's per-league stats cache (~1s), but
+// the first request for a league after flagmag restarts has to compute it
+// from every play (~10s for the busiest leagues) — allow for that one case.
+const STATS_FETCH_TIMEOUT_MS = 20000;
+const withTimeout = (ms = FETCH_TIMEOUT_MS) => ({ signal: AbortSignal.timeout(ms) });
 
 export async function getLiveVenues() {
   try {
@@ -42,6 +46,24 @@ export async function getLiveOrganization() {
   } catch (error) {
     console.error('Failed to fetch flagmag organization:', error);
     return null;
+  }
+}
+
+// Most recent completed games of the default season — the results ticker's
+// whole need. Asking flagmag for just this slice (~20KB) instead of every
+// game ever (~3MB) keeps it fast and small enough for Next's fetch cache,
+// which skips responses over 2MB (so the full list is refetched every time).
+export async function getLiveRecentResults(limit: number) {
+  try {
+    const res = await fetch(
+      `${API_URL}/organizations/${ORG_SLUG}/games?season=default&status=completed&order=desc&limit=${limit}`,
+      { ...CACHE, ...withTimeout() }
+    );
+    const data = await res.json();
+    return data.success ? data.data : [];
+  } catch (error) {
+    console.error('Failed to fetch flagmag recent results:', error);
+    return [];
   }
 }
 
@@ -104,7 +126,7 @@ export async function getLiveLeagueLeaderboard(leagueSlug: string, statType: str
   try {
     const res = await fetch(
       `${API_URL}/organizations/${ORG_SLUG}/season/${leagueSlug}/stats/computed?statType=${statType}`,
-      { ...LIVE_STATS_CACHE, ...withTimeout() }
+      { ...LIVE_STATS_CACHE, ...withTimeout(STATS_FETCH_TIMEOUT_MS) }
     );
     const data = await res.json();
     return data.players || [];
@@ -118,7 +140,7 @@ export async function getLiveSeasonLeaderboard(seasonId: string, statType: strin
   try {
     const res = await fetch(
       `${API_URL}/organizations/${ORG_SLUG}/seasons/leaderboard?seasons=${seasonId}&statType=${statType}`,
-      { ...LIVE_STATS_CACHE, ...withTimeout() }
+      { ...LIVE_STATS_CACHE, ...withTimeout(STATS_FETCH_TIMEOUT_MS) }
     );
     const data = await res.json();
     return data.players || [];

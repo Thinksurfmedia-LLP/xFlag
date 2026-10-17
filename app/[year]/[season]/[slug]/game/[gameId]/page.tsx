@@ -2,6 +2,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
 import GameStatsClient from './GameStatsClient';
+import { displayScore } from '@/lib/score';
 
 export default async function GameStatsPage({ 
   params,
@@ -112,13 +113,13 @@ export default async function GameStatsPage({
             <li className={teamName === game.teamA.name ? 'active' : ''}>
               <Link href={`?team=${encodeURIComponent(game.teamA.name)}`}>
                 <img src={getLogoUrl(game.teamA.logo)} alt={game.teamA.name} />
-                {game.teamA.name} ({game.teamA.score !== undefined ? game.teamA.score : '-'})
+                {game.teamA.name} ({displayScore(game, 'A')})
               </Link>
             </li>
             <li className={teamName === game.teamB.name ? 'active' : ''}>
               <Link href={`?team=${encodeURIComponent(game.teamB.name)}`}>
                 <img src={getLogoUrl(game.teamB.logo)} alt={game.teamB.name} />
-                {game.teamB.name} ({game.teamB.score !== undefined ? game.teamB.score : '-'})
+                {game.teamB.name} ({displayScore(game, 'B')})
               </Link>
             </li>
           </ul>
