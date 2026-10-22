@@ -67,9 +67,13 @@ export async function getLiveRecentResults(limit: number) {
   }
 }
 
+// The full games list (every season, ~3MB+) is over Next's 2MB fetch-cache
+// limit, so a revalidated response can never be stored — the cache keeps
+// serving whatever smaller copy it held before the list grew past 2MB, and
+// newly added games (e.g. a new week) never appear. Always fetch it fresh.
 export async function getLiveSchedules() {
   try {
-    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/games`, { ...CACHE, ...withTimeout() });
+    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/games`, { cache: 'no-store', ...withTimeout() });
     const data = await res.json();
     return data.success ? data.data : [];
   } catch (error) {
