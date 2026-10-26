@@ -44,7 +44,10 @@ export interface AboutContentSection extends SectionBase {
   bodyParagraphs: string[];
 }
 
+// Used for both the rulebooks and the policies on the Rules page. Policies
+// are stored under `rulebooks` too so the sanitizer's rulebook handling applies.
 export interface RulebooksSection extends SectionBase {
+  heading: string;
   rulebooks: Rulebook[];
 }
 
@@ -67,7 +70,7 @@ export interface ContactFormSection extends SectionBase {
 
 export interface PagesData {
   'about-us': { seo: SeoSection; banner: BannerSection; content: AboutContentSection };
-  rules: { seo: SeoSection; banner: BannerSection; intro: IntroSection; rulebooks: RulebooksSection };
+  rules: { seo: SeoSection; banner: BannerSection; intro: IntroSection; rulebooks: RulebooksSection; policies: RulebooksSection };
   locations: { seo: SeoSection; banner: BannerSection; intro: IntroSection; listing: LocationsListingSection };
   schedules: { seo: SeoSection; banner: BannerSection; intro: IntroSection };
   xstats: { seo: SeoSection; banner: BannerSection; intro: IntroSection };

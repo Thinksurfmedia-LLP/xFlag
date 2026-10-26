@@ -5,7 +5,7 @@ import InnerPageBanner from '@/components/InnerPageBanner';
 import PageIntro from '@/components/PageIntro';
 import { readPageData } from '@/lib/cms/pageStore';
 import { renderInline } from '@/lib/cms/inline';
-import type { RuleItem } from '@/lib/cms/pageTypes';
+import type { RuleItem, Rulebook } from '@/lib/cms/pageTypes';
 
 function PdfDownload({ filename }: { filename: string }) {
   const slug = filename.replace('.pdf', '');
@@ -50,6 +50,41 @@ function RuleContentBlock({ block }: { block: RuleItem }) {
   );
 }
 
+// `idPrefix` keeps Bootstrap collapse ids unique when several accordions
+// share the page.
+function RulebookAccordion({ books, idPrefix }: { books: Rulebook[]; idPrefix: string }) {
+  const accordionId = `${idPrefix}Accordion`;
+  return (
+    <div className="accordion" id={accordionId}>
+      {books.map((book, idx) => {
+        const n = `${idPrefix}${idx + 1}`;
+        return (
+          <div className="accordion-item" key={book.filename}>
+            <h2 className="accordion-header" id={`heading-${n}`}>
+              <button className="accordion-button collapsed" type="button" suppressHydrationWarning data-bs-toggle="collapse" data-bs-target={`#collapse-${n}`} aria-expanded="false" aria-controls={`collapse-${n}`}>
+                {book.title}
+              </button>
+            </h2>
+            <div id={`collapse-${n}`} suppressHydrationWarning className="accordion-collapse collapse" aria-labelledby={`heading-${n}`} data-bs-parent={`#${accordionId}`}>
+              <div className="accordion-body">
+                {book.sections.map((section, sIdx) => (
+                  <div key={sIdx}>
+                    {section.heading && <h5>{section.heading}</h5>}
+                    {section.content.map((block, bIdx) => (
+                      <RuleContentBlock key={bIdx} block={block} />
+                    ))}
+                  </div>
+                ))}
+                <PdfDownload filename={`${book.filename}.pdf`} />
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 // Saves revalidate instantly; this only bounds how long a DB-outage
 // fallback render can stay cached.
 export const revalidate = 300;
@@ -60,8 +95,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Rules() {
-  const { banner, intro, rulebooks: rulebooksSection } = await readPageData('rules');
+  const { banner, intro, rulebooks: rulebooksSection, policies: policiesSection } = await readPageData('rules');
   const rulebooks = rulebooksSection.enabled ? rulebooksSection.rulebooks : [];
+  const policies = policiesSection.enabled ? policiesSection.rulebooks : [];
 
   return (
     <>
@@ -89,41 +125,56 @@ export default async function Rules() {
       .rules-download-btn svg {
         flex-shrink: 0;
       }
+      .rules-page-content .accordion .accordion-button {
+        font-family: 'Inter', sans-serif;
+        font-size: 18px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+      }
+      .rules-page-content .accordion .accordion-button::before {
+        display: none !important;
+      }
+      .rules-page-content .accordion .accordion-button::after {
+        margin-left: auto !important;
+        margin-right: 0;
+        flex-shrink: 0;
+        order: 2;
+      }
+      .rules-page-content .accordion .accordion-button:hover,
+      .rules-page-content .accordion .accordion-button:not(.collapsed) {
+        background-color: #f33a26;
+        color: #fff;
+      }
+      .rules-page-content .accordion .accordion-button:focus {
+        box-shadow: none;
+        outline: none;
+      }
+      .rules-section-heading {
+        margin-bottom: 24px;
+      }
     `}</style>
     <div className="wrapper">
       <Header />
       <InnerPageBanner banner={banner} />
       <PageIntro intro={intro} />
       {rulebooks.length > 0 && (
-      <section className="section-padding bg-white text-dark rules-page-content">
+      <section className="section-padding bg-white text-dark rules-page-content" aria-labelledby={rulebooksSection.heading ? 'rules-heading' : undefined}>
         <div className="container">
-          <div className="accordion" id="rulesAccordion">
-            {rulebooks.map((book, idx) => {
-              const n = idx + 1;
-              return (
-                <div className="accordion-item" key={book.filename}>
-                  <h2 className="accordion-header" id={`heading${n}`}>
-                    <button className="accordion-button collapsed" type="button" suppressHydrationWarning data-bs-toggle="collapse" data-bs-target={`#collapse${n}`} aria-expanded="false" aria-controls={`collapse${n}`}>
-                      {book.title}
-                    </button>
-                  </h2>
-                  <div id={`collapse${n}`} suppressHydrationWarning className="accordion-collapse collapse" aria-labelledby={`heading${n}`} data-bs-parent="#rulesAccordion">
-                    <div className="accordion-body">
-                      {book.sections.map((section, sIdx) => (
-                        <div key={sIdx}>
-                          {section.heading && <h5>{section.heading}</h5>}
-                          {section.content.map((block, bIdx) => (
-                            <RuleContentBlock key={bIdx} block={block} />
-                          ))}
-                        </div>
-                      ))}
-                      <PdfDownload filename={`${book.filename}.pdf`} />
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          {rulebooksSection.heading && (
+            <h2 id="rules-heading" className="rules-section-heading">{rulebooksSection.heading}</h2>
+          )}
+          <RulebookAccordion books={rulebooks} idPrefix="rules" />
+        </div>
+      </section>
+      )}
+      {policies.length > 0 && (
+      <section className="section-padding bg-white text-dark rules-page-content pt-0" aria-labelledby={policiesSection.heading ? 'policies-heading' : undefined}>
+        <div className="container">
+          {policiesSection.heading && (
+            <h2 id="policies-heading" className="rules-section-heading">{policiesSection.heading}</h2>
+          )}
+          <RulebookAccordion books={policies} idPrefix="policies" />
         </div>
       </section>
       )}

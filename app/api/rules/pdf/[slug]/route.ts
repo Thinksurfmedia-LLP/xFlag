@@ -6,10 +6,10 @@ import { toPlainText as plain } from '@/lib/cms/inline';
 
 export async function GET(_req: Request, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const { rulebooks: rulebooksSection } = await readPageData('rules');
-  const book = rulebooksSection.enabled
-    ? rulebooksSection.rulebooks.find((r) => r.filename === slug)
-    : undefined;
+  const { rulebooks: rulebooksSection, policies } = await readPageData('rules');
+  const book = [rulebooksSection, policies]
+    .flatMap((section) => (section.enabled ? section.rulebooks : []))
+    .find((r) => r.filename === slug);
 
   if (!book) {
     return new Response('Not found', { status: 404 });

@@ -1,4 +1,5 @@
 import { rulebooks } from '@/app/api/rules/content';
+import { policies } from '@/app/api/rules/policies';
 import type { BannerSection, IntroSection, PagesData, SeoSection } from './pageTypes';
 
 const DEFAULT_BANNER_IMAGE = '/assets/images/about-banner.jpg';
@@ -36,9 +37,10 @@ export const PAGE_DEFAULTS: PagesData = {
   },
   rules: {
     seo: seo('Rules | XFlag Football', 'Official XFlag Football rules for all leagues and formats.'),
-    banner: banner('Rules'),
+    banner: banner('Rules & Policies'),
     intro: emptyIntro(),
-    rulebooks: { enabled: true, rulebooks },
+    rulebooks: { enabled: true, heading: 'Rules', rulebooks },
+    policies: { enabled: true, heading: 'Policies', rulebooks: policies },
   },
   locations: {
     seo: seo('Locations | XFlag Football', 'Find an XFlag Football location near you.'),

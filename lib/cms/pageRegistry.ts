@@ -102,7 +102,20 @@ export const PAGE_REGISTRY: Record<PageSlug, PageDef> = {
         label: 'Rulebooks',
         description: 'Accordion of rulebooks. The PDF download is generated from the same content.',
         canHide: true,
-        fields: [{ key: 'rulebooks', label: 'Rulebooks', type: 'rulebooks' }],
+        fields: [
+          { key: 'heading', label: 'Heading', type: 'text' },
+          { key: 'rulebooks', label: 'Rulebooks', type: 'rulebooks' },
+        ],
+      },
+      {
+        id: 'policies',
+        label: 'Policies',
+        description: 'Accordion of policies shown below the rulebooks. Each policy also generates its downloadable PDF.',
+        canHide: true,
+        fields: [
+          { key: 'heading', label: 'Heading', type: 'text' },
+          { key: 'rulebooks', label: 'Policies', type: 'rulebooks' },
+        ],
       },
       SEO_SECTION,
     ],
