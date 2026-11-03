@@ -1,7 +1,7 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
-import { getLiveLeagues, getLiveStandings, getLiveLeagueSchedule } from '@/lib/flagmag';
+import { getLiveLeague, getLiveStandings, getLiveLeagueSchedule } from '@/lib/flagmag';
 import GameRow from './GameRow';
 
 export const dynamic = 'force-dynamic';
@@ -9,13 +9,11 @@ export const dynamic = 'force-dynamic';
 export default async function GameStatsPage({ params }: { params: { year: string; season: string; slug: string } }) {
   const { year, season, slug } = await params;
 
-  const [leagues, standings, weeks] = await Promise.all([
-    getLiveLeagues(),
+  const [league, standings, weeks] = await Promise.all([
+    getLiveLeague(slug),
     getLiveStandings(slug),
     getLiveLeagueSchedule(slug),
   ]);
-
-  const league = leagues.find((l: any) => l.slug === slug);
 
   // Create a quick lookup for Team W-L records from the standings data
   const teamRecords: Record<string, string> = {};

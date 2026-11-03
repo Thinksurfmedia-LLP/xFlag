@@ -20,7 +20,9 @@ const LIVE_STATS_CACHE = { cache: 'no-store' } as const;
 // Without an explicit timeout, a hung/unreachable FLAGMAG_API_URL (e.g. a
 // misconfigured localhost URL in production) leaves fetch() pending forever,
 // which stalls the whole RSC stream with no error surfaced anywhere.
-const FETCH_TIMEOUT_MS = 8000;
+// 15s, not shorter: flagmag's link to its database periodically stalls for
+// up to ~9s on a single query, which a tighter limit turned into blank pages.
+const FETCH_TIMEOUT_MS = 15000;
 // Leaderboards are served from flagmag's per-league stats cache (~1s), but
 // the first request for a league after flagmag restarts has to compute it
 // from every play (~10s for the busiest leagues) — allow for that one case.
@@ -104,6 +106,36 @@ export async function getLiveLeagues() {
     return data.success ? data.data : [];
   } catch (error) {
     console.error('Failed to fetch flagmag leagues:', error);
+    return [];
+  }
+}
+
+// One league by slug — league pages need only their own league, and the full
+// list (every season ever, ~600KB) can take longer than the fetch timeout.
+// Still matched by slug here so a flagmag that ignores ?slug= works too.
+export async function getLiveLeague(leagueSlug: string) {
+  try {
+    const res = await fetch(
+      `${API_URL}/organizations/${ORG_SLUG}/leagues?slug=${encodeURIComponent(leagueSlug)}`,
+      { ...CACHE, ...withTimeout() }
+    );
+    const data = await res.json();
+    return data.success ? data.data.find((l: any) => l.slug === leagueSlug) || null : null;
+  } catch (error) {
+    console.error(`Failed to fetch flagmag league ${leagueSlug}:`, error);
+    return null;
+  }
+}
+
+// The default season's leagues — the results ticker's whole need. It renders
+// in the Header on every page, so it must not pull every league ever.
+export async function getLiveDefaultSeasonLeagues() {
+  try {
+    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/leagues?season=default`, { ...CACHE, ...withTimeout() });
+    const data = await res.json();
+    return data.success ? data.data : [];
+  } catch (error) {
+    console.error('Failed to fetch flagmag default-season leagues:', error);
     return [];
   }
 }

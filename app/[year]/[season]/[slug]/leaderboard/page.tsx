@@ -1,7 +1,7 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
-import { getLiveLeagueLeaderboard, getLiveLeagues } from '@/lib/flagmag';
+import { getLiveLeagueLeaderboard, getLiveLeague } from '@/lib/flagmag';
 import LeaderboardClient from '@/app/xstats/leaderboard/LeaderboardClient';
 
 export const dynamic = 'force-dynamic';
@@ -13,8 +13,7 @@ export default async function LeagueLeaderboardPage({
 }) {
   const { year, season, slug } = await params;
 
-  const leagues = await getLiveLeagues();
-  const league = leagues.find((l: any) => l.slug === slug);
+  const league = await getLiveLeague(slug);
   const seasonName = league?.season?.name || 'Current Season';
   const leagueName = league?.name || slug;
 

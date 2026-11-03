@@ -1,7 +1,7 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
-import { getLiveLeagues } from '@/lib/flagmag';
+import { getLiveLeague } from '@/lib/flagmag';
 import PlayerStatsClient from './PlayerStatsClient';
 
 export default async function PlayerStatsPage({ 
@@ -31,16 +31,15 @@ export default async function PlayerStatsPage({
     }
   };
 
-  // Run leagues lookup and all four stat fetches in parallel
-  const [leagues, passingStats, receivingStats, rushingStats, defensiveStats] = await Promise.all([
-    getLiveLeagues(),
+  // Run league lookup and all four stat fetches in parallel
+  const [league, passingStats, receivingStats, rushingStats, defensiveStats] = await Promise.all([
+    getLiveLeague(slug),
     fetchStats('passing'),
     fetchStats('receiving'),
     fetchStats('rushing'),
     fetchStats('defensive'),
   ]);
 
-  const league = leagues.find((l: any) => l.slug === slug);
   const seasonName = league?.season?.name || 'Current Season';
   const leagueName = league?.name?.replace(seasonName, '').trim() || league?.name || 'League';
 
