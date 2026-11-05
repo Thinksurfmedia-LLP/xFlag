@@ -85,6 +85,7 @@ export default async function LeaderboardPage({
             receivingStats={receivingStats}
             rushingStats={rushingStats}
             defenseStats={defenseStats}
+            showLeague
           />
         </div>
       </section>

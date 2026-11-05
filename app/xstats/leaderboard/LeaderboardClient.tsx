@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { formatPlayerName } from '@/lib/playerName';
 
 type SortDir = 'asc' | 'desc';
 interface SortState { key: string; dir: SortDir; }
@@ -60,12 +61,14 @@ function PlayerCell({ p }: { p: any }) {
   return (
     <td>
       <img src={photo} alt={p.playerName} style={{ width: 30, height: 30, borderRadius: '50%', objectFit: 'cover', marginRight: 6, verticalAlign: 'middle' }} />
-      {p.playerName}{p.jerseyNumber ? ` (#${p.jerseyNumber})` : ''}
+      {formatPlayerName(p.playerName, p.jerseyNumber)}
     </td>
   );
 }
 
-function PassingTable({ rows }: { rows: any[] }) {
+interface TableProps { rows: any[]; showLeague: boolean; }
+
+function PassingTable({ rows, showLeague }: TableProps) {
   const { sorted, sort, toggle } = useSorted(rows, 'yards');
   const T = (label: string, key: string) => <Th label={label} sortKey={key} sort={sort} toggle={toggle} />;
   return (
@@ -77,6 +80,7 @@ function PassingTable({ rows }: { rows: any[] }) {
             <th>#</th>
             {T('Name', 'playerName')}
             {T('Team', 'teamName')}
+            {showLeague && T('League / Location', 'leagueName')}
             {T('ATT', 'atts')}
             {T('COMP', 'comp')}
             {T('%', 'pct')}
@@ -94,6 +98,7 @@ function PassingTable({ rows }: { rows: any[] }) {
               <td>{i + 1}</td>
               <PlayerCell p={p} />
               <td>{p.teamName}</td>
+              {showLeague && <td>{p.leagueName}</td>}
               <td>{p.atts}</td>
               <td>{p.comp}</td>
               <td>{p.pct}</td>
@@ -104,14 +109,14 @@ function PassingTable({ rows }: { rows: any[] }) {
               <td>{p.sacks}</td>
               <td>{p.rate}</td>
             </tr>
-          )) : <tr><td colSpan={12} className="text-center">No passing stats available</td></tr>}
+          )) : <tr><td colSpan={showLeague ? 13 : 12} className="text-center">No passing stats available</td></tr>}
         </tbody>
       </table>
     </div>
   );
 }
 
-function ReceivingTable({ rows }: { rows: any[] }) {
+function ReceivingTable({ rows, showLeague }: TableProps) {
   const withPts = useMemo(() => rows.map(p => ({ ...p, pts: (p.tds * 6) + p.pat })), [rows]);
   const { sorted, sort, toggle } = useSorted(withPts, 'yards');
   const T = (label: string, key: string) => <Th label={label} sortKey={key} sort={sort} toggle={toggle} />;
@@ -124,6 +129,7 @@ function ReceivingTable({ rows }: { rows: any[] }) {
             <th>#</th>
             {T('Name', 'playerName')}
             {T('Team', 'teamName')}
+            {showLeague && T('League / Location', 'leagueName')}
             {T('REC', 'receptions')}
             {T('YDS', 'yards')}
             {T('TD', 'tds')}
@@ -138,6 +144,7 @@ function ReceivingTable({ rows }: { rows: any[] }) {
               <td>{i + 1}</td>
               <PlayerCell p={p} />
               <td>{p.teamName}</td>
+              {showLeague && <td>{p.leagueName}</td>}
               <td>{p.receptions}</td>
               <td>{p.yards}</td>
               <td>{p.tds}</td>
@@ -145,14 +152,14 @@ function ReceivingTable({ rows }: { rows: any[] }) {
               <td>{(p.tds * 6) + p.pat}</td>
               <td>{p.ypr}</td>
             </tr>
-          )) : <tr><td colSpan={9} className="text-center">No receiving stats available</td></tr>}
+          )) : <tr><td colSpan={showLeague ? 10 : 9} className="text-center">No receiving stats available</td></tr>}
         </tbody>
       </table>
     </div>
   );
 }
 
-function RushingTable({ rows }: { rows: any[] }) {
+function RushingTable({ rows, showLeague }: TableProps) {
   const { sorted, sort, toggle } = useSorted(rows, 'yards');
   const T = (label: string, key: string) => <Th label={label} sortKey={key} sort={sort} toggle={toggle} />;
   return (
@@ -164,6 +171,7 @@ function RushingTable({ rows }: { rows: any[] }) {
             <th>#</th>
             {T('Name', 'playerName')}
             {T('Team', 'teamName')}
+            {showLeague && T('League / Location', 'leagueName')}
             {T('ATT', 'atts')}
             {T('YDS', 'yards')}
             {T('TD', 'tds')}
@@ -179,6 +187,7 @@ function RushingTable({ rows }: { rows: any[] }) {
               <td>{i + 1}</td>
               <PlayerCell p={p} />
               <td>{p.teamName}</td>
+              {showLeague && <td>{p.leagueName}</td>}
               <td>{p.atts}</td>
               <td>{p.yards}</td>
               <td>{p.tds}</td>
@@ -187,14 +196,14 @@ function RushingTable({ rows }: { rows: any[] }) {
               <td>{p.gamesPlayed ?? 0}</td>
               <td>{p.rushAvgPerGame ?? 0}</td>
             </tr>
-          )) : <tr><td colSpan={10} className="text-center">No rushing stats available</td></tr>}
+          )) : <tr><td colSpan={showLeague ? 11 : 10} className="text-center">No rushing stats available</td></tr>}
         </tbody>
       </table>
     </div>
   );
 }
 
-function DefensiveTable({ rows }: { rows: any[] }) {
+function DefensiveTable({ rows, showLeague }: TableProps) {
   const { sorted, sort, toggle } = useSorted(rows, 'flagPulls');
   const T = (label: string, key: string) => <Th label={label} sortKey={key} sort={sort} toggle={toggle} />;
   return (
@@ -206,6 +215,7 @@ function DefensiveTable({ rows }: { rows: any[] }) {
             <th>#</th>
             {T('Name', 'playerName')}
             {T('Team', 'teamName')}
+            {showLeague && T('League / Location', 'leagueName')}
             {T('FP', 'flagPulls')}
             {T('FP/G', 'flagPullsPerGame')}
             {T('INT', 'dint')}
@@ -222,6 +232,7 @@ function DefensiveTable({ rows }: { rows: any[] }) {
               <td>{i + 1}</td>
               <PlayerCell p={p} />
               <td>{p.teamName}</td>
+              {showLeague && <td>{p.leagueName}</td>}
               <td>{p.flagPulls}</td>
               <td>{p.flagPullsPerGame ?? 0}</td>
               <td>{p.dint}</td>
@@ -231,7 +242,7 @@ function DefensiveTable({ rows }: { rows: any[] }) {
               <td>{p.dsafety}</td>
               <td>{p.fumbles ?? 0}</td>
             </tr>
-          )) : <tr><td colSpan={11} className="text-center">No defensive stats available</td></tr>}
+          )) : <tr><td colSpan={showLeague ? 12 : 11} className="text-center">No defensive stats available</td></tr>}
         </tbody>
       </table>
     </div>
@@ -243,18 +254,22 @@ export default function LeaderboardClient({
   receivingStats,
   rushingStats,
   defenseStats,
+  showLeague = false,
 }: {
   passingStats: any[];
   receivingStats: any[];
   rushingStats: any[];
   defenseStats: any[];
+  // Only the cross-league season leaderboard needs it — on a league page
+  // every row would repeat that league.
+  showLeague?: boolean;
 }) {
   return (
     <div className="states-table-main">
-      {passingStats.length > 0 && <PassingTable rows={passingStats} />}
-      {receivingStats.length > 0 && <ReceivingTable rows={receivingStats} />}
-      {rushingStats.length > 0 && <RushingTable rows={rushingStats} />}
-      {defenseStats.length > 0 && <DefensiveTable rows={defenseStats} />}
+      {passingStats.length > 0 && <PassingTable rows={passingStats} showLeague={showLeague} />}
+      {receivingStats.length > 0 && <ReceivingTable rows={receivingStats} showLeague={showLeague} />}
+      {rushingStats.length > 0 && <RushingTable rows={rushingStats} showLeague={showLeague} />}
+      {defenseStats.length > 0 && <DefensiveTable rows={defenseStats} showLeague={showLeague} />}
     </div>
   );
 }

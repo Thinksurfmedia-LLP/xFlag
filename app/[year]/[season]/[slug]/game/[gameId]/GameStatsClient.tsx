@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { formatPlayerName } from '@/lib/playerName';
 
 const FLAGMAG_URL = (process.env.NEXT_PUBLIC_FLAGMAG_API_URL || 'https://flagmag.com').replace(/\/$/, '');
 
@@ -54,7 +55,7 @@ function PlayerCell({ p }: { p: any }) {
   return (
     <td>
       <img src={photo} alt={p.playerName} style={{ width: 30, height: 30, borderRadius: '50%', objectFit: 'cover', marginRight: 6, verticalAlign: 'middle' }} />
-      {p.playerName}{p.jerseyNumber ? ` (#${p.jerseyNumber})` : ''}
+      {formatPlayerName(p.playerName, p.jerseyNumber)}
     </td>
   );
 }

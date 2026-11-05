@@ -16,8 +16,21 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: seo.metaTitle, description: seo.metaDescription };
 }
 
-export default async function Xstats() {
-  const [leagues, seasons, page] = await Promise.all([getLiveLeagues(), getLiveSeasons(), readPageData('xstats')]);
+export default async function Xstats({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const [leagues, seasons, page, query] = await Promise.all([
+    getLiveLeagues(),
+    getLiveSeasons(),
+    readPageData('xstats'),
+    searchParams,
+  ]);
+  // The year/season picker keeps its selection in the URL, so coming back
+  // from a league page restores the season the visitor was browsing.
+  const year = typeof query.year === 'string' ? query.year : undefined;
+  const season = typeof query.season === 'string' ? query.season : undefined;
 
   return (
     <div className="wrapper">
@@ -25,7 +38,7 @@ export default async function Xstats() {
       <InnerPageBanner banner={page.banner} />
       <PageIntro intro={page.intro} />
 
-        <StatsClient leagues={leagues} seasons={seasons} />
+        <StatsClient leagues={leagues} seasons={seasons} requestedYear={year} requestedSeason={season} />
 
       <Footer />
     </div>
