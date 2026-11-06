@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { displayScore } from "@/lib/score";
+import FallbackImg from '@/components/FallbackImg';
 
 export default function GameRow({ game, year, season, slug, showDate }: any) {
   const router = useRouter();
@@ -24,7 +25,7 @@ export default function GameRow({ game, year, season, slug, showDate }: any) {
       <td>{displayScore(game, 'A')}</td>
       <td>
         <span>
-          <img src={getLogoUrl(game.teamA?.logo)} alt={game.teamA?.name} style={{ width: 22, height: 22, objectFit: 'contain', marginRight: 4, verticalAlign: 'middle' }} />
+          <FallbackImg src={getLogoUrl(game.teamA?.logo)} fallback="/assets/images/team-placeholder.svg" alt={game.teamA?.name} style={{ width: 22, height: 22, objectFit: 'contain', marginRight: 4, verticalAlign: 'middle' }} />
           <span>{game.teamA?.seedNumber != null && <span style={{ opacity: 0.7 }}>#{game.teamA.seedNumber} </span>}{game.teamA?.name}</span>
         </span>
       </td>
@@ -32,7 +33,7 @@ export default function GameRow({ game, year, season, slug, showDate }: any) {
       <td>{displayScore(game, 'B')}</td>
       <td>
         <span>
-          <img src={getLogoUrl(game.teamB?.logo)} alt={game.teamB?.name} style={{ width: 22, height: 22, objectFit: 'contain', marginRight: 4, verticalAlign: 'middle' }} />
+          <FallbackImg src={getLogoUrl(game.teamB?.logo)} fallback="/assets/images/team-placeholder.svg" alt={game.teamB?.name} style={{ width: 22, height: 22, objectFit: 'contain', marginRight: 4, verticalAlign: 'middle' }} />
           <span>{game.teamB?.seedNumber != null && <span style={{ opacity: 0.7 }}>#{game.teamB.seedNumber} </span>}{game.teamB?.name}</span>
         </span>
       </td>

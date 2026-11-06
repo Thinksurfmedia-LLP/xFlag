@@ -3,6 +3,7 @@ import Footer from '@/components/Footer';
 import Link from 'next/link';
 import GameStatsClient from './GameStatsClient';
 import { displayScore } from '@/lib/score';
+import FallbackImg from '@/components/FallbackImg';
 
 export default async function GameStatsPage({ 
   params,
@@ -112,13 +113,13 @@ export default async function GameStatsPage({
           <ul className="team-heading-nav">
             <li className={teamName === game.teamA.name ? 'active' : ''}>
               <Link href={`?team=${encodeURIComponent(game.teamA.name)}`}>
-                <img src={getLogoUrl(game.teamA.logo)} alt={game.teamA.name} />
+                <FallbackImg src={getLogoUrl(game.teamA.logo)} fallback="/assets/images/team-placeholder.svg" alt={game.teamA.name} />
                 {game.teamA.name} ({displayScore(game, 'A')})
               </Link>
             </li>
             <li className={teamName === game.teamB.name ? 'active' : ''}>
               <Link href={`?team=${encodeURIComponent(game.teamB.name)}`}>
-                <img src={getLogoUrl(game.teamB.logo)} alt={game.teamB.name} />
+                <FallbackImg src={getLogoUrl(game.teamB.logo)} fallback="/assets/images/team-placeholder.svg" alt={game.teamB.name} />
                 {game.teamB.name} ({displayScore(game, 'B')})
               </Link>
             </li>

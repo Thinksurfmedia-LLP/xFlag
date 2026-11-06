@@ -3,6 +3,7 @@ import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { getLiveLeagueLeaderboard, getLiveLeague } from '@/lib/flagmag';
 import LeaderboardClient from '@/app/xstats/leaderboard/LeaderboardClient';
+import { seasonUrlParts, xstatsHref } from '@/lib/xstatsNav';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,6 +17,7 @@ export default async function LeagueLeaderboardPage({
   const league = await getLiveLeague(slug);
   const seasonName = league?.season?.name || 'Current Season';
   const leagueName = league?.name || slug;
+  const backToXstats = xstatsHref(seasonUrlParts(league?.season?.name), slug);
 
   const [passingStats, receivingStats, rushingStats, defenseStats] = await Promise.all([
     getLiveLeagueLeaderboard(slug, 'passing'),
@@ -32,7 +34,7 @@ export default async function LeagueLeaderboardPage({
         <div className="container">
           <ul>
             <li><Link href="/">Home</Link></li>
-            <li><Link href="/xstats">Xstats</Link></li>
+            <li><Link href={backToXstats}>Xstats</Link></li>
             <li><Link href={`/${year}/${season}/${slug}`}>Point Table</Link></li>
             <li>Statistical Leaders</li>
           </ul>

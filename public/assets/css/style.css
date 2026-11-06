@@ -2598,6 +2598,29 @@ div > .table-wrap:nth-last-child(1) {
   background-color: #F13B26;
   transition: 0.4s;
 }
+/* The card is a real link that fills the tile, so it is keyboard-focusable
+   and can be opened in a new tab. Layout mirrors the li it sits in. */
+.x-states-section .seasons-team-list li .card-link {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: inherit;
+  width: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+.x-states-section .seasons-team-list li:focus-within {
+  outline: 3px solid #F13B26;
+  outline-offset: 3px;
+}
+.x-states-section .seasons-team-list li .card-link:focus {
+  outline: none;
+}
+/* Selected card: red, plus a lifted ring so it reads apart from a hover. */
+.x-states-section .seasons-team-list li.active {
+  background-color: #F13B26;
+  box-shadow: 0 0 0 3px #fff, 0 0 0 6px #F13B26, 0 10px 24px rgba(241, 59, 38, 0.35);
+}
 .x-states-section .banner-area {
   background: url(../images/states-bg.jpg) right center no-repeat;
   background-size: cover;

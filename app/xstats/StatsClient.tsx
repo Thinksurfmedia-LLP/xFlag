@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { leagueLocation } from '@/lib/xstatsNav';
+import FallbackImg from '@/components/FallbackImg';
 
 const SEASON_ORDER = ['Winter', 'Spring', 'Summer', 'Fall', 'Holiday'];
 
@@ -12,15 +14,17 @@ interface StatsClientProps {
   // From ?year=&season= — ignored when they don't name a real season.
   requestedYear?: string;
   requestedSeason?: string;
+  // From ?league= — the card to show as selected (set when a card is clicked).
+  requestedLeague?: string;
 }
 
 export default function StatsClient({ leagues, seasons, ...fromServer }: StatsClientProps) {
-  const router = useRouter();
   // Back navigation re-renders from the router cache, whose server props
   // predate the replaceState below — the live URL is the source of truth.
   const searchParams = useSearchParams();
   const requestedYear = searchParams.get('year') ?? fromServer.requestedYear;
   const requestedSeason = searchParams.get('season') ?? fromServer.requestedSeason;
+  const requestedLeague = searchParams.get('league') ?? fromServer.requestedLeague;
 
   const availableYears = useMemo(() => {
     const ySet = new Set<string>();
@@ -68,12 +72,17 @@ export default function StatsClient({ leagues, seasons, ...fromServer }: StatsCl
 
   const availableSeasons = useMemo(() => seasonsForYear(selectedYear), [seasons, selectedYear]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // The highlighted card. Only one at a time; cleared when year/season change.
+  const [selectedLeague, setSelectedLeague] = useState<string>(requestedLeague || '');
+
   // replaceState (not a navigation): the URL remembers the selection for the
   // back button without a server round trip or extra history entries.
-  const rememberSelection = (year: string, season: string) => {
+  const rememberSelection = (year: string, season: string, league = '') => {
     const params = new URLSearchParams(window.location.search);
     params.set('year', year);
     params.set('season', season.toLowerCase());
+    if (league) params.set('league', league);
+    else params.delete('league');
     window.history.replaceState(null, '', `?${params.toString()}`);
   };
 
@@ -81,12 +90,21 @@ export default function StatsClient({ leagues, seasons, ...fromServer }: StatsCl
     const season = defaultSeasonLabelFor(year);
     setSelectedYear(year);
     setSelectedSeason(season);
+    setSelectedLeague('');
     rememberSelection(year, season);
   };
 
   const selectSeason = (season: string) => {
     setSelectedSeason(season);
+    setSelectedLeague('');
     rememberSelection(selectedYear, season);
+  };
+
+  // Runs before the <Link> navigates, so the card turns red immediately and
+  // is still highlighted when the visitor comes back.
+  const selectLeague = (slug: string) => {
+    setSelectedLeague(slug);
+    rememberSelection(selectedYear, selectedSeason, slug);
   };
 
   const selectedSeasonId = useMemo(() => {
@@ -156,24 +174,24 @@ export default function StatsClient({ leagues, seasons, ...fromServer }: StatsCl
         <ul className="seasons-team-list">
           {filteredLeagues.map(league => {
             const href = `/${selectedYear}/${selectedSeason.toLowerCase()}/${league.slug}`;
-            // Unlike <Link>, router.push never prefetches — warm the route on
-            // hover/touch so its loading spinner shows the instant it's clicked.
-            const prefetch = () => router.prefetch(href);
+            const isSelected = selectedLeague === league.slug;
+            const location = leagueLocation(league);
             return (
-            <li
-              key={league._id}
-              style={{ cursor: 'pointer' }}
-              onMouseEnter={prefetch}
-              onTouchStart={prefetch}
-              onClick={() => router.push(href)}
-            >
-              <div className="lf">
-                <img src={getLogoUrl(league.image)} alt={league.name} />
-              </div>
-              <div className="rt">
-                <h5>{league.name}</h5>
-                <span><i className="fas fa-location-dot"></i> {league.location || 'New York, NY'}</span>
-              </div>
+            <li key={league._id} className={isSelected ? 'active' : undefined}>
+              <Link
+                href={href}
+                className="card-link"
+                aria-current={isSelected ? 'true' : undefined}
+                onClick={() => selectLeague(league.slug)}
+              >
+                <div className="lf">
+                  <FallbackImg src={getLogoUrl(league.image)} fallback="/assets/images/league-placeholder.svg" alt="" />
+                </div>
+                <div className="rt">
+                  <h5>{league.name}</h5>
+                  {location && <span><i className="fas fa-location-dot" aria-hidden="true"></i> {location}</span>}
+                </div>
+              </Link>
             </li>
             );
           })}

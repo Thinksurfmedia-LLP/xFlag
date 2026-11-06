@@ -3,6 +3,7 @@ import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { getLiveSeasonLeaderboard, getLiveSeasons } from '@/lib/flagmag';
 import LeaderboardClient from './LeaderboardClient';
+import { seasonUrlParts, xstatsHref } from '@/lib/xstatsNav';
 
 export const dynamic = 'force-dynamic';
 
@@ -42,6 +43,8 @@ export default async function LeaderboardPage({
   const seasonId = urlSeasonId || seasons.find((s: any) => s.isDefault)?._id || seasons[0]?._id || '';
   const seasonObj = seasons.find((s: any) => s._id === seasonId || String(s._id) === seasonId);
   const seasonName = seasonObj?.name || 'Season';
+  // Back to the picker with this season still selected.
+  const backToXstats = xstatsHref(seasonUrlParts(seasonObj?.name));
 
   // Do NOT pre-sort/truncate here: each table lets the viewer re-sort by any
   // column (INT, SCK, DTD, ...), and a player who ranks outside the top 50 by
@@ -59,7 +62,7 @@ export default async function LeaderboardPage({
         <div className="container">
           <ul>
             <li><Link href="/">Home</Link></li>
-            <li><Link href="/xstats">Xstats</Link></li>
+            <li><Link href={backToXstats}>Xstats</Link></li>
             <li>Statistical Leaders</li>
           </ul>
         </div>
@@ -77,7 +80,17 @@ export default async function LeaderboardPage({
       <section className="team-point-section section-padding">
         <div className="container-fluid">
           <div className="text-center">
-            <h2><span>{seasonName}</span> Statistical Leaders</h2>
+            <h2 className='mb-3'><span>{seasonName}</span> Statistical Leaders</h2>
+          </div>
+
+          <div className='text-center mb-3 w-100'>
+            <Link
+              href={backToXstats}
+              aria-label={`Back to ${seasonName} leagues`}
+              style={{ margin: 'auto', display: 'inline-block' }}
+            >
+              <img style={{ maxWidth: '40px' }} src="/assets/images/back-icon.png" alt="" />
+            </Link>
           </div>
 
           <LeaderboardClient

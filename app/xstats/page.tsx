@@ -31,6 +31,7 @@ export default async function Xstats({
   // from a league page restores the season the visitor was browsing.
   const year = typeof query.year === 'string' ? query.year : undefined;
   const season = typeof query.season === 'string' ? query.season : undefined;
+  const league = typeof query.league === 'string' ? query.league : undefined;
 
   return (
     <div className="wrapper">
@@ -38,7 +39,7 @@ export default async function Xstats({
       <InnerPageBanner banner={page.banner} />
       <PageIntro intro={page.intro} />
 
-        <StatsClient leagues={leagues} seasons={seasons} requestedYear={year} requestedSeason={season} />
+        <StatsClient leagues={leagues} seasons={seasons} requestedYear={year} requestedSeason={season} requestedLeague={league} />
 
       <Footer />
     </div>

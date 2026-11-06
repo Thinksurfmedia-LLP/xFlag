@@ -2,6 +2,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { getLiveLeague } from '@/lib/flagmag';
+import { seasonUrlParts, xstatsHref } from '@/lib/xstatsNav';
 import PlayerStatsClient from './PlayerStatsClient';
 
 export default async function PlayerStatsPage({ 
@@ -42,6 +43,7 @@ export default async function PlayerStatsPage({
 
   const seasonName = league?.season?.name || 'Current Season';
   const leagueName = league?.name?.replace(seasonName, '').trim() || league?.name || 'League';
+  const backToXstats = xstatsHref(seasonUrlParts(league?.season?.name), slug);
 
   const getPlayerPhoto = (url?: string) => {
     if (!url) return '/assets/images/player-placeholder.svg';
@@ -57,7 +59,7 @@ export default async function PlayerStatsPage({
         <div className="container">
           <ul>
             <li><Link href="/">Home</Link></li>
-            <li><Link href="/xstats">xstats</Link></li>
+            <li><Link href={backToXstats}>xstats</Link></li>
             <li><Link href={`/${year}/${season}/${slug}`}>Point Table</Link></li>
             <li> Player Stats</li>
           </ul>

@@ -1,8 +1,11 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { getLiveLeague, getLiveStandings, getLiveLeagueSchedule } from '@/lib/flagmag';
+import { formatWinPct, seasonUrlParts, xstatsHref } from '@/lib/xstatsNav';
 import GameRow from './GameRow';
+import FallbackImg from '@/components/FallbackImg';
 
 export const dynamic = 'force-dynamic';
 
@@ -32,6 +35,15 @@ export default async function GameStatsPage({ params }: { params: { year: string
   const seasonName = league?.season?.name || 'Current Season';
   const leagueName = league?.name?.replace(seasonName, '').trim() || league?.name || 'League';
 
+  // The year/season in the URL are cosmetic (the slug picks the league), so a
+  // stale or hand-edited URL would label one season's data with another's
+  // name. Send it to the league's real season instead.
+  const seasonParts = seasonUrlParts(league?.season?.name);
+  if (seasonParts && (year !== seasonParts.year || decodeURIComponent(season).toLowerCase() !== seasonParts.season)) {
+    redirect(`/${seasonParts.year}/${seasonParts.season}/${slug}`);
+  }
+  const backToXstats = xstatsHref(seasonParts, slug);
+
   return (
     <div className="wrapper">
       <Header />
@@ -40,7 +52,7 @@ export default async function GameStatsPage({ params }: { params: { year: string
         <div className="container">
           <ul>
             <li><Link href="/">Home</Link></li>
-            <li><Link href="/xstats">xstats</Link></li>
+            <li><Link href={backToXstats}>xstats</Link></li>
             <li> Point Table</li>
           </ul>
         </div>
@@ -65,7 +77,10 @@ export default async function GameStatsPage({ params }: { params: { year: string
 
           <div className={`row g-2 ${standings.length === 1 ? 'justify-content-center' : ''}`}>
             {standings.length > 0 ? (
-              standings.map((division: any, dIdx: number) => (
+              standings.map((division: any, dIdx: number) => {
+                // Teams that haven't played yet (0-0) stay off the table.
+                const playedRows = division.rows.filter((row: any) => !(row.wins === 0 && row.losses === 0));
+                return (
                 <div className="col-lg-6" key={dIdx}>
                   <div className="division-table-area">
                     <div className="table-wrap">
@@ -82,15 +97,18 @@ export default async function GameStatsPage({ params }: { params: { year: string
                           </tr>
                         </thead>
                         <tbody>
-                          {division.rows.filter((row: any) => !(row.wins === 0 && row.losses === 0)).map((row: any, rIdx: number) => (
+                          {playedRows.length === 0 && (
+                            <tr><td colSpan={6} className="text-center">No games played yet.</td></tr>
+                          )}
+                          {playedRows.map((row: any, rIdx: number) => (
                             <tr key={rIdx}>
                               <td>
                                 <Link href={`/${year}/${season}/${slug}/player-stats?team=${encodeURIComponent(row.name)}`}>
-                                  <img src={getLogoUrl(row.logo)} alt={row.name} /> <span>{row.seedNumber != null && <span style={{ opacity: 0.7 }}>#{row.seedNumber} </span>}{row.name}</span>
+                                  <FallbackImg src={getLogoUrl(row.logo)} fallback="/assets/images/team-placeholder.svg" alt={row.name} /> <span>{row.seedNumber != null && <span style={{ opacity: 0.7 }}>#{row.seedNumber} </span>}{row.name}</span>
                                 </Link>
                               </td>
                               <td>{row.wins}-{row.losses}</td>
-                              <td>{row.pct?.toFixed(2) || '0.00'}</td>
+                              <td>{formatWinPct(row.pct)}</td>
                               <td>{row.pf}</td>
                               <td>{row.pa}</td>
                               <td>{row.diff}</td>
@@ -101,7 +119,8 @@ export default async function GameStatsPage({ params }: { params: { year: string
                     </div>
                   </div>
                 </div>
-              ))
+                );
+              })
             ) : (
               <div className="col-12 text-center py-5">
                 <p>No standings data available for this league yet.</p>

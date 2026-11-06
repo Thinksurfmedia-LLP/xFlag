@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { formatPlayerName } from '@/lib/playerName';
+import FallbackImg from '@/components/FallbackImg';
 
 type SortDir = 'asc' | 'desc';
 interface SortState { key: string; dir: SortDir; }
@@ -60,7 +61,7 @@ function PlayerCell({ p }: { p: any }) {
       : p.playerPhoto;
   return (
     <td>
-      <img src={photo} alt={p.playerName} style={{ width: 30, height: 30, borderRadius: '50%', objectFit: 'cover', marginRight: 6, verticalAlign: 'middle' }} />
+      <FallbackImg src={photo} fallback="/assets/images/player-placeholder.svg" alt={p.playerName} style={{ width: 30, height: 30, borderRadius: '50%', objectFit: 'cover', marginRight: 6, verticalAlign: 'middle' }} />
       {formatPlayerName(p.playerName, p.jerseyNumber)}
     </td>
   );
@@ -264,6 +265,10 @@ export default function LeaderboardClient({
   // every row would repeat that league.
   showLeague?: boolean;
 }) {
+  const hasAnyStats = passingStats.length + receivingStats.length + rushingStats.length + defenseStats.length > 0;
+  if (!hasAnyStats) {
+    return <p className="text-center py-5">No statistics recorded for this season yet.</p>;
+  }
   return (
     <div className="states-table-main">
       {passingStats.length > 0 && <PassingTable rows={passingStats} showLeague={showLeague} />}
