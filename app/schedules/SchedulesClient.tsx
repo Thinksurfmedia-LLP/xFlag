@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useMemo, useEffect, useRef, Fragment } from 'react';
+import { useState, useMemo, useEffect, useRef, Fragment, useTransition } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 function formatTimeWithZone(timeStr: string, timezone: string = "America/Los_Angeles", gameDate?: Date | string | null): string {
   if (!timeStr || timeStr === 'TBD') return timeStr;
@@ -31,7 +32,16 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
     return seasons.length > 0 ? String(seasons[0]._id) : '';
   })();
 
-  const [selectedSeason, setSelectedSeason] = useState(defaultSeasonId);
+  // ?season=<id> is both the season the server loaded `games` for (only one
+  // season is fetched — every game ever timed out) and what keeps the pick
+  // when coming back with the back button or from a game page.
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const [loadingSeason, startSeasonLoad] = useTransition();
+  const [selectedSeason, setSelectedSeason] = useState(() => {
+    const requested = searchParams.get('season');
+    return requested && seasons.some((s) => String(s._id) === requested) ? requested : defaultSeasonId;
+  });
   const [selectedState, setSelectedState] = useState('');
   const [selectedLeague, setSelectedLeague] = useState('');
   const [selectedTeam, setSelectedTeam] = useState('');
@@ -44,6 +54,13 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
 
   const handleSeasonChange = (seasonId: string) => {
     setSelectedSeason(seasonId);
+    // A navigation (replace: no extra history entry), so the server fetches
+    // that season's games.
+    const params = new URLSearchParams(window.location.search);
+    if (seasonId && seasonId !== defaultSeasonId) params.set('season', seasonId);
+    else params.delete('season');
+    const query = params.toString();
+    startSeasonLoad(() => router.replace(query ? `?${query}` : window.location.pathname, { scroll: false }));
     setSelectedState('');
     setSelectedLeague('');
     setSelectedTeam('');
@@ -373,7 +390,11 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
             </div>
 
             {/* Table */}
-            {gamesByDateTime.length === 0 ? (
+            {loadingSeason ? (
+              <div role="status" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '160px', color: '#888', fontSize: '14px' }}>
+                Loading games for this season...
+              </div>
+            ) : gamesByDateTime.length === 0 ? (
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '160px', color: '#888', fontSize: '14px' }}>
                 No games scheduled for {selectedLeague || 'this week'}.
               </div>

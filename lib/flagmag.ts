@@ -84,6 +84,29 @@ export async function getLiveSchedules() {
   }
 }
 
+// One season's games (all statuses) for the Schedules page: `seasonId` is a
+// Season id, or "default" for the current season. The full list above is
+// ~20MB / ~25s from flagmag and blew the 15s timeout, leaving Schedules empty;
+// one season is ~400KB — under Next's 2MB fetch-cache limit, so it can use
+// the normal 30s cache and repeat visits don't wait on flagmag at all.
+const SEASON_ID_PATTERN = /^[a-f0-9]{24}$/i;
+export async function getLiveSeasonSchedules(seasonId: string) {
+  const season = SEASON_ID_PATTERN.test(seasonId) ? seasonId : 'default';
+  try {
+    const res = await fetch(
+      `${API_URL}/organizations/${ORG_SLUG}/games?season=${season}`,
+      // A season not yet cached is a straight DB query on flagmag (~10s on its
+      // slow Atlas link) — same allowance as the stats endpoints.
+      { ...CACHE, ...withTimeout(STATS_FETCH_TIMEOUT_MS) }
+    );
+    const data = await res.json();
+    return data.success ? data.data : [];
+  } catch (error) {
+    console.error(`Failed to fetch flagmag games for season ${season}:`, error);
+    return [];
+  }
+}
+
 // Only the current (default) season's games, all statuses. The full list
 // above now includes every imported season back to 2008 (~20MB), which is
 // far too much for the home page's 4 upcoming + 4 recent games and timed out.

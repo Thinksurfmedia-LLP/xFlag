@@ -4,7 +4,7 @@ import Footer from '@/components/Footer';
 import InnerPageBanner from '@/components/InnerPageBanner';
 import PageIntro from '@/components/PageIntro';
 import { readPageData } from '@/lib/cms/pageStore';
-import { getLiveSchedules, getLiveLeagues, getLiveOrganization, getLiveSeasons, getLiveVenues } from '@/lib/flagmag';
+import { getLiveSeasonSchedules, getLiveLeagues, getLiveOrganization, getLiveSeasons, getLiveVenues } from '@/lib/flagmag';
 import { getGameRefSectionMap } from '@/lib/scheduleUtils';
 import SchedulesClient from './SchedulesClient';
 
@@ -15,8 +15,12 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: seo.metaTitle, description: seo.metaDescription };
 }
 
-export default async function Schedules() {
-  const [rawGames, leagues, org, seasons, venues, page] = await Promise.all([getLiveSchedules(), getLiveLeagues(), getLiveOrganization(), getLiveSeasons(), getLiveVenues(), readPageData('schedules')]);
+export default async function Schedules({ searchParams }: { searchParams: Promise<{ season?: string }> }) {
+  // Only the season being viewed (?season=<id>, else the default season) —
+  // every game ever (~20MB) timed out. Picking another season navigates
+  // here again with the new id.
+  const { season } = await searchParams;
+  const [rawGames, leagues, org, seasons, venues, page] = await Promise.all([getLiveSeasonSchedules(season || 'default'), getLiveLeagues(), getLiveOrganization(), getLiveSeasons(), getLiveVenues(), readPageData('schedules')]);
   const orgTimezone = org?.timezone || "America/Los_Angeles";
 
   // Enrich sectionName from Schedule docs directly (bypasses external API)

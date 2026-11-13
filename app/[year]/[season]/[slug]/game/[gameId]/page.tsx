@@ -4,6 +4,7 @@ import Link from 'next/link';
 import GameStatsClient from './GameStatsClient';
 import { displayScore } from '@/lib/score';
 import FallbackImg from '@/components/FallbackImg';
+import { xstatsHref } from '@/lib/xstatsNav';
 
 export default async function GameStatsPage({ 
   params,
@@ -91,7 +92,7 @@ export default async function GameStatsPage({
         <div className="container">
           <ul>
             <li><Link href="/">Home</Link></li>
-            <li><Link href="/xstats">xstats</Link></li>
+            <li><Link href={xstatsHref({ year, season: season.toLowerCase() }, slug)}>xstats</Link></li>
             <li><Link href={`/${year}/${season}/${slug}`}>Point Table</Link></li>
             <li> Game Stats</li>
           </ul>
