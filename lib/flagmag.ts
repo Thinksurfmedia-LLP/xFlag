@@ -84,6 +84,20 @@ export async function getLiveSchedules() {
   }
 }
 
+// Only the current (default) season's games, all statuses. The full list
+// above now includes every imported season back to 2008 (~20MB), which is
+// far too much for the home page's 4 upcoming + 4 recent games and timed out.
+export async function getLiveCurrentSeasonGames() {
+  try {
+    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/games?season=default`, { cache: 'no-store', ...withTimeout() });
+    const data = await res.json();
+    return data.success ? data.data : [];
+  } catch (error) {
+    console.error('Failed to fetch flagmag current-season games:', error);
+    return [];
+  }
+}
+
 // Week grouping (name, boundaries, game membership) is computed once, server-side,
 // by flagmag itself — this is the single source of truth every consumer must use
 // instead of re-deriving week numbers from raw game dates, which drifts out of

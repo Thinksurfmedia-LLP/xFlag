@@ -4,7 +4,7 @@ import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { readCmsData } from '@/lib/cms';
 import { isHomeSectionVisible, type HomeSectionId } from '@/lib/cms/homeSections';
-import { getLiveVenues, getLiveSchedules, getLiveLeagues, getLiveStandings } from '@/lib/flagmag';
+import { getLiveVenues, getLiveCurrentSeasonGames, getLiveLeagues, getLiveStandings } from '@/lib/flagmag';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,7 +16,7 @@ export default async function Home() {
 
   const allVenues = await getLiveVenues();
 
-  const liveGames = await getLiveSchedules();
+  const liveGames = await getLiveCurrentSeasonGames();
   const upcomingGames = liveGames.filter((g: any) => g.status !== 'completed').slice(0, 4);
   // Games arrive oldest-first; "past games" should be the most recent results,
   // not the org's oldest ones (imported past seasons go back to 2022).
