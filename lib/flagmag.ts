@@ -177,10 +177,30 @@ export async function getLiveDefaultSeasonLeagues() {
   }
 }
 
+// One season's leagues (Schedules' league strip/dropdown, xstats' league
+// cards). `isDefault` lets the current season share the small, already-warm
+// `?season=default` request the results ticker makes on every page. Other
+// seasons ask for `?season=<id>`, but flagmag currently honours only
+// "default" there and answers anything else with every league ever (~900,
+// ~630KB) — so the result is always narrowed to the season here, and the
+// request shrinks by itself once flagmag supports season ids.
+export async function getLiveSeasonLeagues(seasonId: string, isDefault = false) {
+  if (!SEASON_ID_PATTERN.test(seasonId)) return [];
+  const season = isDefault ? 'default' : seasonId;
+  try {
+    const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/leagues?season=${season}`, { ...CACHE, ...withTimeout() });
+    const data = await res.json();
+    return data.success ? data.data.filter((l: any) => String(l.season?._id) === seasonId) : [];
+  } catch (error) {
+    console.error(`Failed to fetch flagmag leagues for season ${seasonId}:`, error);
+    return [];
+  }
+}
+
 // Signup checkout only wants leagues currently open for registration —
 // `showOnSignup` is an opt-in toggle organizers set per-league on flagmag,
-// so this deliberately narrows past what getLiveLeagues() returns elsewhere
-// (e.g. the schedules page, which wants every league regardless of that flag).
+// so this deliberately narrows past what the other league lookups return
+// (e.g. the schedules page, which wants a season's leagues regardless of that flag).
 export async function getLiveSignupLeagues() {
   try {
     const res = await fetch(
@@ -212,7 +232,7 @@ export async function getLiveLeagueLeaderboard(leagueSlug: string, statType: str
 export async function getLiveSeasonLeaderboard(seasonId: string, statType: string) {
   try {
     const res = await fetch(
-      `${API_URL}/organizations/${ORG_SLUG}/seasons/leaderboard?seasons=${seasonId}&statType=${statType}`,
+      `${API_URL}/organizations/${ORG_SLUG}/seasons/leaderboard?seasons=${encodeURIComponent(seasonId)}&statType=${encodeURIComponent(statType)}`,
       { ...LIVE_STATS_CACHE, ...withTimeout(STATS_FETCH_TIMEOUT_MS) }
     );
     const data = await res.json();
@@ -241,6 +261,57 @@ export async function getLiveStandings(leagueSlug: string) {
     return data.divisionGroups || [];
   } catch (error) {
     console.error(`Failed to fetch standings for ${leagueSlug}:`, error);
+    return [];
+  }
+}
+
+// One game for the game stats page. Same 60s cache the page always used; the
+// timeout and catch are what's new — without them a hung flagmag left the page
+// loading forever and an unreachable one crashed it with a 500. null means
+// "show Game not found" (unknown id, flagmag error or flagmag down alike).
+export async function getLiveGame(gameId: string) {
+  try {
+    const res = await fetch(`${BASE_URL}/api/games/${encodeURIComponent(gameId)}`, { next: { revalidate: 60 }, ...withTimeout() });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.data || null;
+  } catch (error) {
+    console.error(`Failed to fetch flagmag game ${gameId}:`, error);
+    return null;
+  }
+}
+
+// One stat table for one game, for one team (`team` empty = both teams).
+// Computed from the game's plays, so it gets the stats allowance.
+export async function getLiveGameStats(gameId: string, statType: string, team: string) {
+  try {
+    const res = await fetch(
+      `${BASE_URL}/api/games/${encodeURIComponent(gameId)}/stats/computed?team=${encodeURIComponent(team)}&statType=${encodeURIComponent(statType)}`,
+      { next: { revalidate: 60 }, ...withTimeout(STATS_FETCH_TIMEOUT_MS) }
+    );
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.players || [];
+  } catch (error) {
+    console.error(`Failed to fetch game ${gameId} ${statType} stats:`, error);
+    return [];
+  }
+}
+
+// One league's stat table filtered to one team (`team` empty = every player),
+// for the league's player-stats page. Unlike getLiveLeagueLeaderboard this
+// keeps that page's 2-minute cache: it isn't the live leaderboard view.
+export async function getLiveLeagueTeamStats(leagueSlug: string, statType: string, team: string) {
+  try {
+    const res = await fetch(
+      `${API_URL}/organizations/${ORG_SLUG}/season/${encodeURIComponent(leagueSlug)}/stats/computed?team=${encodeURIComponent(team)}&statType=${encodeURIComponent(statType)}`,
+      { next: { revalidate: 120 }, ...withTimeout(STATS_FETCH_TIMEOUT_MS) }
+    );
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.players || [];
+  } catch (error) {
+    console.error(`Failed to fetch ${leagueSlug} ${statType} stats:`, error);
     return [];
   }
 }

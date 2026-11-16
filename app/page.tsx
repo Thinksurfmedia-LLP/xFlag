@@ -4,7 +4,7 @@ import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { readCmsData } from '@/lib/cms';
 import { isHomeSectionVisible, type HomeSectionId } from '@/lib/cms/homeSections';
-import { getLiveVenues, getLiveCurrentSeasonGames, getLiveLeagues, getLiveStandings } from '@/lib/flagmag';
+import { getLiveVenues, getLiveCurrentSeasonGames, getLiveDefaultSeasonLeagues, getLiveStandings } from '@/lib/flagmag';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,9 +14,14 @@ export default async function Home() {
   if (!hp) return null;
   const show = (id: HomeSectionId) => isHomeSectionVisible(hp.visibility, id);
 
-  const allVenues = await getLiveVenues();
+  // Independent flagmag reads — fetched together rather than one after another,
+  // so the page waits for the slowest one instead of their sum.
+  const [allVenues, liveGames, leagues] = await Promise.all([
+    getLiveVenues(),
+    getLiveCurrentSeasonGames(),
+    getLiveDefaultSeasonLeagues(),
+  ]);
 
-  const liveGames = await getLiveCurrentSeasonGames();
   const upcomingGames = liveGames.filter((g: any) => g.status !== 'completed').slice(0, 4);
   // Games arrive oldest-first; "past games" should be the most recent results,
   // not the org's oldest ones (imported past seasons go back to 2022).
@@ -25,7 +30,10 @@ export default async function Home() {
     .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime() || String(b.time || '').localeCompare(String(a.time || '')))
     .slice(0, 4);
 
-  const leagues = await getLiveLeagues();
+  // The standings preview shows the league with the latest start date, which in
+  // practice is always a current-season league — so only those are fetched
+  // (~15KB, above); every league ever (~900, ~630KB) took ~6s. flagmag sorts
+  // both lists by startDate desc, so [0] is the same pick.
   const firstLeagueSlug = leagues[0]?.slug;
   const liveStandings = firstLeagueSlug ? await getLiveStandings(firstLeagueSlug) : [];
   const firstDivisionRows = liveStandings[0]?.rows?.slice(0, 4) || [];

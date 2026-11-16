@@ -4,7 +4,8 @@ import Footer from '@/components/Footer';
 import InnerPageBanner from '@/components/InnerPageBanner';
 import PageIntro from '@/components/PageIntro';
 import { readPageData } from '@/lib/cms/pageStore';
-import { getLiveLeagues, getLiveSeasons } from '@/lib/flagmag';
+import { getLiveSeasonLeagues, getLiveSeasons } from '@/lib/flagmag';
+import { findSeasonOption, initialSeasonLabel, initialYear, type PickerSeason } from '@/lib/xstatsSeasons';
 import StatsClient from './StatsClient';
 
 // Saves revalidate instantly; this only bounds how long a DB-outage
@@ -21,9 +22,8 @@ export default async function Xstats({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const [leagues, seasons, page, query] = await Promise.all([
-    getLiveLeagues(),
-    getLiveSeasons(),
+  const [seasons, page, query] = await Promise.all([
+    getLiveSeasons() as Promise<PickerSeason[]>,
     readPageData('xstats'),
     searchParams,
   ]);
@@ -33,13 +33,21 @@ export default async function Xstats({
   const season = typeof query.season === 'string' ? query.season : undefined;
   const league = typeof query.league === 'string' ? query.league : undefined;
 
+  // Only the leagues of the season the picker opens on (same rules as
+  // StatsClient) — every league ever (~900, ~630KB) took ~6s per load.
+  // Picking another season fetches that season's leagues from the browser.
+  const openYear = initialYear(seasons, year);
+  const openSeason = findSeasonOption(seasons, openYear, initialSeasonLabel(seasons, openYear, season));
+  const initialSeasonId = openSeason ? String(openSeason._id) : '';
+  const leagues = openSeason ? await getLiveSeasonLeagues(initialSeasonId, Boolean(openSeason.isDefault)) : [];
+
   return (
     <div className="wrapper">
       <Header />
       <InnerPageBanner banner={page.banner} />
       <PageIntro intro={page.intro} />
 
-        <StatsClient leagues={leagues} seasons={seasons} requestedYear={year} requestedSeason={season} requestedLeague={league} />
+        <StatsClient initialLeagues={leagues} initialSeasonId={initialSeasonId} seasons={seasons} requestedYear={year} requestedSeason={season} requestedLeague={league} />
 
       <Footer />
     </div>

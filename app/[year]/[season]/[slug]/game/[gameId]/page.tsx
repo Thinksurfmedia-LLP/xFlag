@@ -5,6 +5,7 @@ import GameStatsClient from './GameStatsClient';
 import { displayScore } from '@/lib/score';
 import FallbackImg from '@/components/FallbackImg';
 import { xstatsHref } from '@/lib/xstatsNav';
+import { getLiveGame, getLiveGameStats } from '@/lib/flagmag';
 
 export default async function GameStatsPage({ 
   params,
@@ -18,23 +19,10 @@ export default async function GameStatsPage({
 
   const FLAGMAG_URL = (process.env.NEXT_PUBLIC_FLAGMAG_API_URL || 'https://flagmag.com').replace(/\/$/, '');
 
-  // Fetch specific game details from FlagMag API
-  const gameRes = await fetch(`${FLAGMAG_URL}/api/games/${gameId}`, { next: { revalidate: 60 } });
-  if (!gameRes.ok) {
-    return (
-      <div className="wrapper">
-        <Header />
-        <section className="team-point-section section-padding text-center">
-          <h2>Game not found</h2>
-        </section>
-        <Footer />
-      </div>
-    );
-  }
-  
-  const gameData = await gameRes.json();
-  const game = gameData.data;
-  
+  // Fetch specific game details from FlagMag API (null on a missing game and
+  // on a slow/down flagmag alike — see getLiveGame)
+  const game = await getLiveGame(gameId);
+
   if (!game) {
     return (
       <div className="wrapper">
@@ -50,20 +38,9 @@ export default async function GameStatsPage({
   const teamName = sParams.team || game.teamA.name;
   const seasonName = game.leagueName || 'Current Season';
 
-  // Helper to fetch computed stats
-  const fetchStats = async (type: string) => {
-    try {
-      const teamParam = teamName === 'all' ? '' : encodeURIComponent(teamName);
-      const url = `${FLAGMAG_URL}/api/games/${gameId}/stats/computed?team=${teamParam}&statType=${type}`;
-      const res = await fetch(url, { next: { revalidate: 60 } });
-      if (!res.ok) return [];
-      const data = await res.json();
-      return data.players || [];
-    } catch (e) {
-      console.error(`Failed to fetch ${type} stats:`, e);
-      return [];
-    }
-  };
+  // Computed stats for the selected team ('all' = both teams)
+  const statsTeam = teamName === 'all' ? '' : teamName;
+  const fetchStats = (type: string) => getLiveGameStats(gameId, type, statsTeam);
 
   const [passingStats, receivingStats, rushingStats, defenseStats] = await Promise.all([
     fetchStats('passing'),

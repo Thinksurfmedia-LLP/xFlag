@@ -25,6 +25,13 @@ async function dbConnect() {
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
+      // Every page reads its CMS content from here (with a fallback to the
+      // built-in defaults on error). The driver's default 30s server
+      // selection and no socket timeout meant an unreachable or stalled DB
+      // held pages for 30s+ (or forever) before that fallback could kick in.
+      serverSelectionTimeoutMS: 10000,
+      connectTimeoutMS: 10000,
+      socketTimeoutMS: 45000,
     };
 
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {

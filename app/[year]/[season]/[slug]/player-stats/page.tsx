@@ -1,7 +1,7 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
-import { getLiveLeague } from '@/lib/flagmag';
+import { getLiveLeague, getLiveLeagueTeamStats } from '@/lib/flagmag';
 import { seasonUrlParts, xstatsHref } from '@/lib/xstatsNav';
 import PlayerStatsClient from './PlayerStatsClient';
 
@@ -18,19 +18,9 @@ export default async function PlayerStatsPage({
 
   const FLAGMAG_URL = (process.env.NEXT_PUBLIC_FLAGMAG_API_URL || 'https://flagmag.com').replace(/\/$/, '');
 
-  const fetchStats = async (type: string) => {
-    try {
-      const teamParam = teamName === 'All Players' ? '' : encodeURIComponent(teamName);
-      const url = `${FLAGMAG_URL}/api/organizations/xflagfootball/season/${slug}/stats/computed?team=${teamParam}&statType=${type}`;
-      const res = await fetch(url, { next: { revalidate: 120 } });
-      if (!res.ok) return [];
-      const data = await res.json();
-      return data.players || [];
-    } catch (e) {
-      console.error(`Failed to fetch ${type} stats:`, e);
-      return [];
-    }
-  };
+  // 'All Players' = no team filter
+  const statsTeam = teamName === 'All Players' ? '' : teamName;
+  const fetchStats = (type: string) => getLiveLeagueTeamStats(slug, type, statsTeam);
 
   // Run league lookup and all four stat fetches in parallel
   const [league, passingStats, receivingStats, rushingStats, defensiveStats] = await Promise.all([

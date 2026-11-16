@@ -1,16 +1,27 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { leagueLocation } from '@/lib/xstatsNav';
+import {
+  availableYears as yearsOf,
+  defaultSeasonLabelFor,
+  findSeasonOption,
+  initialSeasonLabel,
+  initialYear,
+  seasonsForYear,
+  type PickerSeason,
+} from '@/lib/xstatsSeasons';
+import { getLiveSeasonLeagues } from '@/lib/flagmag';
 import FallbackImg from '@/components/FallbackImg';
 
-const SEASON_ORDER = ['Winter', 'Spring', 'Summer', 'Fall', 'Holiday'];
-
 interface StatsClientProps {
-  leagues: any[];
-  seasons: any[];
+  // The leagues of `initialSeasonId` only — every league ever (~900) was too
+  // slow to load up front. Other seasons are fetched when they're picked.
+  initialLeagues: any[];
+  initialSeasonId: string;
+  seasons: PickerSeason[];
   // From ?year=&season= — ignored when they don't name a real season.
   requestedYear?: string;
   requestedSeason?: string;
@@ -18,7 +29,7 @@ interface StatsClientProps {
   requestedLeague?: string;
 }
 
-export default function StatsClient({ leagues, seasons, ...fromServer }: StatsClientProps) {
+export default function StatsClient({ initialLeagues, initialSeasonId, seasons, ...fromServer }: StatsClientProps) {
   // Back navigation re-renders from the router cache, whose server props
   // predate the replaceState below — the live URL is the source of truth.
   const searchParams = useSearchParams();
@@ -26,51 +37,17 @@ export default function StatsClient({ leagues, seasons, ...fromServer }: StatsCl
   const requestedSeason = searchParams.get('season') ?? fromServer.requestedSeason;
   const requestedLeague = searchParams.get('league') ?? fromServer.requestedLeague;
 
-  const availableYears = useMemo(() => {
-    const ySet = new Set<string>();
-    seasons.forEach(s => {
-      const yr = (s.name || '').match(/\d{4}/)?.[0];
-      if (yr) ySet.add(yr);
-    });
-    return Array.from(ySet).sort((a, b) => b.localeCompare(a));
-  }, [seasons]);
-
-  const seasonsForYear = (year: string) =>
-    seasons
-      .filter(s => (s.name || '').match(/\d{4}/)?.[0] === year)
-      .map(s => ({ _id: s._id, label: (s.name as string).replace(/\d{4}/g, '').trim(), isDefault: s.isDefault }))
-      .filter(s => s.label)
-      .sort((a, b) => {
-        const idxA = SEASON_ORDER.indexOf(a.label);
-        const idxB = SEASON_ORDER.indexOf(b.label);
-        // Descending — the latest season of the year shows first.
-        if (idxA !== -1 && idxB !== -1) return idxB - idxA;
-        return b.label.localeCompare(a.label);
-      });
-
-  const defaultSeasonLabelFor = (year: string) => {
-    const yearSeasons = seasonsForYear(year);
-    const def = yearSeasons.find(s => s.isDefault);
-    return def?.label || yearSeasons[0]?.label || '';
-  };
+  const availableYears = useMemo(() => yearsOf(seasons), [seasons]);
 
   // First visit: the current (default) season. Back from a league page: the
   // year/season the URL carries, as long as that season actually exists.
-  const [selectedYear, setSelectedYear] = useState<string>(() => {
-    if (requestedYear && availableYears.includes(requestedYear)) return requestedYear;
-    const def = seasons.find(s => s.isDefault);
-    const defYear = (def?.name || '').match(/\d{4}/)?.[0];
-    return defYear || availableYears[0] || '2026';
-  });
+  const [selectedYear, setSelectedYear] = useState<string>(() => initialYear(seasons, requestedYear));
 
-  const [selectedSeason, setSelectedSeason] = useState<string>(() => {
-    const requested = seasonsForYear(selectedYear).find(
-      s => s.label.toLowerCase() === requestedSeason?.toLowerCase()
-    );
-    return requested?.label || defaultSeasonLabelFor(selectedYear);
-  });
+  const [selectedSeason, setSelectedSeason] = useState<string>(() =>
+    initialSeasonLabel(seasons, selectedYear, requestedSeason)
+  );
 
-  const availableSeasons = useMemo(() => seasonsForYear(selectedYear), [seasons, selectedYear]); // eslint-disable-line react-hooks/exhaustive-deps
+  const availableSeasons = useMemo(() => seasonsForYear(seasons, selectedYear), [seasons, selectedYear]);
 
   // The highlighted card. Only one at a time; cleared when year/season change.
   const [selectedLeague, setSelectedLeague] = useState<string>(requestedLeague || '');
@@ -87,7 +64,7 @@ export default function StatsClient({ leagues, seasons, ...fromServer }: StatsCl
   };
 
   const selectYear = (year: string) => {
-    const season = defaultSeasonLabelFor(year);
+    const season = defaultSeasonLabelFor(seasons, year);
     setSelectedYear(year);
     setSelectedSeason(season);
     setSelectedLeague('');
@@ -107,24 +84,35 @@ export default function StatsClient({ leagues, seasons, ...fromServer }: StatsCl
     rememberSelection(selectedYear, selectedSeason, slug);
   };
 
-  const selectedSeasonId = useMemo(() => {
-    const obj = availableSeasons.find(s => s.label.toLowerCase() === selectedSeason.toLowerCase());
-    return obj?._id || '';
-  }, [availableSeasons, selectedSeason]);
+  const selectedSeasonOption = useMemo(
+    () => findSeasonOption(seasons, selectedYear, selectedSeason),
+    [seasons, selectedYear, selectedSeason]
+  );
+  const selectedSeasonId = selectedSeasonOption?._id || '';
 
   const leaderboardHref = selectedSeasonId
     ? `/xstats/leaderboard?season=${selectedSeasonId}`
     : '/xstats/leaderboard';
 
-  const filteredLeagues = useMemo(() => {
-    if (!selectedYear || !selectedSeason) return [];
-    return leagues.filter(l => {
-      const seasonName = l.season?.name || '';
-      const yr = seasonName.match(/\d{4}/)?.[0] || '';
-      const sz = seasonName.replace(/\d{4}/g, '').trim();
-      return yr === selectedYear && sz.toLowerCase() === selectedSeason.toLowerCase();
-    });
-  }, [leagues, selectedYear, selectedSeason]);
+  // Leagues per season id, filled as seasons are picked. Kept for the visit,
+  // so going back to a season already seen is instant.
+  const [leaguesBySeason, setLeaguesBySeason] = useState<Record<string, any[]>>(() =>
+    initialSeasonId ? { [initialSeasonId]: initialLeagues } : {}
+  );
+  const requestedSeasons = useRef(new Set<string>(initialSeasonId ? [initialSeasonId] : []));
+
+  useEffect(() => {
+    if (!selectedSeasonId || requestedSeasons.current.has(selectedSeasonId)) return;
+    requestedSeasons.current.add(selectedSeasonId);
+    const seasonId = selectedSeasonId;
+    getLiveSeasonLeagues(seasonId, Boolean(selectedSeasonOption?.isDefault))
+      // A failed request shows "No leagues found", like a failed page load did.
+      .catch(() => [])
+      .then((list) => setLeaguesBySeason((prev) => ({ ...prev, [seasonId]: list })));
+  }, [selectedSeasonId, selectedSeasonOption]);
+
+  // undefined = that season's leagues are still loading.
+  const filteredLeagues: any[] | undefined = selectedSeasonId ? leaguesBySeason[selectedSeasonId] : [];
 
   const getLogoUrl = (url?: string) => {
     if (!url) return '/assets/images/league-placeholder.svg';
@@ -172,7 +160,7 @@ export default function StatsClient({ leagues, seasons, ...fromServer }: StatsCl
 
         {/* LEAGUES / LOCATIONS GRID */}
         <ul className="seasons-team-list">
-          {filteredLeagues.map(league => {
+          {(filteredLeagues || []).map(league => {
             const href = `/${selectedYear}/${selectedSeason.toLowerCase()}/${league.slug}`;
             const isSelected = selectedLeague === league.slug;
             const location = leagueLocation(league);
@@ -197,7 +185,11 @@ export default function StatsClient({ leagues, seasons, ...fromServer }: StatsCl
           })}
         </ul>
 
-        {filteredLeagues.length === 0 && (
+        {filteredLeagues === undefined ? (
+          <div role="status" className="text-center py-5 text-muted" style={{ marginBottom: '50px' }}>
+            Loading leagues for {selectedSeason} {selectedYear}...
+          </div>
+        ) : filteredLeagues.length === 0 && (
           <div className="text-center py-5 text-muted" style={{ marginBottom: '50px' }}>
             No leagues found for {selectedSeason} {selectedYear}.
           </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect, useRef, Fragment, useTransition } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 function formatTimeWithZone(timeStr: string, timezone: string = "America/Los_Angeles", gameDate?: Date | string | null): string {
   if (!timeStr || timeStr === 'TBD') return timeStr;
@@ -22,7 +22,7 @@ function formatTimeWithZone(timeStr: string, timezone: string = "America/Los_Ang
   return `${h12}:${String(m).padStart(2, "0")} ${ampm}${tzAbbr ? ` ${tzAbbr}` : ""}`;
 }
 
-export default function SchedulesClient({ games, leagues, seasons, venues = [], orgTimezone = "America/Los_Angeles" }: { games: any[], leagues: any[], seasons: any[], venues?: any[], orgTimezone?: string }) {
+export default function SchedulesClient({ games, leagues, seasons, seasonId, venues = [], orgTimezone = "America/Los_Angeles" }: { games: any[], leagues: any[], seasons: any[], seasonId: string, venues?: any[], orgTimezone?: string }) {
   // Determine the default season (marked isDefault, else first season)
   const defaultSeasonId = (() => {
     const fromLeague = leagues.find((l: any) => l.season?.isDefault);
@@ -32,16 +32,21 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
     return seasons.length > 0 ? String(seasons[0]._id) : '';
   })();
 
-  // ?season=<id> is both the season the server loaded `games` for (only one
-  // season is fetched — every game ever timed out) and what keeps the pick
-  // when coming back with the back button or from a game page.
-  const searchParams = useSearchParams();
+  // `seasonId` is the season the server loaded `games` and `leagues` for —
+  // only one season is fetched (every game/league ever timed out). It comes
+  // from ?season=<id>, which keeps the pick when coming back with the back
+  // button or from a game page.
   const router = useRouter();
   const [loadingSeason, startSeasonLoad] = useTransition();
-  const [selectedSeason, setSelectedSeason] = useState(() => {
-    const requested = searchParams.get('season');
-    return requested && seasons.some((s) => String(s._id) === requested) ? requested : defaultSeasonId;
-  });
+  const [selectedSeason, setSelectedSeason] = useState(seasonId || defaultSeasonId);
+  // A navigation that didn't come from the picker (back/forward, a link to
+  // plain /schedules) swaps the loaded season under this component — follow it
+  // (adjusted during render, React's pattern for state derived from a prop).
+  const [loadedSeasonId, setLoadedSeasonId] = useState(seasonId);
+  if (seasonId !== loadedSeasonId) {
+    setLoadedSeasonId(seasonId);
+    if (seasonId) setSelectedSeason(seasonId);
+  }
   const [selectedState, setSelectedState] = useState('');
   const [selectedLeague, setSelectedLeague] = useState('');
   const [selectedTeam, setSelectedTeam] = useState('');
@@ -52,12 +57,12 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
     if (leagueStripRef.current) leagueStripRef.current.scrollBy({ left: dir === 'left' ? -280 : 280, behavior: 'smooth' });
   };
 
-  const handleSeasonChange = (seasonId: string) => {
-    setSelectedSeason(seasonId);
+  const handleSeasonChange = (nextSeasonId: string) => {
+    setSelectedSeason(nextSeasonId);
     // A navigation (replace: no extra history entry), so the server fetches
-    // that season's games.
+    // that season's games and leagues.
     const params = new URLSearchParams(window.location.search);
-    if (seasonId && seasonId !== defaultSeasonId) params.set('season', seasonId);
+    if (nextSeasonId && nextSeasonId !== defaultSeasonId) params.set('season', nextSeasonId);
     else params.delete('season');
     const query = params.toString();
     startSeasonLoad(() => router.replace(query ? `?${query}` : window.location.pathname, { scroll: false }));
@@ -106,7 +111,9 @@ export default function SchedulesClient({ games, leagues, seasons, venues = [], 
     return '';
   };
 
-  // Leagues that belong to the selected season (for the Leagues dropdown)
+  // Leagues that belong to the selected season (for the Leagues dropdown).
+  // `leagues` is already just the loaded season's; this also empties the list
+  // while another season is loading instead of showing the old one's.
   const filteredLeagues = useMemo(() => {
     if (!selectedSeason) return leagues;
     return leagues.filter((l: any) => String(l.season?._id) === selectedSeason);
