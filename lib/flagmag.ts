@@ -29,13 +29,40 @@ const FETCH_TIMEOUT_MS = 15000;
 const STATS_FETCH_TIMEOUT_MS = 20000;
 const withTimeout = (ms = FETCH_TIMEOUT_MS) => ({ signal: AbortSignal.timeout(ms) });
 
+// `next build` pre-renders the static (ISR) pages, which call flagmag. When the
+// API isn't running at build time (e.g. FLAGMAG_API_URL is a local dev server),
+// every call fails with ECONNREFUSED and dumps a stack trace. That's expected:
+// the pages are built empty and refill on their first revalidation (~30s).
+// So during the build, report it once per worker instead; at runtime every
+// failure is still logged in full.
+const IS_BUILD_PHASE = process.env.NEXT_PHASE === 'phase-production-build';
+let hasWarnedBuildUnreachable = false;
+
+function getErrorCode(error: unknown): string | undefined {
+  const cause = (error as { cause?: { code?: string } } | null)?.cause;
+  return cause?.code;
+}
+
+function logFetchError(message: string, error: unknown): void {
+  if (IS_BUILD_PHASE && getErrorCode(error) === 'ECONNREFUSED') {
+    if (!hasWarnedBuildUnreachable) {
+      hasWarnedBuildUnreachable = true;
+      console.warn(
+        `⚠ flagmag API unreachable at ${BASE_URL} during build — static pages are built without live data and will populate on first revalidation.`
+      );
+    }
+    return;
+  }
+  console.error(message, error);
+}
+
 export async function getLiveVenues() {
   try {
     const res = await fetch(`${API_URL}/organizations/${ORG_SLUG}/venues`, { ...CACHE, ...withTimeout() });
     const data = await res.json();
     return data.success ? data.data : [];
   } catch (error) {
-    console.error('Failed to fetch flagmag venues:', error);
+    logFetchError('Failed to fetch flagmag venues:', error);
     return [];
   }
 }
@@ -46,7 +73,7 @@ export async function getLiveOrganization() {
     const data = await res.json();
     return data.success ? data.data : null;
   } catch (error) {
-    console.error('Failed to fetch flagmag organization:', error);
+    logFetchError('Failed to fetch flagmag organization:', error);
     return null;
   }
 }
@@ -64,7 +91,7 @@ export async function getLiveRecentResults(limit: number) {
     const data = await res.json();
     return data.success ? data.data : [];
   } catch (error) {
-    console.error('Failed to fetch flagmag recent results:', error);
+    logFetchError('Failed to fetch flagmag recent results:', error);
     return [];
   }
 }
@@ -79,7 +106,7 @@ export async function getLiveSchedules() {
     const data = await res.json();
     return data.success ? data.data : [];
   } catch (error) {
-    console.error('Failed to fetch flagmag games:', error);
+    logFetchError('Failed to fetch flagmag games:', error);
     return [];
   }
 }
@@ -102,7 +129,7 @@ export async function getLiveSeasonSchedules(seasonId: string) {
     const data = await res.json();
     return data.success ? data.data : [];
   } catch (error) {
-    console.error(`Failed to fetch flagmag games for season ${season}:`, error);
+    logFetchError(`Failed to fetch flagmag games for season ${season}:`, error);
     return [];
   }
 }
@@ -116,7 +143,7 @@ export async function getLiveCurrentSeasonGames() {
     const data = await res.json();
     return data.success ? data.data : [];
   } catch (error) {
-    console.error('Failed to fetch flagmag current-season games:', error);
+    logFetchError('Failed to fetch flagmag current-season games:', error);
     return [];
   }
 }
@@ -131,7 +158,7 @@ export async function getLiveLeagueSchedule(leagueSlug: string) {
     const data = await res.json();
     return data.success ? data.weeks : [];
   } catch (error) {
-    console.error(`Failed to fetch league schedule for ${leagueSlug}:`, error);
+    logFetchError(`Failed to fetch league schedule for ${leagueSlug}:`, error);
     return [];
   }
 }
@@ -142,7 +169,7 @@ export async function getLiveLeagues() {
     const data = await res.json();
     return data.success ? data.data : [];
   } catch (error) {
-    console.error('Failed to fetch flagmag leagues:', error);
+    logFetchError('Failed to fetch flagmag leagues:', error);
     return [];
   }
 }
@@ -159,7 +186,7 @@ export async function getLiveLeague(leagueSlug: string) {
     const data = await res.json();
     return data.success ? data.data.find((l: any) => l.slug === leagueSlug) || null : null;
   } catch (error) {
-    console.error(`Failed to fetch flagmag league ${leagueSlug}:`, error);
+    logFetchError(`Failed to fetch flagmag league ${leagueSlug}:`, error);
     return null;
   }
 }
@@ -172,7 +199,7 @@ export async function getLiveDefaultSeasonLeagues() {
     const data = await res.json();
     return data.success ? data.data : [];
   } catch (error) {
-    console.error('Failed to fetch flagmag default-season leagues:', error);
+    logFetchError('Failed to fetch flagmag default-season leagues:', error);
     return [];
   }
 }
@@ -192,7 +219,7 @@ export async function getLiveSeasonLeagues(seasonId: string, isDefault = false) 
     const data = await res.json();
     return data.success ? data.data.filter((l: any) => String(l.season?._id) === seasonId) : [];
   } catch (error) {
-    console.error(`Failed to fetch flagmag leagues for season ${seasonId}:`, error);
+    logFetchError(`Failed to fetch flagmag leagues for season ${seasonId}:`, error);
     return [];
   }
 }
@@ -210,7 +237,7 @@ export async function getLiveSignupLeagues() {
     const data = await res.json();
     return data.success ? data.data : [];
   } catch (error) {
-    console.error('Failed to fetch flagmag signup leagues:', error);
+    logFetchError('Failed to fetch flagmag signup leagues:', error);
     return [];
   }
 }
@@ -224,7 +251,7 @@ export async function getLiveLeagueLeaderboard(leagueSlug: string, statType: str
     const data = await res.json();
     return data.players || [];
   } catch (error) {
-    console.error(`Failed to fetch league leaderboard (${statType}):`, error);
+    logFetchError(`Failed to fetch league leaderboard (${statType}):`, error);
     return [];
   }
 }
@@ -238,7 +265,7 @@ export async function getLiveSeasonLeaderboard(seasonId: string, statType: strin
     const data = await res.json();
     return data.players || [];
   } catch (error) {
-    console.error(`Failed to fetch leaderboard (${statType}):`, error);
+    logFetchError(`Failed to fetch leaderboard (${statType}):`, error);
     return [];
   }
 }
@@ -249,7 +276,7 @@ export async function getLiveSeasons() {
     const data = await res.json();
     return data.success ? data.data : [];
   } catch (error) {
-    console.error('Failed to fetch flagmag seasons:', error);
+    logFetchError('Failed to fetch flagmag seasons:', error);
     return [];
   }
 }
@@ -260,7 +287,7 @@ export async function getLiveStandings(leagueSlug: string) {
     const data = await res.json();
     return data.divisionGroups || [];
   } catch (error) {
-    console.error(`Failed to fetch standings for ${leagueSlug}:`, error);
+    logFetchError(`Failed to fetch standings for ${leagueSlug}:`, error);
     return [];
   }
 }
@@ -276,7 +303,7 @@ export async function getLiveGame(gameId: string) {
     const data = await res.json();
     return data.data || null;
   } catch (error) {
-    console.error(`Failed to fetch flagmag game ${gameId}:`, error);
+    logFetchError(`Failed to fetch flagmag game ${gameId}:`, error);
     return null;
   }
 }
@@ -293,7 +320,7 @@ export async function getLiveGameStats(gameId: string, statType: string, team: s
     const data = await res.json();
     return data.players || [];
   } catch (error) {
-    console.error(`Failed to fetch game ${gameId} ${statType} stats:`, error);
+    logFetchError(`Failed to fetch game ${gameId} ${statType} stats:`, error);
     return [];
   }
 }
@@ -311,7 +338,7 @@ export async function getLiveLeagueTeamStats(leagueSlug: string, statType: strin
     const data = await res.json();
     return data.players || [];
   } catch (error) {
-    console.error(`Failed to fetch ${leagueSlug} ${statType} stats:`, error);
+    logFetchError(`Failed to fetch ${leagueSlug} ${statType} stats:`, error);
     return [];
   }
 }
